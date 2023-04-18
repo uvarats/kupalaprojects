@@ -3,6 +3,7 @@
 /.env.local
 /.env.local.php
 /.env.*.local
+/.env.docker
 /config/secrets/prod/prod.decrypt.private.php
 /public/bundles/
 /var/
@@ -19,6 +20,7 @@
 /phpunit.xml
 ###< symfony/phpunit-bridge ###
 /.idea
+/docker
 ###> symfony/webpack-encore-bundle ###
 /node_modules/
 /public/build/
