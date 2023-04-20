@@ -36,6 +36,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $middleName = null;
 
+    #[ORM\OneToOne(mappedBy: 'userEntity', cascade: ['persist', 'remove'])]
+    private ?ProjectAuthor $projectAuthor = null;
+
     public function getId(): ?UuidInterface
     {
         return $this->id;
@@ -138,6 +141,23 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setMiddleName(?string $middleName): self
     {
         $this->middleName = $middleName;
+
+        return $this;
+    }
+
+    public function getProjectAuthor(): ?ProjectAuthor
+    {
+        return $this->projectAuthor;
+    }
+
+    public function setProjectAuthor(ProjectAuthor $projectAuthor): self
+    {
+        // set the owning side of the relation if necessary
+        if ($projectAuthor->getUserEntity() !== $this) {
+            $projectAuthor->setUserEntity($this);
+        }
+
+        $this->projectAuthor = $projectAuthor;
 
         return $this;
     }

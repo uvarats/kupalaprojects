@@ -1,0 +1,31 @@
+@import '~bootstrap/scss/bootstrap';
+/* Custom styles */
+body {
+  background-color: #f7f9fb;
+}
+.jumbotron {
+  background-color: #8fc1e3;
+  color: #f7f9fb;
+  margin-bottom: 1rem;
+  padding: 2.5rem;
+}
+.btn-primary {
+  background-color: #31708e;
+  border-color: #31708e;
+}
+.btn-primary:hover {
+  background-color: #5085a5;
+  border-color: #5085a5;
+}
+.card {
+  background-color: #f7f9fb;
+  border-color: #8fc1e3;
+}
+.card-header {
+  background-color: #8fc1e3;
+  color: #f7f9fb;
+}
+.card-footer {
+  background-color: #8fc1e3;
+  color: #f7f9fb;
+}

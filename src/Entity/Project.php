@@ -34,9 +34,20 @@ class Project
     #[ORM\JoinColumn(nullable: false)]
     private ?Festival $festival = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $orientedOn = null;
+
+    #[ORM\ManyToOne(inversedBy: 'projects')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?ProjectAuthor $author = null;
+
+    #[ORM\OneToMany(mappedBy: 'project', targetEntity: ProjectAward::class, orphanRemoval: true)]
+    private Collection $awards;
+
     public function __construct()
     {
         $this->subjects = new ArrayCollection();
+        $this->awards = new ArrayCollection();
     }
 
     public function getId(): ?UuidInterface
@@ -112,6 +123,60 @@ class Project
     public function setFestival(?Festival $festival): self
     {
         $this->festival = $festival;
+
+        return $this;
+    }
+
+    public function getOrientedOn(): ?string
+    {
+        return $this->orientedOn;
+    }
+
+    public function setOrientedOn(?string $orientedOn): self
+    {
+        $this->orientedOn = $orientedOn;
+
+        return $this;
+    }
+
+    public function getAuthor(): ?ProjectAuthor
+    {
+        return $this->author;
+    }
+
+    public function setAuthor(?ProjectAuthor $author): self
+    {
+        $this->author = $author;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, ProjectAward>
+     */
+    public function getAwards(): Collection
+    {
+        return $this->awards;
+    }
+
+    public function addAward(ProjectAward $award): self
+    {
+        if (!$this->awards->contains($award)) {
+            $this->awards->add($award);
+            $award->setProject($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAward(ProjectAward $award): self
+    {
+        if ($this->awards->removeElement($award)) {
+            // set the owning side to null (unless already changed)
+            if ($award->getProject() === $this) {
+                $award->setProject(null);
+            }
+        }
 
         return $this;
     }

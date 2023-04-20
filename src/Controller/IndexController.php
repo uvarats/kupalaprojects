@@ -14,14 +14,6 @@ class IndexController extends AbstractController
     #[Route('/', name: 'app_index')]
     public function index(EntityManagerInterface $entityManager, UserPasswordHasherInterface $hasher): Response
     {
-        $user = new User();
-        $user->setEmail('test@mail.com');
-
-        $password = $hasher->hashPassword($user, '123456');
-        $user->setPassword($password);
-
-        $entityManager->persist($user);
-        $entityManager->flush();
         return $this->render('index/index.html.twig', [
             'controller_name' => 'IndexController',
         ]);
