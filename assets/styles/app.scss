@@ -29,3 +29,10 @@ body {
   background-color: #8fc1e3;
   color: #f7f9fb;
 }
+.main-cards {
+  display: flex !important;
+  flex-direction: row !important;
+  flex-basis: 0 !important;
+  flex-grow: 1 !important;
+  justify-content: space-between !important;
+}

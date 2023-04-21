@@ -1,41 +1,58 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="UTF-8">
-        <title>{% block title %}Welcome!{% endblock %}</title>
-        <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text></svg>">
-        {# Run `composer require symfony/webpack-encore-bundle` to start using Symfony UX #}
-        {% block stylesheets %}
-            {{ encore_entry_link_tags('app') }}
-        {% endblock %}
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Welcome!{% endblock %}</title>
+    <link rel="icon"
+          href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text></svg>">
+    {# Run `composer require symfony/webpack-encore-bundle` to start using Symfony UX #}
+    {% block stylesheets %}
+        {{ encore_entry_link_tags('app') }}
+    {% endblock %}
 
-        {% block javascripts %}
-            {{ encore_entry_script_tags('app') }}
-        {% endblock %}
-    </head>
-    <body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <div class="container-fluid">
-            <img src="//kp.grsu.by/pluginfile.php/1/theme_eduhub/logo/1641907127/logo.png" height="40" width="47" alt="logo">
-            <a class="navbar-brand" href="{{ path('app_index') }}">Купаловские проекты</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Домой</a>
+    {% block javascripts %}
+        {{ encore_entry_script_tags('app') }}
+    {% endblock %}
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container-fluid">
+        <img src="//kp.grsu.by/pluginfile.php/1/theme_eduhub/logo/1641907127/logo.png" height="40" width="47"
+             alt="logo">
+        <a class="navbar-brand" href="{{ path('app_index') }}">Купаловские проекты</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Домой</a>
+                </li>
+                {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button"
+                           data-bs-toggle="dropdown" aria-expanded="false">
+                            Аккаунт
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownMenuLink">
+                            <li><a class="dropdown-item" href="#">Проекты</a></li>
+                            <li><a class="dropdown-item" href="#">Настройки</a></li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li><a class="dropdown-item" href="{{ path('app_auth_logout') }}">Выход</a></li>
+                        </ul>
                     </li>
-                    {% if is_granted('IS_AUTHENTICATED_FULLY') %}
-                    {% else %}
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ path('app_auth_login') }}">Вход</a>
-                        </li>
-                    {% endif %}
-                </ul>
-            </div>
+                {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ path('app_auth_login') }}">Вход</a>
+                    </li>
+                {% endif %}
+            </ul>
         </div>
-    </nav>
-        {% block body %}{% endblock %}
-    </body>
+    </div>
+</nav>
+{% block body %}{% endblock %}
+</body>
 </html>

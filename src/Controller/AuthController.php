@@ -13,9 +13,6 @@ class AuthController extends AbstractController
     #[Route('/login', name: 'app_auth_login')]
     public function index(Request $request, AuthenticationUtils $authUtils): Response
     {
-        if ($request->isMethod('POST')) {
-            dd($request);
-        }
         $error = $authUtils->getLastAuthenticationError();
         $lastUsername = $authUtils->getLastUsername();
 
@@ -23,5 +20,10 @@ class AuthController extends AbstractController
             'error' => $error,
             'last_username' => $lastUsername,
         ]);
+    }
+
+    #[Route('/logout', name: 'app_auth_logout')]
+    public function logout(): void
+    {
     }
 }

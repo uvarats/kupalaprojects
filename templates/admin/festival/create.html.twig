@@ -1,0 +1,43 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Создание фестиваля{% endblock %}
+
+{% block body %}
+    <div class="container my-5">
+        <form>
+            <div class="mb-3">
+                <label for="festivalName" class="form-label">Name</label>
+                <input type="text" class="form-control" id="festivalName" name="festivalName" required>
+            </div>
+            <div class="mb-3">
+                <label for="startDate" class="form-label">Start Date</label>
+                <input type="date" class="form-control" id="startDate" name="startDate" required>
+            </div>
+            <div class="mb-3">
+                <label for="endDate" class="form-label">End Date</label>
+                <input type="date" class="form-control" id="endDate" name="endDate" required>
+            </div>
+            <div class="mb-3">
+                <label for="orgCommittee" class="form-label">Organization Committee</label>
+                <select multiple class="form-control" id="orgCommittee" name="orgCommittee[]" required>
+                    <option value="committee1">Committee 1</option>
+                    <option value="committee2">Committee 2</option>
+                    <option value="committee3">Committee 3</option>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="jury" class="form-label">Jury</label>
+                <select multiple class="form-control" id="jury" name="jury[]" required>
+                    <option value="jury1">Jury 1</option>
+                    <option value="jury2">Jury 2</option>
+                    <option value="jury3">Jury 3</option>
+                </select>
+            </div>
+            <div class="mb-3 form-check">
+                <input type="checkbox" class="form-check-input" id="isActive" name="isActive">
+                <label class="form-check-label" for="isActive">Is Active</label>
+            </div>
+            <button type="submit" class="btn btn-primary">Create</button>
+        </form>
+    </div>
+{% endblock %}

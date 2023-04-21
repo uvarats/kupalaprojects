@@ -39,6 +39,9 @@ class Festival
     #[ORM\OneToMany(mappedBy: 'festival', targetEntity: Project::class)]
     private Collection $projects;
 
+    #[ORM\Column]
+    private bool $isActive = true;
+
     public function __construct()
     {
         $this->organizationCommittee = new ArrayCollection();
@@ -161,6 +164,18 @@ class Festival
                 $project->setFestival(null);
             }
         }
+
+        return $this;
+    }
+
+    public function isActive(): bool
+    {
+        return $this->isActive;
+    }
+
+    public function setIsActive(bool $isActive): self
+    {
+        $this->isActive = $isActive;
 
         return $this;
     }
