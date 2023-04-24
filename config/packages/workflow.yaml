@@ -1,0 +1,47 @@
+framework:
+    workflows:
+        project:
+            type: 'workflow'
+            audit_trail:
+                enabled: true
+            marking_store:
+                type: 'method'
+                property: 'state'
+            supports:
+                - App\Entity\Project
+            initial_marking: under_moderation
+            places:
+                - under_moderation
+                - declined
+                - accepted
+                - under_voting
+                - after_voting
+                - ended
+            transitions:
+                accept:
+                    from: under_moderation
+                    to: accepted
+                decline:
+                    from: under_moderation
+                    to: declined
+                accept_after_decline:
+                    from: declined
+                    to: accepted
+                decline_after_accept:
+                    from: accepted
+                    to: declined
+                to_voting:
+                    from: accepted
+                    to: under_voting
+                cancel_voting:
+                    from: under_voting
+                    to: accepted
+                end_voting:
+                    from: under_voting
+                    to: after_voting
+                end_after_voting:
+                    from: after_voting
+                    to: ended
+                end_without_voting:
+                    from: accepted
+                    to: ended

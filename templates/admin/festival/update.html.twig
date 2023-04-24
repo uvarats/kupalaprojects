@@ -1,10 +1,10 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Создание фестиваля{% endblock %}
+{% block title %}{{ 'festival.update'|trans }}{% endblock %}
 
 {% block body %}
     {{ include('admin/festival/_form.html.twig', {
         form: form,
-        title: 'festival.create'|trans
+        title: 'festival.update'|trans,
     }) }}
 {% endblock %}

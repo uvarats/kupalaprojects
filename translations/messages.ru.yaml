@@ -1,0 +1,17 @@
+app:
+  create: 'Создать'
+  edit: 'Редактировать'
+  remove: 'Удалить'
+  yes: 'Да'
+  no: 'Нет'
+festival:
+  create: 'Создание фестиваля'
+  update: 'Редактирование фестиваля'
+  form:
+    name: 'Название фестиваля'
+    startsAt: 'Дата начала'
+    endsAt: 'Дата завершения'
+    organizationCommittee: 'Организационный комитет'
+    jury: 'Жюри'
+    is_active: 'Активен'
+    submit: 'Создать'

@@ -11,7 +11,6 @@ use Faker\Generator;
 use Nette\Utils\Validators;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -40,7 +39,6 @@ class UserCreateCommand extends Command
     protected function configure(): void
     {
         $this
-            ->addOption('random', null, InputOption::VALUE_NONE, 'Just generate user')
             ->addOption('admin', null, InputOption::VALUE_NONE, 'Create administrator');
     }
 
@@ -48,27 +46,20 @@ class UserCreateCommand extends Command
     {
         $io = new SymfonyStyle($input, $output);
 
+        $helper = $this->getHelper('question');
+        $fullNameQuestion = $this->getFullNameQuestion();
+        $emailQuestion = $this->getEmailQuestion();
+
+        $fullName = $helper->ask($input, $output, $fullNameQuestion);
+        $email = $helper->ask($input, $output, $emailQuestion);
+
+        $fullNameDto = FullNameDto::fromString($fullName);
+
         $user = new User();
-        if ($input->getOption('random')) {
-            $faker = $this->faker;
-            $user->setFirstName($faker->firstName)
-                ->setLastName($faker->lastName)
-                ->setEmail($faker->email);
-        } else {
-            $helper = $this->getHelper('question');
-            $fullNameQuestion = $this->getFullNameQuestion();
-            $emailQuestion = $this->getEmailQuestion();
-
-            $fullName = $helper->ask($input, $output, $fullNameQuestion);
-            $email = $helper->ask($input, $output, $emailQuestion);
-
-            $fullNameDto = FullNameDto::fromString($fullName);
-
-            $user->setEmail($email)
-                ->setFirstName($fullNameDto->firstName)
-                ->setLastName($fullNameDto->lastName)
-                ->setMiddleName($fullNameDto->middleName);
-        }
+        $user->setEmail($email)
+            ->setFirstName($fullNameDto->firstName)
+            ->setLastName($fullNameDto->lastName)
+            ->setMiddleName($fullNameDto->middleName);
 
         $password = $this->passwordGenerator->getRandomPassword();
         $hashedPassword = $this->hasher->hashPassword($user, $password);

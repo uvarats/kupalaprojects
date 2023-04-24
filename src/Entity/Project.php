@@ -44,6 +44,9 @@ class Project
     #[ORM\OneToMany(mappedBy: 'project', targetEntity: ProjectAward::class, orphanRemoval: true)]
     private Collection $awards;
 
+    #[ORM\Column(length: 50)]
+    private ?string $state = null;
+
     public function __construct()
     {
         $this->subjects = new ArrayCollection();
@@ -177,6 +180,18 @@ class Project
                 $award->setProject(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getState(): ?string
+    {
+        return $this->state;
+    }
+
+    public function setState(string $state): self
+    {
+        $this->state = $state;
 
         return $this;
     }

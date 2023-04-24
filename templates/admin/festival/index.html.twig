@@ -14,7 +14,6 @@
         <table class="table">
             <thead>
             <tr>
-                <th>ID</th>
                 <th>Название</th>
                 <th>Период</th>
                 <th>Активен</th>
@@ -22,38 +21,25 @@
             </tr>
             </thead>
             <tbody>
-            <tr>
-                <td>1</td>
-                <td>Summer Fest</td>
-                <td>July 15-18</td>
-                <td>Yes</td>
-                <td>
-                    <button class="btn btn-sm btn-primary">Edit</button>
-                    <button class="btn btn-sm btn-danger">Delete</button>
-                </td>
-            </tr>
-            <tr>
-                <td>2</td>
-                <td>Autumn Fest</td>
-                <td>October 10-12</td>
-                <td>No</td>
-                <td>
-                    <button class="btn btn-sm btn-primary">Edit</button>
-                    <button class="btn btn-sm btn-danger">Delete</button>
-                </td>
-            </tr>
-            <tr>
-                <td>3</td>
-                <td>Winter Fest</td>
-                <td>December 20-24</td>
-                <td>Yes</td>
-                <td>
-                    <button class="btn btn-sm btn-primary">Edit</button>
-                    <button class="btn btn-sm btn-danger">Delete</button>
-                </td>
-            </tr>
+            {# @var festival \App\Entity\Festival #}
+            {% for festival in festivals %}
+                <tr>
+                    <td>{{ festival.name }}</td>
+                    <td>{{ festival.startsAt|date('d.m.y') }} - {{ festival.endsAt|date('d.m.y') }}</td>
+                    <td>{{ festival.active ? 'app.yes'|trans : 'app.no'|trans }}</td>
+                    <td {{ stimulus_controller('festival-actions', {
+                        updateUrl: path('app_admin_festival_update', { id: festival.id }),
+                        removeUrl: path('app_admin_festival_remove', { id: festival.id })
+                    }) }}>
+                        <button class="btn btn-sm btn-primary" {{ stimulus_action('festival-actions', 'update') }}>{{ 'app.edit'|trans }}</button>
+                        <button class="btn btn-sm btn-danger" {{ stimulus_action('festival-actions', 'remove') }}>{{ 'app.remove'|trans }}</button>
+                    </td>
+                </tr>
+            {% endfor %}
             </tbody>
         </table>
+
+        {{ pagerfanta(festivals, 'twitter_bootstrap5', {'omitFirstPage': true}) }}
     </div>
 
 {% endblock %}

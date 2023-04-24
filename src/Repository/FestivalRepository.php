@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Festival;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Query;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -37,6 +38,15 @@ class FestivalRepository extends ServiceEntityRepository
         if ($flush) {
             $this->getEntityManager()->flush();
         }
+    }
+
+    public function createOrderedQuery(): Query
+    {
+        return $this->createQueryBuilder('festival')
+            ->orderBy('festival.isActive')
+            ->addOrderBy('festival.startsAt')
+            ->addOrderBy('festival.endsAt')
+            ->getQuery();
     }
 
 //    /**

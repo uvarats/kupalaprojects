@@ -3,14 +3,16 @@
 namespace App\Entity;
 
 use App\Repository\FestivalRepository;
+use App\Validator\FestivalDatesValidator;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\Doctrine\UuidGenerator;
 use Ramsey\Uuid\UuidInterface;
-use Symfony\Component\Uid\Uuid;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: FestivalRepository::class)]
+#[Assert\Callback([FestivalDatesValidator::class, 'validate'])]
 class Festival
 {
     #[ORM\Id]
@@ -20,6 +22,7 @@ class Festival
     private ?UuidInterface $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank]
     private ?string $name = null;
 
     #[ORM\Column]
