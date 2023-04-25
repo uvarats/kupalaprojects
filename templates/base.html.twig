@@ -27,7 +27,7 @@
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ms-auto">
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Домой</a>
+                    <a class="nav-link" href="{{ path('app_index') }}">Домой</a>
                 </li>
                 {% if is_granted('IS_AUTHENTICATED_FULLY') %}
                     <li class="nav-item dropdown">
@@ -38,6 +38,9 @@
                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownMenuLink">
                             <li><a class="dropdown-item" href="#">Проекты</a></li>
                             <li><a class="dropdown-item" href="#">Настройки</a></li>
+                            {% if is_granted('ROLE_ADMIN') %}
+                                <li><a class="dropdown-item" href="{{ path('app_admin') }}">Панель управления</a></li>
+                            {% endif %}
                             <li>
                                 <hr class="dropdown-divider">
                             </li>

@@ -1,0 +1,31 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Панель управления{% endblock %}
+
+{% block body %}
+    <div class="container-fluid mt-3">
+        <div class="row">
+            <div class="col-md-3">
+                <div class="list-group">
+                    <a href="#" class="list-group-item list-group-item-action active" aria-current="true">
+                        {{ ea.dashboardTitle }}
+                    </a>
+                    {# @var menuItem \EasyCorp\Bundle\EasyAdminBundle\Dto\MenuItemDto #}
+                    {% for menuItem in ea.mainMenu.items %}
+                        <a href="{{ menuItem.linkUrl }}" class="list-group-item list-group-item-action">{{ menuItem.label }}</a>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="col-md-9">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title">Dashboard</h5>
+                    </div>
+                    <div class="card-body">
+                        <p>Welcome to the Admin Panel!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

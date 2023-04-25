@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\ProjectSubject;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Query;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -37,6 +38,12 @@ class ProjectSubjectRepository extends ServiceEntityRepository
         if ($flush) {
             $this->getEntityManager()->flush();
         }
+    }
+
+    public function getQuery(): Query
+    {
+        return $this->createQueryBuilder('project_subject')
+            ->getQuery();
     }
 
 //    /**

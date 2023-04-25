@@ -15,7 +15,8 @@ framework:
                 - declined
                 - accepted
                 - under_voting
-                - after_voting
+                - voting_success
+                - voting_failed
                 - ended
             transitions:
                 accept:
@@ -30,18 +31,18 @@ framework:
                 decline_after_accept:
                     from: accepted
                     to: declined
-                to_voting:
+                start_voting:
                     from: accepted
                     to: under_voting
                 cancel_voting:
                     from: under_voting
                     to: accepted
-                end_voting:
+                succeed_voting:
                     from: under_voting
-                    to: after_voting
-                end_after_voting:
-                    from: after_voting
-                    to: ended
-                end_without_voting:
-                    from: accepted
+                    to: voting_success
+                fail_voting:
+                    from: under_voting
+                    to: voting_failed
+                end:
+                    from: [accepted, voting_success, voting_failed]
                     to: ended

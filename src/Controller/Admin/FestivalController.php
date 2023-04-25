@@ -5,84 +5,40 @@ declare(strict_types=1);
 namespace App\Controller\Admin;
 
 use App\Entity\Festival;
-use App\Form\FestivalType;
-use App\Repository\FestivalRepository;
-use Doctrine\ORM\EntityManagerInterface;
-use Pagerfanta\Doctrine\ORM\QueryAdapter;
-use Pagerfanta\Pagerfanta;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
+use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\DateField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/manage')]
 #[IsGranted('ROLE_ADMIN')]
-final class FestivalController extends AbstractController
+final class FestivalController extends AbstractCrudController
 {
-    public function __construct(private readonly EntityManagerInterface $entityManager) {
-
+    public static function getEntityFqcn(): string
+    {
+        return Festival::class;
     }
 
-    #[Route('/festivals/{page}', name: 'app_admin_festivals_manage')]
-    public function manageFestivals(FestivalRepository $festivalRepository, int $page = 1): Response
+    public function configureCrud(Crud $crud): Crud
     {
-        $query = $festivalRepository->createOrderedQuery();
-
-        $pager = new Pagerfanta(
-            new QueryAdapter($query),
-        );
-        $pager->setMaxPerPage(25)
-            ->setCurrentPage($page);
-
-
-        return $this->render('admin/festival/index.html.twig', [
-            'festivals' => $pager,
-        ]);
+        return $crud
+            ->setEntityLabelInSingular('Фестиваль')
+            ->setEntityLabelInPlural('Фестивали');
     }
 
-    #[Route('/festival/create', name: 'app_admin_festival_create')]
-    public function createFestival(Request $request): Response
+    public function configureFields(string $pageName): iterable
     {
-        $festival = new Festival();
-        $form = $this->createForm(FestivalType::class, $festival);
-
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            $this->entityManager->persist($festival);
-            $this->entityManager->flush();
-
-            return $this->redirectToRoute('app_admin_festivals_manage');
-        }
-
-        return $this->render('admin/festival/create.html.twig', [
-            'form' => $form->createView(),
-        ]);
-    }
-
-    #[Route('/festival/{id}/update', name: 'app_admin_festival_update')]
-    public function updateFestival(Festival $festival, Request $request): Response
-    {
-        $form = $this->createForm(FestivalType::class, $festival);
-
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            $this->entityManager->flush();
-
-            return $this->redirectToRoute('app_admin_festivals_manage');
-        }
-
-        return $this->render('admin/festival/update.html.twig', [
-            'form' => $form->createView(),
-        ]);
-    }
-
-    #[Route('/festival/{id}/remove', name: 'app_admin_festival_remove')]
-    public function removeFestival(Festival $festival): Response
-    {
-        $this->entityManager->remove($festival);
-        $this->entityManager->flush();
-
-        return $this->redirectToRoute('app_admin_festivals_manage');
+        return [
+            TextField::new('name'),
+            DateField::new('startsAt'),
+            DateField::new('endsAt'),
+            AssociationField::new('organizationCommittee')->setFormTypeOption('choice_label', 'displayString'),
+            AssociationField::new('jury')->setFormTypeOption('choice_label', 'displayString'),
+            BooleanField::new('isActive'),
+        ];
     }
 }

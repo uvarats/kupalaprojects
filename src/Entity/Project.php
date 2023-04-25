@@ -47,6 +47,12 @@ class Project
     #[ORM\Column(length: 50)]
     private ?string $state = null;
 
+    #[ORM\Column]
+    private ?\DateTimeImmutable $startsAt = null;
+
+    #[ORM\Column]
+    private ?\DateTimeImmutable $endsAt = null;
+
     public function __construct()
     {
         $this->subjects = new ArrayCollection();
@@ -192,6 +198,30 @@ class Project
     public function setState(string $state): self
     {
         $this->state = $state;
+
+        return $this;
+    }
+
+    public function getStartsAt(): ?\DateTimeImmutable
+    {
+        return $this->startsAt;
+    }
+
+    public function setStartsAt(\DateTimeImmutable $startsAt): self
+    {
+        $this->startsAt = $startsAt;
+
+        return $this;
+    }
+
+    public function getEndsAt(): ?\DateTimeImmutable
+    {
+        return $this->endsAt;
+    }
+
+    public function setEndsAt(\DateTimeImmutable $endsAt): self
+    {
+        $this->endsAt = $endsAt;
 
         return $this;
     }
