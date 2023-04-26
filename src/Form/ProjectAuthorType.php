@@ -3,47 +3,54 @@
 namespace App\Form;
 
 use App\Entity\Interface\ProjectAuthorInterface;
-use App\Entity\NullEntity\NullProjectAuthor;
 use App\Entity\ProjectAuthor;
+use App\FormConfig\FieldConfig;
+use App\FormConfig\FormFieldsConfig;
+use App\Service\Util\FormService;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use TypeError;
 
-class ProjectAuthorType extends AbstractType
+final class ProjectAuthorType extends AbstractType
 {
+    public function __construct(private readonly FormService $formService)
+    {
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $author = $this->getProjectAuthor($options);
-
-        $builder
-            ->add('userEntity', UserType::class, [
-                'disabled' => true,
-            ])
-            ->add('placeOfWork', TextType::class)
-            ->add('occupation', TextType::class)
-            ->add('reserveEmail', EmailType::class, [
-                'required' => false,
-            ])
-        ;
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, $this->onPreSetData(...));
     }
 
-    private function getProjectAuthor(array $options): ProjectAuthorInterface
+    private function onPreSetData(FormEvent $event): void
     {
-        $author = $options['data'];
+        $form = $event->getForm();
+        /** @var ProjectAuthorInterface|null $data */
+        $data = $event->getData();
 
-        if ($author !== null && !$author instanceof ProjectAuthor) {
-            throw new TypeError();
-        }
+        $config = new FormFieldsConfig();
+        $config->setConfig('placeOfWork', new FieldConfig())
+            ->setConfig('occupation', new FieldConfig())
+            ->setConfig(
+                'reserveEmail',
+                new FieldConfig([
+                    'required' => false,
+                ])
+            );
 
-        if ($author === null) {
-            return new NullProjectAuthor();
-        }
+        $config = $this->formService->disableFilledFields($data, $config);
 
-        return $author;
+
+        $form->add('userEntity', UserType::class)
+            ->add('placeOfWork', TextType::class, $config->getConfigArray('placeOfWork'))
+            ->add('occupation', TextType::class, $config->getConfigArray('occupation'))
+            ->add('reserveEmail', EmailType::class, $config->getConfigArray('reserveEmail'));
     }
+
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([

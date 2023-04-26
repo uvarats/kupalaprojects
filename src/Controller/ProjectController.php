@@ -34,19 +34,11 @@ final class ProjectController extends AbstractController
         UserRepository $userRepository,
         ProjectAuthorRepository $projectAuthorRepository,
     ) {
-        $projectAuthor = $user?->getProjectAuthor();
-
-        if ($user !== null && $projectAuthor === null) {
-            $projectAuthor = $this->projectService->createProjectAuthorFromUser($user);
-        }
-
-        $project = new Project();
-        $project->setAuthor($projectAuthor);
+        $project = $this->projectService->createProject($user);
 
         $form = $this->createForm(ProjectType::class, $project);
 
         $form->handleRequest($request);
-
         if ($form->isSubmitted() && $form->isValid()) {
             dd($form);
         }

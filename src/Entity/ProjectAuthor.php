@@ -7,14 +7,17 @@ use App\Repository\ProjectAuthorRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Ramsey\Uuid\Doctrine\UuidGenerator;
+use Ramsey\Uuid\UuidInterface;
 
 #[ORM\Entity(repositoryClass: ProjectAuthorRepository::class)]
 class ProjectAuthor implements ProjectAuthorInterface
 {
     #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column]
-    private ?int $id = null;
+    #[ORM\Column(type: 'uuid', unique: true)]
+    #[ORM\GeneratedValue(strategy: 'CUSTOM')]
+    #[ORM\CustomIdGenerator(class: UuidGenerator::class)]
+    private ?UuidInterface $id = null;
 
     #[ORM\OneToOne(inversedBy: 'projectAuthor', cascade: ['persist', 'remove'])]
     #[ORM\JoinColumn(nullable: false)]
@@ -37,7 +40,7 @@ class ProjectAuthor implements ProjectAuthorInterface
         $this->projects = new ArrayCollection();
     }
 
-    public function getId(): ?int
+    public function getId(): ?UuidInterface
     {
         return $this->id;
     }
