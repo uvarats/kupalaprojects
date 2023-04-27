@@ -16,6 +16,12 @@ security:
         main:
             lazy: true
             provider: app_user_provider
+            login_link:
+                check_route: app_auth_check_login_link
+                signature_properties: ['id']
+                max_uses: 1
+                lifetime: 600
+                success_handler: App\Security\Authentication\ProjectAuthorLoginLinkHandler
             form_login:
                 login_path: app_auth_login
                 check_path: app_auth_login

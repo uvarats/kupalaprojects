@@ -7,7 +7,7 @@ namespace App\Dto;
 use App\Entity\User;
 use Uvarats\Dto\Data;
 
-final class FullNameDto extends Data
+final class FullName extends Data
 {
     public function __construct(
         public readonly string $lastName,
@@ -16,7 +16,7 @@ final class FullNameDto extends Data
     ) {
     }
 
-    public static function fromString(string $fullName): FullNameDto
+    public static function fromString(string $fullName): FullName
     {
         $data = explode(' ', $fullName);
 

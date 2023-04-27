@@ -6,7 +6,7 @@ namespace App\Dto;
 
 use Uvarats\Dto\Data;
 
-final class UserCreateDto extends Data
+final class UserCreate extends Data
 {
     public function __construct(
         public string $fullName,

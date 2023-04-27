@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use LogicException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -21,6 +22,13 @@ class AuthController extends AbstractController
             'last_username' => $lastUsername,
         ]);
     }
+
+    #[Route('/check/login-link', name: 'app_auth_check_login_link')]
+    public function checkLoginLink()
+    {
+        throw new LogicException();
+    }
+
 
     #[Route('/logout', name: 'app_auth_logout')]
     public function logout(): void

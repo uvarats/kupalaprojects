@@ -7,11 +7,11 @@ namespace App\Dto;
 use App\Entity\User;
 use Uvarats\Dto\Data;
 
-final class UserPasswordDto extends Data
+final class UserPassword extends Data
 {
     public function __construct(
-        private readonly User $user,
-        private readonly string $password,
+        public readonly User $user,
+        public readonly string $password,
     )
     {
     }

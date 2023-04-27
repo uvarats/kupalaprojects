@@ -2,11 +2,9 @@
 
 namespace App\Controller;
 
-use App\Entity\Project;
 use App\Entity\User;
+use App\Enum\ProjectCreateStatusEnum;
 use App\Form\ProjectType;
-use App\Repository\ProjectAuthorRepository;
-use App\Repository\UserRepository;
 use App\Service\Project\ProjectService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -31,8 +29,6 @@ final class ProjectController extends AbstractController
     public function createProject(
         #[CurrentUser] ?User $user,
         Request $request,
-        UserRepository $userRepository,
-        ProjectAuthorRepository $projectAuthorRepository,
     ) {
         $project = $this->projectService->createProject($user);
 
@@ -40,10 +36,16 @@ final class ProjectController extends AbstractController
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            dd($form);
+            $result = $this->projectService->handleSubmittedProject($project);
+
+            if ($result === ProjectCreateStatusEnum::USER_CREATED) {
+                return $this->render('project/project_with_user_created.html.twig');
+            }
+
+
         }
 
-        return $this->render('project/index.html.twig', [
+        return $this->render('project/create.html.twig', [
             'form' => $form->createView(),
         ]);
     }

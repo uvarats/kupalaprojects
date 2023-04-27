@@ -2,15 +2,19 @@
 
 namespace App\Entity;
 
+use App\Interface\DateRangeInterface;
 use App\Repository\ProjectRepository;
+use App\Validator\DateRangeValidator;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\Doctrine\UuidGenerator;
 use Ramsey\Uuid\UuidInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: ProjectRepository::class)]
-class Project
+#[Assert\Callback([DateRangeValidator::class, 'validate'])]
+class Project implements DateRangeInterface
 {
     #[ORM\Id]
     #[ORM\Column(type: 'uuid', unique: true)]

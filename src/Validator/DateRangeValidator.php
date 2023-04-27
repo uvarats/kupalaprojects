@@ -5,15 +5,16 @@ declare(strict_types=1);
 namespace App\Validator;
 
 use App\Entity\Festival;
+use App\Interface\DateRangeInterface;
 use Cake\Chronos\Chronos;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
-final class FestivalDatesValidator
+final class DateRangeValidator
 {
-    public static function validate(Festival $festival, ExecutionContextInterface $context, $payload): void
+    public static function validate(DateRangeInterface $range, ExecutionContextInterface $context, $payload): void
     {
-        $startsAt = new Chronos($festival->getStartsAt());
-        $endsAt = new Chronos($festival->getEndsAt());
+        $startsAt = new Chronos($range->getStartsAt());
+        $endsAt = new Chronos($range->getEndsAt());
 
         $yearStart = Chronos::now()->firstOfYear();
 

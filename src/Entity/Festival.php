@@ -2,8 +2,9 @@
 
 namespace App\Entity;
 
+use App\Interface\DateRangeInterface;
 use App\Repository\FestivalRepository;
-use App\Validator\FestivalDatesValidator;
+use App\Validator\DateRangeValidator;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -12,8 +13,8 @@ use Ramsey\Uuid\UuidInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: FestivalRepository::class)]
-#[Assert\Callback([FestivalDatesValidator::class, 'validate'])]
-class Festival
+#[Assert\Callback([DateRangeValidator::class, 'validate'])]
+class Festival implements DateRangeInterface
 {
     #[ORM\Id]
     #[ORM\Column(type: 'uuid', unique: true)]
@@ -181,5 +182,17 @@ class Festival
         $this->isActive = $isActive;
 
         return $this;
+    }
+
+    public function getLabel(): string
+    {
+        $name = $this->getName();
+        $startsAt = $this->getStartsAt();
+        $endsAt = $this->getEndsAt();
+
+        $startsAtFormat = $startsAt->format('d.m.Y');
+        $endsAtFormat = $endsAt->format('d.m.Y');
+
+        return "{$name} ({$startsAtFormat} - {$endsAtFormat})";
     }
 }

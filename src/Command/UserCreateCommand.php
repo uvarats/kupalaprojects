@@ -2,7 +2,7 @@
 
 namespace App\Command;
 
-use App\Dto\FullNameDto;
+use App\Dto\FullName;
 use App\Entity\User;
 use App\Service\Util\PasswordGeneratorService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -53,7 +53,7 @@ class UserCreateCommand extends Command
         $fullName = $helper->ask($input, $output, $fullNameQuestion);
         $email = $helper->ask($input, $output, $emailQuestion);
 
-        $fullNameDto = FullNameDto::fromString($fullName);
+        $fullNameDto = FullName::fromString($fullName);
 
         $user = new User();
         $user->setEmail($email)

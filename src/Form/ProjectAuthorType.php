@@ -23,32 +23,15 @@ final class ProjectAuthorType extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $builder->addEventListener(FormEvents::PRE_SET_DATA, $this->onPreSetData(...));
-    }
-
-    private function onPreSetData(FormEvent $event): void
-    {
-        $form = $event->getForm();
-        /** @var ProjectAuthorInterface|null $data */
-        $data = $event->getData();
-
-        $config = new FormFieldsConfig();
-        $config->setConfig('placeOfWork', new FieldConfig())
-            ->setConfig('occupation', new FieldConfig())
-            ->setConfig(
-                'reserveEmail',
-                new FieldConfig([
-                    'required' => false,
-                ])
-            );
-
-        $config = $this->formService->disableFilledFields($data, $config);
-
-
-        $form->add('userEntity', UserType::class)
-            ->add('placeOfWork', TextType::class, $config->getConfigArray('placeOfWork'))
-            ->add('occupation', TextType::class, $config->getConfigArray('occupation'))
-            ->add('reserveEmail', EmailType::class, $config->getConfigArray('reserveEmail'));
+        $builder
+            ->add('userEntity', UserType::class, [
+                'by_reference' => false,
+            ])
+            ->add('placeOfWork', TextType::class)
+            ->add('occupation', TextType::class)
+            ->add('reserveEmail', EmailType::class, [
+                'required' => false,
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void
