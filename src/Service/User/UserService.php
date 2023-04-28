@@ -4,43 +4,29 @@ declare(strict_types=1);
 
 namespace App\Service\User;
 
-use App\Dto\UserPassword;
-use App\Entity\Project;
-use App\Entity\ProjectAuthor;
 use App\Entity\User;
-use App\Form\ProjectAuthorType;
 use App\Service\Util\PasswordGeneratorService;
-use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
-use Twig\Environment;
 
 final readonly class UserService
 {
     public function __construct(
         private UserPasswordHasherInterface $hasher,
         private PasswordGeneratorService $passwordGenerator,
-        private EntityManagerInterface $entityManager,
+        private Security $security
     ) {
     }
 
-    public function handleProjectAuthor(ProjectAuthor $author): void
+    public function getCurrentUser(): User
     {
-        $user = $author->getUserEntity();
+        $user = $this->security->getUser();
 
-    }
+        if (!$user instanceof User) {
+            throw new \LogicException();
+        }
 
-    public function processUser(User $user): UserPassword
-    {
-        $rawPassword = $this->generatePassword($user);
-
-        $this->entityManager->persist($user);
-        $this->entityManager->flush();
-
-        return new UserPassword(
-            user: $user,
-            password: $rawPassword
-        );
+        return $user;
     }
 
     public function generatePassword(User $user): string

@@ -28,9 +28,6 @@ class ProjectType extends AbstractType
         }
 
         $builder
-            ->add('author', ProjectAuthorType::class, [
-                'label' => null,
-            ])
             ->add('name', TextType::class)
             ->add('siteUrl', UrlType::class)
             ->add('startsAt', DateType::class, [
@@ -43,11 +40,7 @@ class ProjectType extends AbstractType
             ])
             ->add('creationYear', NumberType::class)
             ->add('orientedOn', TextType::class)
-            ->add('subjects', EntityType::class, [
-                'class' => ProjectSubject::class,
-                'choice_label' => 'name',
-                'multiple' => true,
-            ])
+            ->add('subjects', ProjectSubjectAutocompleteField::class)
             ->add('festival', EntityType::class, [
                 'class' => Festival::class,
                 'choice_label' => 'label',
@@ -62,8 +55,7 @@ class ProjectType extends AbstractType
                 'allow_add' => true,
                 'allow_delete' => true,
                 'by_reference' => false,
-            ])
-        ;
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void

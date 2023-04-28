@@ -195,4 +195,9 @@ class Festival implements DateRangeInterface
 
         return "{$name} ({$startsAtFormat} - {$endsAtFormat})";
     }
+
+    public function __toString(): string
+    {
+        return $this->getLabel();
+    }
 }

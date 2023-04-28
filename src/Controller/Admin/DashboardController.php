@@ -3,6 +3,7 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Festival;
+use App\Entity\Project;
 use App\Entity\ProjectSubject;
 use App\Entity\User;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
@@ -54,6 +55,7 @@ class DashboardController extends AbstractDashboardController
             MenuItem::linkToDashboard('Панель управления', 'fa fa-home'),
             MenuItem::linkToCrud('Фестивали', 'fas fa-calendar', Festival::class),
             MenuItem::linkToCrud('Предметы проектов', 'fa fa-tags', ProjectSubject::class),
+            MenuItem::linkToCrud('Проекты', 'fas fa-project-diagram', Project::class),
         ];
     }
 

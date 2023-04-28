@@ -17,6 +17,7 @@ final readonly class AuthService
 
     public function getLoginLink(User $user): string
     {
+        // link forwards to project create page
         $loginLinkDetails = $this->loginLinkHandler->createLoginLink($user);
 
         return $loginLinkDetails->getUrl();

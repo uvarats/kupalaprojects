@@ -20,7 +20,7 @@ services:
             - '../src/Entity/'
             - '../src/Kernel.php'
 
-    App\Service\Project\ProjectMailerService:
+    App\Service\Mail\ProjectMailerService:
         arguments:
             $mailFrom: 'org@kp.grsu.by'
 

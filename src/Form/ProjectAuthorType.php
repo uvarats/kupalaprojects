@@ -2,17 +2,12 @@
 
 namespace App\Form;
 
-use App\Entity\Interface\ProjectAuthorInterface;
 use App\Entity\ProjectAuthor;
-use App\FormConfig\FieldConfig;
-use App\FormConfig\FormFieldsConfig;
 use App\Service\Util\FormService;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Form\FormEvent;
-use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 final class ProjectAuthorType extends AbstractType
