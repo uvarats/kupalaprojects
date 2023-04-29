@@ -2,36 +2,30 @@
 
 namespace App\Security\Voter;
 
-use App\Entity\Project;
-use App\Entity\User;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 use Symfony\Component\Security\Core\User\UserInterface;
 
-class JuryVoter extends Voter
+/**
+ * Checks if user has rights to do actions with project
+ */
+class ProjectVoter extends Voter
 {
-    public const IS_JURY_MEMBER = 'jury_member';
+    public const IS_PROJECT_OWNER = 'IS_PROJECT_OWNER';
 
     protected function supports(string $attribute, mixed $subject): bool
     {
-        return $attribute === self::IS_JURY_MEMBER
-            && $subject instanceof User;
+        return $subject instanceof \App\Entity\Project;
     }
 
-    /**
-     * @param string $attribute
-     * @param Project $subject
-     * @param TokenInterface $token
-     * @return bool
-     */
     protected function voteOnAttribute(string $attribute, mixed $subject, TokenInterface $token): bool
     {
         $user = $token->getUser();
-
+        // if the user is anonymous, do not grant access
         if (!$user instanceof UserInterface) {
             return false;
         }
 
-
+        return false;
     }
 }

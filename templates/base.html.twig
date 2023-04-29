@@ -57,22 +57,5 @@
     </div>
 </nav>
 {% block body %}{% endblock %}
-<div class="toast-container position-static" id="toasts">
-    {% for flashes in app.flashes(['message']) %}
-        {% for flash in flashes %}
-            <div class="toast" role="alert" aria-live="assertive" aria-atomic="true">
-                <div class="toast-header">
-                    <img src="..." class="rounded me-2" alt="...">
-                    <strong class="me-auto">Уведомление</strong>
-                    <small class="text-muted">сейчас</small>
-                    <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
-                </div>
-                <div class="toast-body">
-                    {{ flash }}
-                </div>
-            </div>
-        {% endfor %}
-    {% endfor %}
-</div>
 </body>
 </html>
