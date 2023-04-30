@@ -11,6 +11,7 @@ use App\Security\Voter\ProjectAuthorVoter;
 use App\Service\Auth\AuthService;
 use App\Service\Mail\UserMailerService;
 use App\Service\User\UserService;
+use ContainerGJsL5Pb\App_KernelDevDebugContainer;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\ExpressionLanguage\Expression;

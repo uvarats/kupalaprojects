@@ -7,7 +7,10 @@ use App\Entity\User;
 use App\Enum\ProjectCreateStatusEnum;
 use App\Form\ProjectType;
 use App\Repository\ProjectRepository;
+use App\Security\Voter\ProjectAuthorVoter;
 use App\Service\Project\ProjectService;
+use Pagerfanta\Doctrine\ORM\QueryAdapter;
+use Pagerfanta\Pagerfanta;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -28,18 +31,25 @@ final class ProjectController extends AbstractController
         #[CurrentUser] User $user,
         ProjectRepository $projectRepository
     ): Response {
-        return $this->render('project/my_projects.html.twig', [
+        $query = $projectRepository->getUserProjectsQuery($user);
 
+        $pager = new Pagerfanta(
+            new QueryAdapter($query),
+        );
+
+        return $this->render('project/my_projects.html.twig', [
+            'projects' => $pager,
         ]);
     }
 
     #[Route('/projects/create', name: 'app_projects_create')]
     #[IsGranted('IS_AUTHENTICATED_FULLY')]
     public function createProject(
-        #[CurrentUser] User $user,
         Request $request,
     ): Response {
-
+        if (!$this->isGranted(ProjectAuthorVoter::IS_PROJECT_AUTHOR)) {
+            return $this->redirectToRoute('app_project_author_create');
+        }
 
         $project = new Project();
         $form = $this->createForm(ProjectType::class, $project);

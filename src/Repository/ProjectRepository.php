@@ -3,7 +3,9 @@
 namespace App\Repository;
 
 use App\Entity\Project;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Query;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -39,8 +41,14 @@ class ProjectRepository extends ServiceEntityRepository
         }
     }
 
-    public function getUserProjects() {
-
+    public function getUserProjectsQuery(User $user): Query
+    {
+        return $this->createQueryBuilder('project')
+            ->leftJoin('project.author', 'author')
+            ->addSelect('author')
+            ->where('author.userEntity = :user')
+            ->setParameter('user', $user)
+            ->getQuery();
     }
 
 //    /**

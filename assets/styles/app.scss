@@ -1,5 +1,5 @@
 @import '~bootstrap/scss/bootstrap';
-/* Custom styles */
+
 body {
   background-color: #f7f9fb;
 }
@@ -10,12 +10,23 @@ body {
   padding: 2.5rem;
 }
 .btn-primary {
-  background-color: #31708e;
-  border-color: #31708e;
+  background-color: #31708E;
+  border-color: #31708E;
 }
-.btn-primary:hover {
-  background-color: #5085a5;
-  border-color: #5085a5;
+
+.btn-primary:hover, .btn-primary:focus {
+  background-color: #5085A5 !important;
+  border-color: #5085A5 !important;
+}
+
+.btn-secondary {
+  background-color: #687864;
+  border-color: #687864;
+}
+
+.btn-secondary:hover, .btn-secondary:focus {
+  background-color: #8FC1E3;
+  border-color: #8FC1E3;
 }
 .card {
   background-color: #f7f9fb;

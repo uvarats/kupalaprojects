@@ -9,6 +9,7 @@ enum ProjectStateEnum: string
     case UNDER_MODERATION = 'under_moderation';
     case ACCEPTED = 'accepted';
     case DECLINED = 'declined';
+    case PRE_VOTING = 'pre_voting';
     case UNDER_VOTING = 'under_voting';
     case AFTER_VOTING = 'after_voting';
     case ENDED = 'ended';

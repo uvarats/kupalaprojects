@@ -930,6 +930,11 @@
   resolved "https://registry.npmjs.org/@hotwired/stimulus/-/stimulus-3.2.1.tgz"
   integrity sha512-HGlzDcf9vv/EQrMJ5ZG6VWNs8Z/xMN+1o2OhV1gKiSG6CqZt5MCBB1gRg5ILiN3U0jEAxuDTNPRfBcnZBDmupQ==
 
+"@hotwired/turbo@^7.0.1":
+  version "7.3.0"
+  resolved "https://registry.yarnpkg.com/@hotwired/turbo/-/turbo-7.3.0.tgz#2226000fff1aabda9fd9587474565c9929dbf15d"
+  integrity sha512-Dcu+NaSvHLT7EjrDrkEmH4qET2ZJZ5IcCWmNXxNQTBwlnE5tBZfN6WxZ842n5cHV52DH/AKNirbPBtcEXDLW4g==
+
 "@jest/schemas@^29.4.3":
   version "29.4.3"
   resolved "https://registry.npmjs.org/@jest/schemas/-/schemas-29.4.3.tgz"
@@ -1076,6 +1081,9 @@
 
 "@symfony/ux-autocomplete@file:vendor/symfony/ux-autocomplete/assets":
   version "1.0.0"
+
+"@symfony/ux-turbo@file:vendor/symfony/ux-turbo/assets":
+  version "0.1.0"
 
 "@symfony/webpack-encore@^4.0.0":
   version "4.2.0"
