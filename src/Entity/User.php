@@ -164,10 +164,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function getDisplayString(): string
     {
+        $email = $this->getEmail();
+        $fullName = $this->getFullName();
+
+        return $fullName . " ({$email})";
+    }
+
+    public function getFullName(): string
+    {
         $lastName = $this->getLastName();
         $firstName = $this->getFirstName();
         $middleName = $this->getMiddleName();
-        $email = $this->getEmail();
 
         $displayString = "{$lastName} {$firstName}";
 
@@ -175,8 +182,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             $displayString .= " {$middleName}";
         }
 
-        $displayString .= " ({$email})";
-
         return $displayString;
     }
+
+    public function __toString(): string
+    {
+        return $this->getDisplayString();
+    }
+
 }

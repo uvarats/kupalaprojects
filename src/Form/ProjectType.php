@@ -39,7 +39,7 @@ class ProjectType extends AbstractType
                 'years' => $years,
             ])
             ->add('creationYear', NumberType::class)
-            ->add('orientedOn', TextType::class)
+            ->add('orientedOn', EducationSubGroupAutocompleteField::class)
             ->add('subjects', ProjectSubjectAutocompleteField::class)
             ->add('festival', EntityType::class, [
                 'class' => Festival::class,

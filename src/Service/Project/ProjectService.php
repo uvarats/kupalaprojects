@@ -4,14 +4,10 @@ declare(strict_types=1);
 
 namespace App\Service\Project;
 
-use App\Dto\NewUserProject;
-use App\Dto\ProjectCreateResult;
 use App\Entity\Project;
-use App\Entity\ProjectAuthor;
 use App\Entity\ProjectAward;
-use App\Entity\User;
-use App\Enum\ProjectCreateStatusEnum;
 use App\Enum\ProjectStateEnum;
+use App\Enum\ProjectTransitionEnum;
 use App\Service\Mail\ProjectMailerService;
 use App\Service\User\UserService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -20,7 +16,7 @@ use Symfony\Component\Workflow\WorkflowInterface;
 final readonly class ProjectService
 {
     public function __construct(
-        private WorkflowInterface $projectWorkflow,
+        private WorkflowInterface $projectStateMachine,
         private EntityManagerInterface $entityManager,
         private UserService $userService,
         private ProjectMailerService $projectMailer,
@@ -50,7 +46,25 @@ final readonly class ProjectService
         foreach ($awards as $award) {
             $this->entityManager->persist($award);
         }
-
         //$this->entityManager->flush();
+    }
+
+    public function makeTransition(Project $project, ProjectTransitionEnum $transition): bool
+    {
+        return match ($transition) {
+            default => $this->defaultTransition($project, $transition),
+        };
+    }
+
+    private function defaultTransition(Project $project, ProjectTransitionEnum $transition): bool
+    {
+        if (!$this->projectStateMachine->can($project, $transition->value)) {
+            return false;
+        }
+
+        $this->projectStateMachine->apply($project, $transition->value);
+        $this->entityManager->flush();
+
+        return true;
     }
 }

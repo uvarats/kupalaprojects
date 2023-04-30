@@ -27,6 +27,7 @@ Name: 'Название'
 'Creation Year': 'Год создания'
 'Oriented On': 'На кого направлен'
 'State': 'Состояние'
+'Education Group': 'Образовательная группа'
 app:
   create: 'Создать'
   edit: 'Редактировать'
@@ -44,3 +45,9 @@ festival:
     jury: 'Жюри'
     is_active: 'Активен'
     submit: 'Создать'
+project:
+  state:
+    under_moderation: 'на модерации'
+    approved: 'одобрен'
+    rejected: 'не одобрен (отказ)'
+    ended: 'завершён'

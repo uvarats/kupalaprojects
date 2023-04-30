@@ -38,9 +38,6 @@ class Project implements DateRangeInterface
     #[ORM\JoinColumn(nullable: false)]
     private ?Festival $festival = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $orientedOn = null;
-
     #[ORM\ManyToOne(inversedBy: 'projects')]
     #[ORM\JoinColumn(nullable: false)]
     private ?ProjectAuthor $author = null;
@@ -57,10 +54,14 @@ class Project implements DateRangeInterface
     #[ORM\Column]
     private ?\DateTimeImmutable $endsAt = null;
 
+    #[ORM\ManyToMany(targetEntity: EducationSubGroup::class, inversedBy: 'projects')]
+    private Collection $orientedOn;
+
     public function __construct()
     {
         $this->subjects = new ArrayCollection();
         $this->awards = new ArrayCollection();
+        $this->orientedOn = new ArrayCollection();
     }
 
     public function getId(): ?UuidInterface
@@ -140,18 +141,6 @@ class Project implements DateRangeInterface
         return $this;
     }
 
-    public function getOrientedOn(): ?string
-    {
-        return $this->orientedOn;
-    }
-
-    public function setOrientedOn(?string $orientedOn): self
-    {
-        $this->orientedOn = $orientedOn;
-
-        return $this;
-    }
-
     public function getAuthor(): ?ProjectAuthor
     {
         return $this->author;
@@ -226,6 +215,30 @@ class Project implements DateRangeInterface
     public function setEndsAt(\DateTimeImmutable $endsAt): self
     {
         $this->endsAt = $endsAt;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, EducationSubGroup>
+     */
+    public function getOrientedOn(): Collection
+    {
+        return $this->orientedOn;
+    }
+
+    public function addOrientedOn(EducationSubGroup $orientedOn): self
+    {
+        if (!$this->orientedOn->contains($orientedOn)) {
+            $this->orientedOn->add($orientedOn);
+        }
+
+        return $this;
+    }
+
+    public function removeOrientedOn(EducationSubGroup $orientedOn): self
+    {
+        $this->orientedOn->removeElement($orientedOn);
 
         return $this;
     }

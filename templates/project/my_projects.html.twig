@@ -18,11 +18,11 @@
                     <div class="card">
                         <div class="card-body">
                             <h5 class="card-title">{{ project.name }}</h5>
-                            <span class="card-text">Дата начала: {{ project.startsAt|date('m.d.Y') }}</span>
+                            <span class="card-text">Дата начала: {{ project.startsAt|date('d.m.Y') }}</span>
                             <br>
-                            <span class="card-text">Дата завершения: {{ project.endsAt|date('m.d.Y') }}</span>
+                            <span class="card-text">Дата завершения: {{ project.endsAt|date('d.m.Y') }}</span>
                             <br>
-                            <span class="card-text">Состояние: {{ project.state }}</span>
+                            <span class="card-text">Состояние: {{ project.state|fancy|raw }}</span>
                         </div>
                         <div class="card-footer">
                             <div class="d-flex justify-content-end">
@@ -35,5 +35,8 @@
             {% endfor %}
             <!-- End of Project Card -->
         </div>
+        {% if projects.count > 50 %}
+            {{ pagerfanta(projects, 'default', {'omitFirstPage': true}) }}
+        {% endif %}
     </div>
 {% endblock %}

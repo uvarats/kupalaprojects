@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Entity\Festival;
 use App\Entity\Project;
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
@@ -48,6 +49,39 @@ class ProjectRepository extends ServiceEntityRepository
             ->addSelect('author')
             ->where('author.userEntity = :user')
             ->setParameter('user', $user)
+            ->getQuery();
+    }
+
+    public function eagerLoad(string $id): ?Project
+    {
+        return $this->createQueryBuilder('project')
+            ->leftJoin('project.author', 'author')
+            ->addSelect('author')
+            ->leftJoin('project.subjects', 'subjects')
+            ->addSelect('subjects')
+            ->leftJoin('project.orientedOn', 'orientedOn')
+            ->addSelect('orientedOn')
+            ->leftJoin('project.festival', 'festival')
+            ->addSelect('festival')
+            ->where('project.id = :id')
+            ->setParameter('id', $id)
+            ->getQuery()
+            ->getSingleResult();
+    }
+
+    public function getFestivalProjectsQuery(Festival $festival): Query
+    {
+        return $this->createQueryBuilder('project')
+            ->leftJoin('project.author', 'author')
+            ->addSelect('author')
+            ->leftJoin('project.subjects', 'subjects')
+            ->addSelect('subjects')
+            ->leftJoin('project.orientedOn', 'orientedOn')
+            ->addSelect('orientedOn')
+            ->leftJoin('project.festival', 'festival')
+            ->addSelect('festival')
+            ->where('festival = :festival')
+            ->setParameter('festival', $festival)
             ->getQuery();
     }
 

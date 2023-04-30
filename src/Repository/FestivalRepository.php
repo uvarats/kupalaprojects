@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Festival;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\Query;
 use Doctrine\Persistence\ManagerRegistry;
@@ -43,10 +44,26 @@ class FestivalRepository extends ServiceEntityRepository
     public function createOrderedQuery(): Query
     {
         return $this->createQueryBuilder('festival')
-            ->orderBy('festival.isActive')
+            ->where('festival.isActive = true')
             ->addOrderBy('festival.startsAt')
             ->addOrderBy('festival.endsAt')
             ->getQuery();
+    }
+
+    public function isUserRelatedWithAnyFestival(User $user): bool
+    {
+        $builder = $this->createQueryBuilder('festival')
+            ->leftJoin('festival.jury', 'jury')
+            ->leftJoin('festival.organizationCommittee', 'organizationCommittee')
+            ->where(':user MEMBER OF festival.jury')
+            ->orWhere(':user MEMBER OF festival.organizationCommittee')
+            ->andWhere('festival.isActive = true')
+            ->setParameter('user', $user);
+
+        return $builder
+                ->select('count(festival)')
+                ->getQuery()
+                ->getSingleScalarResult() > 0;
     }
 
 //    /**
