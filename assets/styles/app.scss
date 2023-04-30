@@ -1,0 +1,54 @@
+@import '~bootstrap/scss/bootstrap';
+
+body {
+  background-color: #f7f9fb;
+}
+.jumbotron {
+  background-color: #8fc1e3;
+  color: #f7f9fb;
+  margin-bottom: 1rem;
+  padding: 2.5rem;
+}
+.btn-primary {
+  background-color: #31708E;
+  border-color: #31708E;
+}
+
+.btn-primary:hover, .btn-primary:focus {
+  background-color: #5085A5 !important;
+  border-color: #5085A5 !important;
+}
+
+.btn-secondary {
+  background-color: #687864;
+  border-color: #687864;
+}
+
+.btn-secondary:hover, .btn-secondary:focus {
+  background-color: #8FC1E3;
+  border-color: #8FC1E3;
+}
+.card {
+  background-color: #f7f9fb;
+  border-color: #8fc1e3;
+}
+.card-header {
+  background-color: #8fc1e3;
+  color: #f7f9fb;
+}
+.card-footer {
+  background-color: #8fc1e3;
+  color: #f7f9fb;
+}
+.main-cards {
+  display: flex !important;
+  flex-direction: row !important;
+  flex-basis: 0 !important;
+  flex-grow: 1 !important;
+  justify-content: space-between !important;
+}
+.bi {
+  width: 1em;
+  height: 1em;
+  fill: currentcolor
+}

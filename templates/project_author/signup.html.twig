@@ -1,0 +1,24 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Регистрация автора проектов{% endblock %}
+
+{% block body %}
+    <div class="container">
+        {{ form_start(form) }}
+        <div class="mb-3">
+            {{ form_row(form.userEntity) }}
+        </div>
+        <div class="mb-3">
+            {{ form_row(form.placeOfWork) }}
+        </div>
+        <div class="mb-3">
+            {{ form_row(form.occupation) }}
+        </div>
+        <div class="mb-3">
+            {{ form_row(form.reserveEmail) }}
+        </div>
+        <button type="submit" class="btn btn-primary">Зарегистрировать</button>
+        {{ form_rest(form) }}
+        {{ form_end(form) }}
+    </div>
+{% endblock %}

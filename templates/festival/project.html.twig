@@ -1,0 +1,20 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ festival.name }}: проекты{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <h1>{{ festival.name }}: проекты.</h1>
+
+        <div class="row row-cols-2 row-cols-md-3" id="">
+            {# @var project \App\Entity\Project #}
+            {% for project in projects %}
+                    <div class="col">
+                        <turbo-frame id="project_frame_{{ project.id }}">
+                            {{ include('festival/_project_card.html.twig', {'project': project}) }}
+                        </turbo-frame>
+                    </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}

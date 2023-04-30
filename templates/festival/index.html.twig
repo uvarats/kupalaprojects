@@ -1,0 +1,24 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Фестивали{% endblock %}
+
+{% block body %}
+<div class="container">
+    <h2 class="my-3">Фестивали</h2>
+    <div class="d-flex flex-row">
+        {# @var festival \App\Entity\Festival #}
+        {% for festival in festivals %}
+            <div class="card flex-grow-0 flex-wrap me-3">
+                <div class="card-body">
+                    <h5 class="card-title">{{ festival.name }}</h5>
+                    <p class="card-text">Дата начала: {{ festival.startsAt|date('d.m.Y') }}</p>
+                    <p class="card-text">Дата завершения: {{ festival.endsAt|date('d.m.Y') }}</p>
+                    <a href="{{ path('app_festival_projects', {
+                        'id': festival.id
+                    }) }}" class="btn btn-primary">Проекты</a>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

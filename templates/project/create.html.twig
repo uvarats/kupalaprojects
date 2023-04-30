@@ -1,0 +1,54 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Заявка проекта{% endblock %}
+
+{% block body %}
+    <div class="container mt-3">
+        {{ form_start(form) }}
+
+        <div class="d-flex justify-content-center mt-4">
+            <h3>Заявка проекта</h3>
+        </div>
+        <div class="mb-3">
+            {{ form_row(form.name) }}
+        </div>
+        <div class="mb-3">
+            {{ form_row(form.festival) }}
+        </div>
+        <div class="d-flex justify-content-between flex-row mb-3">
+            <div class="flex-grow-1">
+                {{ form_row(form.startsAt) }}
+            </div>
+            <div class="ms-3 flex-grow-1">
+                {{ form_row(form.endsAt) }}
+            </div>
+        </div>
+        <div class="mb-3">
+            {{ form_row(form.siteUrl) }}
+        </div>
+        <div class="mb-3">
+            {{ form_row(form.creationYear) }}
+        </div>
+        <div class="mb-3">
+            {{ form_row(form.orientedOn) }}
+        </div>
+        <div class="mb-3">
+            {{ form_row(form.subjects) }}
+        </div>
+        <div class="mb-3">
+            {{ form_label(form.awards) }}
+            <div class="mb-3" {{ stimulus_controller('form-collection', {
+                'index': form.awards|length > 0 ? form.awards|last.vars.name + 1 : 0,
+                'prototype': form_widget(form.awards.vars.prototype)|e('html_attr')
+            }) }}>
+                <ul {{ stimulus_target('form-collection', 'collectionContainer') }}></ul>
+                <button type="button" {{ stimulus_action('form-collection', 'addCollectionElement')}} class="btn btn-primary">Добавить награду</button>
+            </div>
+            {{ form_rest(form.awards) }}
+        </div>
+        {{ form_rest(form) }}
+
+        <button type="submit" class="btn btn-primary mb-5">Отправить</button>
+        {{ form_end(form) }}
+    </div>
+{% endblock %}

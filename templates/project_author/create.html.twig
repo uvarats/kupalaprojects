@@ -1,0 +1,12 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Информация об авторе проекта{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <h3 class="mb-3">Заполнение информации об авторе проектов</h3>
+        {{ include('project_author/_project_author_form.twig', {
+            form: form,
+        }) }}
+    </div>
+{% endblock %}

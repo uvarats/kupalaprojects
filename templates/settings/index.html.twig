@@ -1,0 +1,40 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello SettingsController!{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <h1>Общая информация о пользователе</h1>
+        {{ form_start(form) }}
+        <div class="mb-3">
+            {{ form_row(form.lastName, {
+                'disabled': true,
+            }) }}
+        </div>
+        <div class="mb-3">
+            {{ form_row(form.firstName, {
+                'disabled': true,
+            }) }}
+        </div>
+        {% if form.middleName.vars.value is not empty %}
+            <div class="mb-3">
+                {{ form_row(form.middleName, {
+                    'disabled': true,
+                }) }}
+            </div>
+        {% else %}
+            {% do form.middleName.setRendered(false) %}
+        {% endif %}
+        <div class="mb-3">
+            {{ form_row(form.email, {
+                'disabled': true,
+            }) }}
+        </div>
+        <div class="form-text">
+            Для изменения информации о пользователе необходимо обратиться к администратору платформы.
+        </div>
+        <hr>
+        <a href="{{ path('app_project_author_update') }}" class="btn btn-primary">Настройки автора проектов</a>
+        {{ form_end(form) }}
+    </div>
+{% endblock %}

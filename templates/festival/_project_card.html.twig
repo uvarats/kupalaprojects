@@ -1,0 +1,69 @@
+<div class="card">
+    <div class="card-body">
+        <h5 class="card-title">{{ project.name }}</h5>
+        <span class="card-text">Автор: {{ project.author.userEntity.fullName }}</span><br>
+        <span class="card-text">Сайт: <a href="#">{{ project.siteUrl }}</a></span><br>
+        <span class="card-text">Год создания: {{ project.creationYear }}</span><br>
+        <span class="card-text">Участники: {{ project|orientedOn }}</span><br>
+        <span class="card-text">Состояние: {{ project.state|fancy }}</span><br>
+        <span class="card-text">Дата начала: {{ project.startsAt|date('d.m.Y') }}</span><br>
+        <span class="card-text">Дата завершения: {{ project.endsAt|date('d.m.Y') }}</span><br>
+        <span class="card-text">Предметные области: {{ project|subjects }}</span><br>
+    </div>
+    <div class="d-flex justify-content-between align-items-center card-footer">
+        <div class="d-flex flex-wrap">
+            {% if workflow_can(project, 'approve') %}
+                <form action="{{ path('app_project_transition', {'id': project.id, 'transition': 'approve'}) }}" method="post">
+                    <button type="submit" class="btn btn-success me-2">Одобрить</button>
+                </form>
+            {% endif %}
+            {% if workflow_can(project, 'reject') %}
+                <form action="{{ path('app_project_transition', {'id': project.id, 'transition': 'reject'}) }}" method="post">
+                    <button type="submit" class="btn btn-danger me-2">Отклонить</button>
+                </form>
+            {% endif %}
+            <a href="#" class="btn btn-primary me-2">Награды</a>
+            {% if false %}
+                <a href="#" class="btn btn-secondary me-2">Отчёт</a>
+            {% endif %}
+            {% if not workflow_has_marked_place(project, 'under_moderation') %}
+                <div class="dropdown me-2">
+                    <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown"
+                            aria-expanded="false">
+                        Действия
+                    </button>
+                    <ul class="dropdown-menu">
+                        {% if workflow_can(project, 'cancel_rejection') %}
+                            <li>
+                                <form action="{{ path('app_project_transition', {'id': project.id, 'transition': 'cancel_rejection'}) }}" method="post">
+                                    <button class="dropdown-item">На модерацию</button>
+                                </form>
+                            </li>
+                        {% endif %}
+                        {% if workflow_can(project, 'cancel_approval') %}
+                            <li>
+                                <form action="{{ path('app_project_transition', {'id': project.id, 'transition': 'cancel_approval'}) }}" method="post">
+                                    <button class="dropdown-item">Отозвать допуск</button>
+                                </form>
+                            </li>
+                        {% endif %}
+                        {% if workflow_can(project, 'start_pre_voting') %}
+                            <li>
+                                <form action="" method="post">
+                                    <button class="dropdown-item">Начать предголосование</button>
+                                </form>
+                            </li>
+                        {% endif %}
+                        {% if workflow_can(project, 'start_voting') %}
+                            <li>
+                                <form action="" method="post">
+                                    <button class="dropdown-item">Начать голосование</button>
+                                </form>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>

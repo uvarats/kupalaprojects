@@ -1,0 +1,42 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Проекты{% endblock %}
+
+{% block body %}
+    <div class="container py-5">
+        <div class="d-flex flex-wrap justify-content-between mb-3">
+            <h1>Мои проекты</h1>
+            <div class="mt-2">
+                <a class="btn btn-primary" href="{{ path('app_projects_create') }}">Новый проект</a>
+            </div>
+        </div>
+        <div class="d-flex row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3">
+            <!-- Project Card -->
+            {# @var project \App\Entity\Project #}
+            {% for project in projects %}
+                <div class="col">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ project.name }}</h5>
+                            <span class="card-text">Дата начала: {{ project.startsAt|date('d.m.Y') }}</span>
+                            <br>
+                            <span class="card-text">Дата завершения: {{ project.endsAt|date('d.m.Y') }}</span>
+                            <br>
+                            <span class="card-text">Состояние: {{ project.state|fancy|raw }}</span>
+                        </div>
+                        <div class="card-footer">
+                            <div class="d-flex justify-content-end">
+                                <button class="btn btn-primary me-2">Attach Report</button>
+                                <button class="btn btn-primary">See Voting</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+            <!-- End of Project Card -->
+        </div>
+        {% if projects.count > 50 %}
+            {{ pagerfanta(projects, 'default', {'omitFirstPage': true}) }}
+        {% endif %}
+    </div>
+{% endblock %}
