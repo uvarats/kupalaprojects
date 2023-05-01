@@ -15,6 +15,9 @@
         <div class="mb-3">
             {{ form_row(form.festival) }}
         </div>
+        <div class="mb-3">
+            {{ form_row(form.goal) }}
+        </div>
         <div class="d-flex justify-content-between flex-row mb-3">
             <div class="flex-grow-1">
                 {{ form_row(form.startsAt) }}
@@ -37,7 +40,7 @@
         </div>
         <div class="mb-3">
             {{ form_label(form.awards) }}
-            <div class="mb-3" {{ stimulus_controller('form-collection', {
+            <div class="mb-3" id="project_awards" {{ stimulus_controller('form-collection', {
                 'index': form.awards|length > 0 ? form.awards|last.vars.name + 1 : 0,
                 'prototype': form_widget(form.awards.vars.prototype)|e('html_attr')
             }) }}>

@@ -1,0 +1,32 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Награды проекта {{ project.name }}{% endblock %}
+
+{% block body %}
+    <div class="container mt-4">
+        <h1 class="mb-4">Награды проекта "{{ project.name }}"</h1>
+        {% if project.awards.count > 0 %}
+            <table class="table">
+                <thead>
+                <tr>
+                    <th scope="col">Название награды</th>
+                    <th scope="col">Ссылка на подтверждающий документ</th>
+                </tr>
+                </thead>
+                <tbody>
+                {# @var award \App\Entity\ProjectAward #}
+                {% for award in project.awards %}
+                    <tr>
+                        <td>{{ award.name }}</td>
+                        <td><a href="{{ award.diplomaLink }}">Ссылка</a></td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <div class="">
+                К сожалению, автор данного проекта не указал <наград class=""></наград>
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}

@@ -24,5 +24,9 @@ services:
         arguments:
             $mailFrom: 'org@kp.grsu.by'
 
+    App\Controller\ProjectController:
+        arguments:
+            $finder: '@fos_elastica.finder.project'
+
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones

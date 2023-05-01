@@ -1,0 +1,30 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Просмотр информационного письма{% endblock %}
+
+{% block body %}
+    <div class="container py-4">
+        <h1 class="mb-4">Просмотр письма</h1>
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0">{{ mail.subject }}</h5>
+            </div>
+            <div class="card-body">
+                <div class="mb-2">
+                    <small>Автор:</small>
+                    <span class="fw-bold">{{ mail.mailAuthor.fullName }}</span>
+                </div>
+                <div class="mb-2">
+                    <small>Время отправки:</small>
+                    <span class="fw-bold">{{ mail.sentAt|date('d.m.Y H:i:s') }}</span>
+                </div>
+                <div class="mt-4">
+                    <small>Содержимое:</small>
+                    <div>
+                        {{ mail.content|raw }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -2,6 +2,36 @@ version: '3'
 
 services:
 ###> doctrine/doctrine-bundle ###
+#  php:
+#    build:
+#      context: ./build/php
+#      dockerfile: Dockerfile
+#    container_name: php
+#    depends_on:
+#      - database
+#    volumes:
+#      - .:/var/www/project
+#      - ./docker/php:/var/www/log
+#
+#  nginx:
+#    build:
+#      context: ./build/nginx
+#      dockerfile: Dockerfile
+#    container_name: nginx
+#    volumes:
+#      - ./docker/nginx:/var/log/nginx
+#      - .:/var/www/project
+#    ports:
+#      - "8000:80"
+
+  elastic:
+    image: elasticsearch:8.7.0
+    container_name: elastic
+    environment:
+      - ES_JAVA_OPTS=-Xms2g -Xmx2g
+    ports:
+      - "9200:9200"
+
   database:
     image: postgres:${POSTGRES_VERSION:-15}-alpine
     container_name: kupala_postgres

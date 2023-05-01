@@ -1,0 +1,10 @@
+<turbo-stream action="replace" target="mail-form">
+    <template>
+        <div class="alert alert-success">
+            Письмо <strong>"{{ mail.subject }}"</strong> успешно разослано!
+        </div>
+        <a href="{{ path('app_festival_mail', {'id': festival.id}) }}" class="btn btn-primary">
+            К письмам
+        </a>
+    </template>
+</turbo-stream>

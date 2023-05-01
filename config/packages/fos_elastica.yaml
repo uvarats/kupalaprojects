@@ -1,0 +1,65 @@
+# Read the documentation: https://github.com/FriendsOfSymfony/FOSElasticaBundle/blob/master/doc/setup.md
+fos_elastica:
+  clients:
+    default:
+      url: '%env(ELASTICSEARCH_URL)%'
+      curl:
+        !php/const \CURLOPT_CAINFO: '%env(resolve:ELASTICSEARCH_CRT_PATH)%'
+        !php/const \CURLOPT_CAPATH: '%env(resolve:ELASTICSEARCH_CRT_PATH)%'
+  indexes:
+    project:
+      settings:
+        index:
+          max_ngram_diff: 10
+          analysis:
+            analyzer:
+              project_analyzer:
+                tokenizer: project_tokenizer
+                filter: [lowercase]
+              project_search_analyzer:
+                tokenizer: standard
+                filter: [lowercase]
+            tokenizer:
+              project_tokenizer:
+                type: ngram
+                min_gram: 3
+                max_gram: 10
+                token_chars:
+                  - letter
+                  - digit
+      persistence:
+        driver: orm
+        model: App\Entity\Project
+        provider: ~
+        finder: ~
+      indexable_callback: 'isActive'
+      properties:
+        name:
+          type: text
+          analyzer: project_analyzer
+          search_analyzer: project_search_analyzer
+        goal:
+          type: text
+        startsAt:
+          type: date
+        endsAt:
+          type: date
+        creationYear:
+          type: integer
+        subjects:
+          type: 'nested'
+          properties:
+            name:
+              type: text
+              analyzer: project_analyzer
+              search_analyzer: project_search_analyzer
+        orientedOn:
+          type: 'nested'
+          properties:
+            name:
+              type: text
+              analyzer: project_analyzer
+              search_analyzer: project_search_analyzer
+
+
+

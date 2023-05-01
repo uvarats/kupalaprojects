@@ -28,6 +28,7 @@ Name: 'Название'
 'Oriented On': 'На кого направлен'
 'State': 'Состояние'
 'Education Group': 'Образовательная группа'
+'Goal': 'Цель проекта'
 app:
   create: 'Создать'
   edit: 'Редактировать'
@@ -45,6 +46,9 @@ festival:
     jury: 'Жюри'
     is_active: 'Активен'
     submit: 'Создать'
+  mail:
+    subject: 'Тема письма'
+    content: 'Содержимое'
 project:
   state:
     under_moderation: 'на модерации'
