@@ -16,5 +16,8 @@
                     </div>
             {% endfor %}
         </div>
+        {% if projects.count > 50 %}
+            {{ pagerfanta(projects, 'twitter_bootstrap5', {'omitFirstPage': true}) }}
+        {% endif %}
     </div>
 {% endblock %}

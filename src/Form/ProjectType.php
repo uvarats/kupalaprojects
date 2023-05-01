@@ -4,13 +4,13 @@ namespace App\Form;
 
 use App\Entity\Festival;
 use App\Entity\Project;
-use App\Entity\ProjectSubject;
 use App\Repository\FestivalRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\UrlType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -29,6 +29,11 @@ class ProjectType extends AbstractType
 
         $builder
             ->add('name', TextType::class)
+            ->add('goal', TextareaType::class, [
+                'attr' => [
+                    'rows' => 4,
+                ]
+            ])
             ->add('siteUrl', UrlType::class)
             ->add('startsAt', DateType::class, [
                 'input' => 'datetime_immutable',

@@ -173,16 +173,23 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getFullName(): string
     {
         $lastName = $this->getLastName();
+        $firstAndMiddleName = $this->getFirstAndMiddleName();
+
+        return $lastName . ' ' . $firstAndMiddleName;
+    }
+
+    public function getFirstAndMiddleName(): string
+    {
         $firstName = $this->getFirstName();
         $middleName = $this->getMiddleName();
 
-        $displayString = "{$lastName} {$firstName}";
+        $string = "{$firstName}";
 
         if ($middleName !== null) {
-            $displayString .= " {$middleName}";
+            $string .= " {$middleName}";
         }
 
-        return $displayString;
+        return $string;
     }
 
     public function __toString(): string

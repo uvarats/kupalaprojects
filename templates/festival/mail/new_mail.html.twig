@@ -1,0 +1,21 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Новое информационное письмо{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <div id="mail-form">
+            <h2>Новое информационное письмо</h2>
+            {{ form_start(form) }}
+            <div class="mb-3">
+                {{ form_row(form.subject) }}
+            </div>
+            <div class="mb-3">
+                {{ form_row(form.content) }}
+            </div>
+            <button type="submit" class="btn btn-primary">Отправить</button>
+            {{ form_rest(form) }}
+            {{ form_end(form) }}
+        </div>
+    </div>
+{% endblock %}

@@ -2,6 +2,7 @@
     <div class="card-body">
         <h5 class="card-title">{{ project.name }}</h5>
         <span class="card-text">Автор: {{ project.author.userEntity.fullName }}</span><br>
+        <span class="card-text">Цель: {{ project.goal }}</span><br>
         <span class="card-text">Сайт: <a href="#">{{ project.siteUrl }}</a></span><br>
         <span class="card-text">Год создания: {{ project.creationYear }}</span><br>
         <span class="card-text">Участники: {{ project|orientedOn }}</span><br>
@@ -22,7 +23,7 @@
                     <button type="submit" class="btn btn-danger me-2">Отклонить</button>
                 </form>
             {% endif %}
-            <a href="#" class="btn btn-primary me-2">Награды</a>
+            <a href="{{ path('app_project_awards', { 'id': project.id }) }}" data-turbo="false" class="btn btn-primary me-2">Награды</a>
             {% if false %}
                 <a href="#" class="btn btn-secondary me-2">Отчёт</a>
             {% endif %}

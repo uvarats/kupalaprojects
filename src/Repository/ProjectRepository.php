@@ -2,11 +2,14 @@
 
 namespace App\Repository;
 
+use App\Collection\ProjectCollection;
 use App\Entity\Festival;
 use App\Entity\Project;
 use App\Entity\User;
+use App\Enum\ProjectStateEnum;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\Query;
+use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -52,37 +55,69 @@ class ProjectRepository extends ServiceEntityRepository
             ->getQuery();
     }
 
-    public function eagerLoad(string $id): ?Project
+    public function getProjectWithAwards(string $id): ?Project
     {
         return $this->createQueryBuilder('project')
-            ->leftJoin('project.author', 'author')
-            ->addSelect('author')
-            ->leftJoin('project.subjects', 'subjects')
-            ->addSelect('subjects')
-            ->leftJoin('project.orientedOn', 'orientedOn')
-            ->addSelect('orientedOn')
-            ->leftJoin('project.festival', 'festival')
-            ->addSelect('festival')
+            ->leftJoin('project.awards', 'awards')
+            ->addSelect('awards')
             ->where('project.id = :id')
             ->setParameter('id', $id)
             ->getQuery()
             ->getSingleResult();
     }
 
+    public function eagerLoad(string $id): ?Project
+    {
+        return $this->eagerLoadBuilder()
+            ->where('project.id = :id')
+            ->setParameter('id', $id)
+            ->getQuery()
+            ->getSingleResult();
+    }
+
+    public function getAllProjectsQuery(): Query
+    {
+        $states = [
+            ProjectStateEnum::UNDER_MODERATION->value,
+            ProjectStateEnum::REJECTED->value,
+        ];
+
+        return $this->eagerLoadBuilder()
+            ->where('project.state not in (:states)')
+            ->setParameter('states', $states)
+            ->getQuery();
+    }
+
+    public function getFestivalProjects(Festival $festival): ProjectCollection
+    {
+        /** @var Project[] $result */
+        $result = $this->getFestivalProjectsQuery($festival)
+            ->getResult();
+
+        return new ProjectCollection($result);
+    }
+
     public function getFestivalProjectsQuery(Festival $festival): Query
+    {
+        return $this->eagerLoadBuilder()
+            ->where('festival = :festival')
+            ->setParameter('festival', $festival)
+            ->getQuery();
+    }
+
+    private function eagerLoadBuilder(): QueryBuilder
     {
         return $this->createQueryBuilder('project')
             ->leftJoin('project.author', 'author')
             ->addSelect('author')
+            ->leftJoin('author.userEntity', 'user')
+            ->addSelect('user')
             ->leftJoin('project.subjects', 'subjects')
             ->addSelect('subjects')
             ->leftJoin('project.orientedOn', 'orientedOn')
             ->addSelect('orientedOn')
             ->leftJoin('project.festival', 'festival')
-            ->addSelect('festival')
-            ->where('festival = :festival')
-            ->setParameter('festival', $festival)
-            ->getQuery();
+            ->addSelect('festival');
     }
 
 //    /**

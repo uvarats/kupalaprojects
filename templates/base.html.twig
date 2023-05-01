@@ -29,6 +29,9 @@
                 <li class="nav-item">
                     <a class="nav-link" href="{{ path('app_index') }}">Домой</a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ path('app_projects') }}">Проекты</a>
+                </li>
                 {% if is_granted('IS_AUTHENTICATED_FULLY') %}
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button"
@@ -36,9 +39,8 @@
                             Аккаунт
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownMenuLink">
-                            <li><a class="dropdown-item" href="{{ path('app_projects_personal') }}">Проекты</a></li>
+                            <li><a class="dropdown-item" href="{{ path('app_projects_personal') }}">Мои проекты</a></li>
                             {% if is_granted('IS_RELATED_WITH_ANY_FESTIVAL') %}
-                                {# todo: change route #}
                                 <li><a class="dropdown-item" href="{{ path('app_festivals') }}">Фестивали</a></li>
                             {% endif %}
                             <li><a class="dropdown-item" href="{{ path('app_settings') }}">Настройки</a></li>

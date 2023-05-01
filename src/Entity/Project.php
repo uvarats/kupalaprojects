@@ -2,11 +2,13 @@
 
 namespace App\Entity;
 
+use App\Enum\ProjectStateEnum;
 use App\Interface\DateRangeInterface;
 use App\Repository\ProjectRepository;
 use App\Validator\DateRangeValidator;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\Doctrine\UuidGenerator;
 use Ramsey\Uuid\UuidInterface;
@@ -56,6 +58,9 @@ class Project implements DateRangeInterface
 
     #[ORM\ManyToMany(targetEntity: EducationSubGroup::class, inversedBy: 'projects')]
     private Collection $orientedOn;
+
+    #[ORM\Column(type: Types::TEXT)]
+    private ?string $goal = null;
 
     public function __construct()
     {
@@ -195,6 +200,15 @@ class Project implements DateRangeInterface
         return $this;
     }
 
+    public function isActive(): bool
+    {
+        $state = $this->getState();
+        $stateEnum = ProjectStateEnum::from($state);
+
+        return $stateEnum !== ProjectStateEnum::UNDER_MODERATION
+            && $stateEnum !== ProjectStateEnum::REJECTED;
+    }
+
     public function getStartsAt(): ?\DateTimeImmutable
     {
         return $this->startsAt;
@@ -239,6 +253,18 @@ class Project implements DateRangeInterface
     public function removeOrientedOn(EducationSubGroup $orientedOn): self
     {
         $this->orientedOn->removeElement($orientedOn);
+
+        return $this;
+    }
+
+    public function getGoal(): ?string
+    {
+        return $this->goal;
+    }
+
+    public function setGoal(string $goal): self
+    {
+        $this->goal = $goal;
 
         return $this;
     }

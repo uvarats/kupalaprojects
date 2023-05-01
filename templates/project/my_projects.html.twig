@@ -36,7 +36,7 @@
             <!-- End of Project Card -->
         </div>
         {% if projects.count > 50 %}
-            {{ pagerfanta(projects, 'default', {'omitFirstPage': true}) }}
+            {{ pagerfanta(projects, 'twitter_bootstrap5', {'omitFirstPage': true}) }}
         {% endif %}
     </div>
 {% endblock %}
