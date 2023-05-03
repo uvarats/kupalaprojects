@@ -3,6 +3,7 @@
 namespace App\Security\Voter;
 
 use App\Entity\Project;
+use App\Entity\User;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -21,16 +22,45 @@ class ProjectVoter extends Voter
             $subject instanceof Project;
     }
 
+    /**
+     * @param string $attribute
+     * @param Project $subject
+     * @param TokenInterface $token
+     * @return bool
+     */
     protected function voteOnAttribute(string $attribute, mixed $subject, TokenInterface $token): bool
     {
         $user = $token->getUser();
         // if the user is anonymous, do not grant access
-        if (!$user instanceof UserInterface) {
+        if (!$user instanceof User) {
             return false;
         }
 
+        return match ($attribute) {
+            self::IS_PROJECT_OWNER => $this->isProjectOwner($user, $subject),
+            self::CAN_VOTE_FOR_PROJECT => $this->canVoteForProject($user, $subject),
+        };
+    }
 
+    private function isProjectOwner(User $user, Project $project): bool
+    {
+        $author = $project->getAuthor();
 
-        return false;
+        return $author->getUserEntity() === $user;
+    }
+
+    private function canVoteForProject(User $user, Project $project): bool
+    {
+        $festival = $project->getFestival();
+        $jury = $festival->getJury();
+
+        if (!$jury->contains($user)) {
+            return false;
+        }
+
+        $projectAuthor = $project->getAuthor();
+        $authorUser = $projectAuthor->getUserEntity();
+
+        return $authorUser !== $user;
     }
 }

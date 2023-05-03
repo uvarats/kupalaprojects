@@ -39,7 +39,7 @@
             {{ form_row(form.subjects) }}
         </div>
         <div class="mb-3">
-            {{ form_label(form.awards) }}
+            <label for="project_awards" class="form-label">{{ 'Awards'|trans }}</label>
             <div class="mb-3" id="project_awards" {{ stimulus_controller('form-collection', {
                 'index': form.awards|length > 0 ? form.awards|last.vars.name + 1 : 0,
                 'prototype': form_widget(form.awards.vars.prototype)|e('html_attr')
@@ -48,6 +48,9 @@
                 <button type="button" {{ stimulus_action('form-collection', 'addCollectionElement')}} class="btn btn-primary">Добавить награду</button>
             </div>
             {{ form_rest(form.awards) }}
+        </div>
+        <div class="mb-3">
+            {{ form_row(form.teamsAllowed) }}
         </div>
         {{ form_rest(form) }}
 

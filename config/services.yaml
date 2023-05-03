@@ -24,7 +24,7 @@ services:
         arguments:
             $mailFrom: 'org@kp.grsu.by'
 
-    App\Controller\ProjectController:
+    App\Controller\Project\ListingController:
         arguments:
             $finder: '@fos_elastica.finder.project'
 

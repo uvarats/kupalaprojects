@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use App\Trait\NameTrait;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\Doctrine\UuidGenerator;
 use Ramsey\Uuid\UuidInterface;
@@ -13,6 +14,8 @@ use Symfony\Component\Security\Core\User\UserInterface;
 #[ORM\Table(name: '`user`')]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
+    use NameTrait;
+
     #[ORM\Id]
     #[ORM\Column(type: 'uuid', unique: true)]
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]
@@ -168,28 +171,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $fullName = $this->getFullName();
 
         return $fullName . " ({$email})";
-    }
-
-    public function getFullName(): string
-    {
-        $lastName = $this->getLastName();
-        $firstAndMiddleName = $this->getFirstAndMiddleName();
-
-        return $lastName . ' ' . $firstAndMiddleName;
-    }
-
-    public function getFirstAndMiddleName(): string
-    {
-        $firstName = $this->getFirstName();
-        $middleName = $this->getMiddleName();
-
-        $string = "{$firstName}";
-
-        if ($middleName !== null) {
-            $string .= " {$middleName}";
-        }
-
-        return $string;
     }
 
     public function __toString(): string

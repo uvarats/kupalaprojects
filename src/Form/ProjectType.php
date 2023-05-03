@@ -7,6 +7,7 @@ use App\Entity\Project;
 use App\Repository\FestivalRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
@@ -60,7 +61,9 @@ class ProjectType extends AbstractType
                 'allow_add' => true,
                 'allow_delete' => true,
                 'by_reference' => false,
-            ]);
+                'label' => false
+            ])
+            ->add('teamsAllowed', CheckboxType::class);
     }
 
     public function configureOptions(OptionsResolver $resolver): void
