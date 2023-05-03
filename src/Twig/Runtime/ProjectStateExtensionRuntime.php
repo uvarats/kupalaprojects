@@ -12,9 +12,9 @@ final readonly class ProjectStateExtensionRuntime implements RuntimeExtensionInt
     {
     }
 
-    public function makeState(string $projectStateEnum): string
+    public function makeState(string $state): string
     {
-        $enum = ProjectStateEnum::from($projectStateEnum);
+        $enum = ProjectStateEnum::from($state);
         return $this->getElement($enum);
     }
 

@@ -6,6 +6,7 @@ use App\Collection\ProjectCollection;
 use App\Entity\Festival;
 use App\Entity\Project;
 use App\Entity\User;
+use App\Enum\AcceptanceEnum;
 use App\Enum\ProjectStateEnum;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\Query;
@@ -62,6 +63,24 @@ class ProjectRepository extends ServiceEntityRepository
             ->addSelect('awards')
             ->where('project.id = :id')
             ->setParameter('id', $id)
+            ->getQuery()
+            ->getSingleResult();
+    }
+
+    public function getProjectWithParticipants(string $id): ?Project
+    {
+        return $this->createQueryBuilder('project')
+            ->leftJoin(
+                'project.participants',
+                'participants',
+            )
+            ->addSelect('participants')
+            ->leftJoin(
+                'project.teams',
+                'teams',
+            )
+            ->addSelect('teams')
+            ->setParameter('acceptance', AcceptanceEnum::NO_DECISION->value)
             ->getQuery()
             ->getSingleResult();
     }

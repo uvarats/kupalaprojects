@@ -62,11 +62,22 @@ class Project implements DateRangeInterface
     #[ORM\Column(type: Types::TEXT)]
     private ?string $goal = null;
 
+    #[ORM\OneToMany(mappedBy: 'project', targetEntity: Participant::class)]
+    private Collection $participants;
+
+    #[ORM\OneToMany(mappedBy: 'project', targetEntity: Team::class, orphanRemoval: true)]
+    private Collection $teams;
+
+    #[ORM\Column(options: ['default' => false])]
+    private bool $teamsAllowed = false;
+
     public function __construct()
     {
         $this->subjects = new ArrayCollection();
         $this->awards = new ArrayCollection();
         $this->orientedOn = new ArrayCollection();
+        $this->participants = new ArrayCollection();
+        $this->teams = new ArrayCollection();
     }
 
     public function getId(): ?UuidInterface
@@ -202,11 +213,11 @@ class Project implements DateRangeInterface
 
     public function isActive(): bool
     {
-        $state = $this->getState();
-        $stateEnum = ProjectStateEnum::from($state);
+        $stateString = $this->getState();
+        $state = ProjectStateEnum::from($stateString);
 
-        return $stateEnum !== ProjectStateEnum::UNDER_MODERATION
-            && $stateEnum !== ProjectStateEnum::REJECTED;
+        return $state !== ProjectStateEnum::UNDER_MODERATION
+            && $state !== ProjectStateEnum::REJECTED;
     }
 
     public function getStartsAt(): ?\DateTimeImmutable
@@ -265,6 +276,78 @@ class Project implements DateRangeInterface
     public function setGoal(string $goal): self
     {
         $this->goal = $goal;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Participant>
+     */
+    public function getParticipants(): Collection
+    {
+        return $this->participants;
+    }
+
+    public function addParticipant(Participant $participant): self
+    {
+        if (!$this->participants->contains($participant)) {
+            $this->participants->add($participant);
+            $participant->setProject($this);
+        }
+
+        return $this;
+    }
+
+    public function removeParticipant(Participant $participant): self
+    {
+        if ($this->participants->removeElement($participant)) {
+            // set the owning side to null (unless already changed)
+            if ($participant->getProject() === $this) {
+                $participant->setProject(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Team>
+     */
+    public function getTeams(): Collection
+    {
+        return $this->teams;
+    }
+
+    public function addTeam(Team $team): self
+    {
+        if (!$this->teams->contains($team)) {
+            $this->teams->add($team);
+            $team->setProject($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTeam(Team $team): self
+    {
+        if ($this->teams->removeElement($team)) {
+            // set the owning side to null (unless already changed)
+            if ($team->getProject() === $this) {
+                $team->setProject(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function isTeamsAllowed(): bool
+    {
+        return $this->teamsAllowed;
+    }
+
+    public function setTeamsAllowed(bool $teamsAllowed): self
+    {
+        $this->teamsAllowed = $teamsAllowed;
 
         return $this;
     }

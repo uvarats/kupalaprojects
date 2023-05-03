@@ -1,65 +1,19 @@
-{% apply inline_css %}
-    <style>
-        /* Email body styles */
-        body {
-            font-family: Arial, sans-serif;
-            font-size: 16px;
-            line-height: 1.5;
-            margin: 0;
-            padding: 0;
-        }
-        /* Email container styles */
-        .container {
-            margin: 20px auto;
-            max-width: 600px;
-            padding: 20px;
-        }
-        /* Email header styles */
-        .header {
-            background-color: #007bff;
-            color: #fff;
-            padding: 10px;
-            text-align: center;
-        }
-        /* Email content styles */
-        .content {
-            background-color: #f7f7f7;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            margin-top: 20px;
-            padding: 20px;
-        }
-        /* Email footer styles */
-        .footer {
-            background-color: #ddd;
-            color: #333;
-            font-size: 12px;
-            padding: 10px;
-            text-align: center;
-        }
-    </style>
+{% extends 'mail/default_template.html.twig' %}
 
-    <div class="container">
-        <div class="header">
-            <h1>Новый проект</h1>
-        </div>
-        {# @var user \App\Entity\User #}
-        {# @var rawPassword #}
-        {# @var loginLink #}
-        <div class="content">
-            <p>Уважаемый(-ая) {{ user.firstName }},</p>
-            <p>Благодарим Вас за регистрацию на платформе "Купаловские проекты".</p>
-            <p>Ваши данные для входа:</p>
-            <ul>
-                <li>E-Mail: {{ user.email }}</li>
-                <li>Пароль: {{ rawPassword }}</li>
-            </ul>
-            <p>Для создания проекта перейдите по данной <a href="{{ loginLink }}">ссылке.</a></p>
-            <p>С уважением,</p>
-            <p>Организационный комитет</p>
-        </div>
-        <div class="footer">
-            <p>Данное письмо было отправлено автоматически. Не отвечайте на него.</p>
-        </div>
-    </div>
-{% endapply %}
+{% block subject %}Новый проект{% endblock %}
+
+{% block content %}
+    {# @var user \App\Entity\User #}
+    {# @var rawPassword #}
+    {# @var loginLink #}
+    <p>Уважаемый(-ая) {{ user.firstName }},</p>
+    <p>Благодарим Вас за регистрацию на платформе "Купаловские проекты".</p>
+    <p>Ваши данные для входа:</p>
+    <ul>
+        <li>E-Mail: {{ user.email }}</li>
+        <li>Пароль: {{ rawPassword }}</li>
+    </ul>
+    <p>Для создания проекта перейдите по данной <a href="{{ loginLink }}">ссылке.</a></p>
+    <p>С уважением,</p>
+    <p>Организационный комитет</p>
+{% endblock %}

@@ -1,0 +1,33 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Регистрация в качестве участника проекта{% endblock %}
+
+{% block body %}
+    <div class="container mt-2">
+        <div class="d-flex justify-content-center mb-2">
+            <h1>Регистрация участника на проект "{{ project.name }}"</h1>
+        </div>
+        <turbo-frame id="registration-frame">
+            <div id="registration-form">
+                {{ form_start(form) }}
+                <div class="mb-3">
+                    {{ form_row(form.lastName) }}
+                </div>
+                <div class="mb-3">
+                    {{ form_row(form.firstName) }}
+                </div>
+                <div class="mb-3">
+                    {{ form_row(form.middleName) }}
+                </div>
+                <div class="mb-3">
+                    {{ form_row(form.educationEstablishment) }}
+                </div>
+                <div class="mb-3">
+                    {{ form_row(form.email) }}
+                </div>
+                <button class="btn btn-primary">Регистрация</button>
+                {{ form_end(form) }}
+            </div>
+        </turbo-frame>
+    </div>
+{% endblock %}

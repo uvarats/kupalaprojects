@@ -29,6 +29,8 @@ services:
     container_name: elastic
     environment:
       - ES_JAVA_OPTS=-Xms2g -Xmx2g
+    volumes:
+      - elastic:/usr/share/elasticsearch/data
     ports:
       - "9200:9200"
 
@@ -49,4 +51,5 @@ services:
 volumes:
 ###> doctrine/doctrine-bundle ###
   kupala_db:
+  elastic:
 ###< doctrine/doctrine-bundle ###
