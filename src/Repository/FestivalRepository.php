@@ -6,6 +6,7 @@ use App\Entity\Festival;
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\Query;
+use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -43,11 +44,26 @@ class FestivalRepository extends ServiceEntityRepository
 
     public function createOrderedQuery(): Query
     {
+        return $this->getOrderedBuilder()
+            ->getQuery();
+    }
+
+    public function getActiveFestivalsDates(): array
+    {
+        return $this->getOrderedBuilder()
+            ->select('festival.id as festivalId')
+            ->addSelect('festival.startsAt')
+            ->addSelect('festival.endsAt')
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function getOrderedBuilder(): QueryBuilder
+    {
         return $this->createQueryBuilder('festival')
             ->where('festival.isActive = true')
             ->addOrderBy('festival.startsAt')
-            ->addOrderBy('festival.endsAt')
-            ->getQuery();
+            ->addOrderBy('festival.endsAt');
     }
 
     public function isUserRelatedWithAnyFestival(User $user): bool

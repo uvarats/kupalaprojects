@@ -28,9 +28,12 @@ services:
     image: elasticsearch:8.7.0
     container_name: elastic
     environment:
-      - ES_JAVA_OPTS=-Xms2g -Xmx2g
+      - ES_JAVA_OPTS=-Xms1g -Xmx1g
+      - discovery.type=single-node
+      - ELASTIC_PASSWORD=elastic1234
+#      - xpack.security.enabled=false
     volumes:
-      - elastic:/usr/share/elasticsearch/data
+      - ./docker/elastic:/usr/share/elasticsearch/data
     ports:
       - "9200:9200"
 
