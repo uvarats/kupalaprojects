@@ -25,6 +25,9 @@
                 <div class="mb-3">
                     {{ form_row(form.email) }}
                 </div>
+                <div class="mb-3">
+                    {{ form_errors(form) }}
+                </div>
                 <button class="btn btn-primary">Регистрация</button>
                 {{ form_end(form) }}
             </div>

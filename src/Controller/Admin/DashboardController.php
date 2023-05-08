@@ -6,6 +6,7 @@ use App\Entity\EducationGroup;
 use App\Entity\EducationSubGroup;
 use App\Entity\Festival;
 use App\Entity\Project;
+use App\Entity\ProjectAuthor;
 use App\Entity\ProjectSubject;
 use App\Entity\User;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
@@ -15,6 +16,8 @@ use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\User\UserInterface;
+
+use function Symfony\Component\Translation\t;
 
 class DashboardController extends AbstractDashboardController
 {
@@ -46,15 +49,21 @@ class DashboardController extends AbstractDashboardController
             ->setTitle('Панель управления')
             ->setLocales([
                 'ru' => 'Русский',
-            ]);
+            ])
+            ->setTranslationDomain('admin');
     }
 
     public function configureMenuItems(): iterable
     {
         // yield MenuItem::linkToCrud('The Label', 'fas fa-list', EntityClass::class);
-
         return [
             MenuItem::linkToDashboard('Панель управления', 'fa fa-home'),
+
+            MenuItem::section('Пользователи'),
+            MenuItem::linkToCrud('Пользователи', 'fas fa-users', User::class),
+            MenuItem::linkToCrud('Авторы проектов', 'fas fa-user-graduate', ProjectAuthor::class),
+
+            MenuItem::section('Фестивали и проекты'),
             MenuItem::linkToCrud('Фестивали', 'fas fa-calendar', Festival::class),
             MenuItem::linkToCrud('Предметы проектов', 'fa fa-tags', ProjectSubject::class),
             MenuItem::linkToCrud('Проекты', 'fas fa-project-diagram', Project::class),
@@ -68,6 +77,9 @@ class DashboardController extends AbstractDashboardController
         assert($user instanceof User);
         return parent::configureUserMenu($user)
             ->setName($user->getFirstName())
-            ->displayUserAvatar(false);
+            ->setGravatarEmail($user->getEmail())
+            ->addMenuItems([
+                MenuItem::linkToRoute('На главную', 'fa fa-home', 'app_index')
+            ]);
     }
 }

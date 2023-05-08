@@ -9,17 +9,16 @@ use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-final class AwardsListingController extends AbstractController
+final class DetailsController extends AbstractController
 {
-    #[Route('/project/{id}/awards', name: 'app_project_awards')]
+    #[Route('/project/{id}', name: 'app_project_details')]
     public function __invoke(
-        #[MapEntity(expr: 'repository.getProjectWithAwards(id)')]
+        #[MapEntity(expr: 'repository.eagerLoad(id)')]
         Project $project
     ): Response {
-        return $this->render('project/project_awards.html.twig', [
-            'project' => $project
+        return $this->render('project/details.html.twig', [
+            'project' => $project,
         ]);
     }
 }

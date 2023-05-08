@@ -7,9 +7,7 @@ namespace App\Factory;
 use App\Collection\FestivalDatesCollection;
 use App\Dto\FestivalDates;
 use App\Entity\Festival;
-use App\Entity\Project;
 use DateTimeImmutable;
-use JetBrains\PhpStorm\ArrayShape;
 
 final readonly class FestivalDatesFactory
 {

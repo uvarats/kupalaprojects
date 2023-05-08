@@ -31,7 +31,6 @@ services:
       - ES_JAVA_OPTS=-Xms1g -Xmx1g
       - discovery.type=single-node
       - ELASTIC_PASSWORD=elastic1234
-#      - xpack.security.enabled=false
     volumes:
       - ./docker/elastic:/usr/share/elasticsearch/data
     ports:
