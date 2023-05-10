@@ -2,14 +2,11 @@
     <div class="card-body">
         <h5 class="card-title">{{ project.name }}</h5>
         <span class="card-text">Автор: {{ project.author.userEntity.fullName }}</span><br>
-        <span class="card-text">Цель: {{ project.goal }}</span><br>
         <span class="card-text">Сайт: <a href="#">{{ project.siteUrl }}</a></span><br>
         <span class="card-text">Год создания: {{ project.creationYear }}</span><br>
-        <span class="card-text">Участники: {{ project|orientedOn }}</span><br>
         <span class="card-text">Состояние: {{ project.state|fancy }}</span><br>
         <span class="card-text">Дата начала: {{ project.startsAt|date('d.m.Y') }}</span><br>
         <span class="card-text">Дата завершения: {{ project.endsAt|date('d.m.Y') }}</span><br>
-        <span class="card-text">Предметные области: {{ project|subjects }}</span><br>
     </div>
     <div class="d-flex justify-content-between align-items-center card-footer">
         <div class="d-flex flex-wrap">

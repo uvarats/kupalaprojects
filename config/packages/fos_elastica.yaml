@@ -3,9 +3,9 @@ fos_elastica:
   clients:
     default:
       url: '%env(ELASTICSEARCH_URL)%'
-      curl:
-        !php/const \CURLOPT_CAINFO: '%env(resolve:ELASTICSEARCH_CRT_PATH)%'
-        !php/const \CURLOPT_CAPATH: '%env(resolve:ELASTICSEARCH_CRT_PATH)%'
+#      curl:
+#        !php/const \CURLOPT_CAINFO: '%env(resolve:ELASTICSEARCH_CRT_PATH)%'
+#        !php/const \CURLOPT_CAPATH: '%env(resolve:ELASTICSEARCH_CRT_PATH)%'
   indexes:
     project:
       settings:
