@@ -8,8 +8,16 @@ use App\Trait\NameTrait;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\Doctrine\UuidGenerator;
 use Ramsey\Uuid\UuidInterface;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Translation\TranslatableMessage;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: ParticipantRepository::class)]
+#[ORM\UniqueConstraint(columns: ['project_id', 'email'])]
+#[UniqueEntity(
+    fields: ['project', 'email'],
+    message: 'Участник с таким e-mail уже зарегистрирован в данном проекте',
+)]
 class Participant
 {
     use NameTrait;
@@ -37,7 +45,8 @@ class Participant
     #[ORM\ManyToOne(inversedBy: 'participants')]
     private ?Project $project = null;
 
-    #[ORM\Column(length: 255, unique: true)]
+    #[ORM\Column(length: 255)]
+    #[Assert\Email]
     private ?string $email = null;
 
     #[ORM\Column(enumType: AcceptanceEnum::class)]

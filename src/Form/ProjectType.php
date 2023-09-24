@@ -21,12 +21,7 @@ class ProjectType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $now = new \DateTimeImmutable();
-        $year = (int)$now->format('Y');
-        $years = [];
-        for ($i = 0; $i < 5; $i++) {
-            $years[] = $year + $i;
-        }
+        $years = range((int)date('Y'), ((int)date('Y')) + 5);
 
         $builder
             ->add('name', TextType::class)
@@ -37,11 +32,9 @@ class ProjectType extends AbstractType
             ])
             ->add('siteUrl', UrlType::class)
             ->add('startsAt', DateType::class, [
-                'input' => 'datetime_immutable',
                 'years' => $years,
             ])
             ->add('endsAt', DateType::class, [
-                'input' => 'datetime_immutable',
                 'years' => $years,
             ])
             ->add('creationYear', NumberType::class)
@@ -51,8 +44,7 @@ class ProjectType extends AbstractType
                 'class' => Festival::class,
                 'choice_label' => 'label',
                 'query_builder' => static function (FestivalRepository $festivalRepository) {
-                    return $festivalRepository->createQueryBuilder('festival')
-                        ->where('festival.isActive = true');
+                    return $festivalRepository->getOrderedBuilder();
                 },
             ])
             ->add('awards', CollectionType::class, [
@@ -63,7 +55,9 @@ class ProjectType extends AbstractType
                 'by_reference' => false,
                 'label' => false
             ])
-            ->add('teamsAllowed', CheckboxType::class);
+            ->add('teamsAllowed', CheckboxType::class, [
+                'required' => false,
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void

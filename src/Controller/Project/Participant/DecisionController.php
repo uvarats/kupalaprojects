@@ -6,7 +6,6 @@ namespace App\Controller\Project\Participant;
 
 use App\Entity\Participant;
 use App\Entity\Project;
-use App\Enum\AcceptanceEnum;
 use App\Security\Voter\ProjectVoter;
 use App\Service\Project\ParticipantService;
 use Symfony\Bridge\Doctrine\Attribute\MapEntity;

@@ -29,7 +29,7 @@ class ProjectExtensionRuntime implements RuntimeExtensionInterface
         return implode(', ', $orientedOnNames->toArray());
     }
 
-    public function subjects(Project $project)
+    public function subjects(Project $project): string
     {
         $subjects = $project->getSubjects();
 

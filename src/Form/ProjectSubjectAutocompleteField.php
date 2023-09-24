@@ -19,7 +19,7 @@ class ProjectSubjectAutocompleteField extends AbstractType
             'placeholder' => 'Выбор предметов',
             'choice_label' => 'name',
             'multiple' => true,
-            'query_builder' => function(ProjectSubjectRepository $projectSubjectRepository) {
+            'query_builder' => function (ProjectSubjectRepository $projectSubjectRepository) {
                 return $projectSubjectRepository->createQueryBuilder('projectSubject');
             },
             'no_more_results_text' => 'Больше результатов нет',

@@ -18,4 +18,5 @@ return [
     Symfony\UX\Turbo\TurboBundle::class => ['all' => true],
     Trsteel\CkeditorBundle\TrsteelCkeditorBundle::class => ['all' => true],
     FOS\ElasticaBundle\FOSElasticaBundle::class => ['all' => true],
+    Symfony\UX\StimulusBundle\StimulusBundle::class => ['all' => true],
 ];

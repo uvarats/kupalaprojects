@@ -8,6 +8,7 @@ use App\Entity\Project;
 use App\Entity\User;
 use App\Enum\AcceptanceEnum;
 use App\Enum\ProjectStateEnum;
+use App\Repository\Interface\EagerLoadInterface;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
@@ -21,7 +22,7 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method Project[]    findAll()
  * @method Project[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class ProjectRepository extends ServiceEntityRepository
+class ProjectRepository extends ServiceEntityRepository implements EagerLoadInterface
 {
     public function __construct(ManagerRegistry $registry)
     {
@@ -85,7 +86,7 @@ class ProjectRepository extends ServiceEntityRepository
             ->getSingleResult();
     }
 
-    public function eagerLoad(string $id): ?Project
+    public function eagerLoad(int|string $id): ?Project
     {
         return $this->eagerLoadBuilder()
             ->where('project.id = :id')
@@ -136,7 +137,11 @@ class ProjectRepository extends ServiceEntityRepository
             ->leftJoin('project.orientedOn', 'orientedOn')
             ->addSelect('orientedOn')
             ->leftJoin('project.festival', 'festival')
-            ->addSelect('festival');
+            ->addSelect('festival')
+            ->leftJoin('project.participants', 'participants')
+            ->addSelect('participants')
+            ->leftJoin('project.teams', 'teams')
+            ->addSelect('teams');
     }
 
 //    /**

@@ -1,0 +1,70 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ project.name }}{% endblock %}
+
+{% block body %}
+    <div class="container mt-2">
+        <div class="d-flex justify-content-center">
+            <h1>Информация о проекте "{{ project.name }}"</h1>
+        </div>
+        <div class="mb-3" id="details">
+            <table class="table">
+                <tbody>
+                <tr>
+                    <th>Название</th>
+                    <td>{{ project.name }}</td>
+                </tr>
+                <tr>
+                    <th>Фестиваль</th>
+                    <td>{{ project.festival.name }}</td>
+                </tr>
+                <tr>
+                    <th>Цель</th>
+                    <td>{{ project.goal }}</td>
+                </tr>
+                <tr>
+                    <th>Даты проведения</th>
+                    <td>{{ project.startsAt|date('d.m.Y') }} - {{ project.endsAt|date('d.m.Y') }}</td>
+                </tr>
+                <tr>
+                    <th>Предметные области</th>
+                    <td>{{ project|subjects }}</td>
+                </tr>
+                <tr>
+                    <th>Направленность проекта</th>
+                    <td>{{ project|orientedOn }}</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="mb-3">
+            <h3 class="mb-3">Участники</h3>
+        </div>
+        <div class="mb-3">
+            <h3 class="mb-4">Награды</h3>
+            {% if project.awards.count > 0 %}
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th scope="col">Название награды</th>
+                        <th scope="col">Ссылка на подтверждающий документ</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {# @var award \App\Entity\ProjectAward #}
+                    {% for award in project.awards %}
+                        <tr>
+                            <td>{{ award.name }}</td>
+                            <td><a href="{{ award.diplomaLink }}">Ссылка</a></td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <div class="">
+                    К сожалению, автор данного проекта не указал наград
+                </div>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}
