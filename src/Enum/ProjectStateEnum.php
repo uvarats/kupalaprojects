@@ -14,4 +14,3 @@ enum ProjectStateEnum: string
     case ENDED_VOTING = 'ended_voting';
     case ENDED = 'ended';
 }
-

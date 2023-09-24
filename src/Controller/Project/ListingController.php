@@ -14,8 +14,7 @@ final class ListingController extends AbstractController
 {
     public function __construct(
         private readonly PaginatedFinderInterface $finder,
-    ) {
-    }
+    ) {}
 
     #[Route('/projects/{page}', name: 'app_projects')]
     public function __invoke(Request $request, int $page = 1): Response

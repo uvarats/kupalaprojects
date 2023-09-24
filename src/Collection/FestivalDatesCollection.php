@@ -15,7 +15,6 @@ use Ramsey\Collection\AbstractCollection;
  */
 final class FestivalDatesCollection extends AbstractCollection
 {
-
     public function getType(): string
     {
         return FestivalDates::class;

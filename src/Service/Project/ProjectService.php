@@ -20,8 +20,7 @@ final readonly class ProjectService
         private EntityManagerInterface $entityManager,
         private UserService $userService,
         private ProjectMailerService $projectMailer,
-    ) {
-    }
+    ) {}
 
     public function handleSubmittedProject(Project $project): void
     {

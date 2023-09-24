@@ -30,8 +30,7 @@ class UserCreateCommand extends Command
         private readonly UserPasswordHasherInterface $hasher,
         private readonly PasswordGeneratorService $passwordGenerator,
         private readonly EntityManagerInterface $entityManager,
-    )
-    {
+    ) {
         parent::__construct();
         $this->faker = Factory::create('ru_RU');
     }

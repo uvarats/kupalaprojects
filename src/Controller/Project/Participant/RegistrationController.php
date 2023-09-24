@@ -19,8 +19,7 @@ final class RegistrationController extends AbstractController
 {
     public function __construct(
         private readonly ParticipantService $participantService,
-    ) {
-    }
+    ) {}
 
     #[Route('/project/{id}/registration/individual', name: 'app_project_participant_registration')]
     public function __invoke(Project $project, Request $request): Response

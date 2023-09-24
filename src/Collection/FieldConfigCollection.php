@@ -15,7 +15,6 @@ use Ramsey\Collection\AbstractCollection;
  */
 final class FieldConfigCollection extends AbstractCollection
 {
-
     public function getType(): string
     {
         return FieldConfig::class;

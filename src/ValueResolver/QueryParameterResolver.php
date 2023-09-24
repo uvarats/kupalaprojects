@@ -11,7 +11,6 @@ use Symfony\Component\HttpKernel\ControllerMetadata\ArgumentMetadata;
 
 final readonly class QueryParameterResolver implements ValueResolverInterface
 {
-
     public function resolve(Request $request, ArgumentMetadata $argument): iterable
     {
         $attributes = $argument->getAttributes(MapQueryParameter::class);

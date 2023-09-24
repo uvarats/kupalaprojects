@@ -12,9 +12,7 @@ final class UserVoter extends Voter
 {
     public const IS_RELATED_WITH_ANY_FESTIVAL = 'IS_RELATED_WITH_ANY_FESTIVAL';
 
-    public function __construct(private readonly FestivalRepository $festivalRepository) {
-
-    }
+    public function __construct(private readonly FestivalRepository $festivalRepository) {}
 
     protected function supports(string $attribute, mixed $subject): bool
     {

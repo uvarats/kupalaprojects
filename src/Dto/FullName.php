@@ -13,8 +13,7 @@ final class FullName extends Data
         public readonly string $lastName,
         public readonly string $firstName,
         public readonly ?string $middleName = null,
-    ) {
-    }
+    ) {}
 
     public static function fromString(string $fullName): FullName
     {

@@ -11,10 +11,7 @@ final readonly class ProjectMailerService
     public function __construct(
         private string $mailFrom,
         private MailerInterface $mailer,
-    ) {
-    }
+    ) {}
 
-    public function sendNewUserEmail() {
-
-    }
+    public function sendNewUserEmail() {}
 }

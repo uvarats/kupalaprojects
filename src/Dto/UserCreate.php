@@ -13,6 +13,5 @@ final class UserCreate extends Data
         public string $email,
         public string $password,
         public bool $isAdmin = false,
-    ) {
-    }
+    ) {}
 }

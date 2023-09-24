@@ -18,8 +18,7 @@ final class CreateController extends AbstractController
 {
     public function __construct(
         private readonly ProjectService $projectService,
-    ) {
-    }
+    ) {}
 
     #[Route('/projects/create', name: 'app_projects_create')]
     #[IsGranted('IS_AUTHENTICATED_FULLY')]

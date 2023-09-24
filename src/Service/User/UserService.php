@@ -15,8 +15,7 @@ final readonly class UserService
         private UserPasswordHasherInterface $hasher,
         private PasswordGeneratorService $passwordGenerator,
         private Security $security
-    ) {
-    }
+    ) {}
 
     public function getCurrentUser(): User
     {

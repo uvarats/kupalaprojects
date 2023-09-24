@@ -16,12 +16,12 @@ class FestivalVoter extends Voter
     protected function supports(string $attribute, mixed $subject): bool
     {
         return in_array(
-                $attribute,
-                [
+            $attribute,
+            [
                     self::IS_JURY_MEMBER,
                     self::IS_ORGANIZATION_COMMITTEE_MEMBER
                 ]
-            )
+        )
             && $subject instanceof Festival;
     }
 

@@ -11,9 +11,7 @@ final readonly class AuthService
 {
     public function __construct(
         private LoginLinkHandlerInterface $loginLinkHandler,
-    ) {
-
-    }
+    ) {}
 
     public function getLoginLink(User $user): string
     {

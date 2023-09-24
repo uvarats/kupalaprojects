@@ -17,9 +17,7 @@ final readonly class ParticipantService
         private EntityManagerInterface $entityManager,
         private MailerInterface $mailer,
         private TranslatorInterface $translator,
-    ) {
-
-    }
+    ) {}
 
     public function handleParticipantRegistration(Participant $participant): void
     {

@@ -17,8 +17,7 @@ final class FestivalController extends AbstractController
 {
     public function __construct(
         private readonly ProjectRepository $projectRepository
-    ) {
-    }
+    ) {}
 
     #[Route('/festivals/{page}', name: 'app_festivals')]
     public function index(FestivalRepository $festivalRepository, int $page = 1): Response

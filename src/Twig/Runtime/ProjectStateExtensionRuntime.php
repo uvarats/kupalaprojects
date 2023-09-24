@@ -8,9 +8,7 @@ use Twig\Extension\RuntimeExtensionInterface;
 
 final readonly class ProjectStateExtensionRuntime implements RuntimeExtensionInterface
 {
-    public function __construct(private TranslatorInterface $translator)
-    {
-    }
+    public function __construct(private TranslatorInterface $translator) {}
 
     public function makeState(string $state): string
     {

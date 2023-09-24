@@ -12,8 +12,6 @@ final class FestivalDates extends Data
         public string $festivalId,
         public string $startsAt,
         public string $endsAt,
-    )
-    {
-    }
+    ) {}
 
 }

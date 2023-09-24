@@ -12,7 +12,5 @@ final readonly class NewProjectAuthor
         public User $user,
         public string $password,
         public string $loginLink,
-    )
-    {
-    }
+    ) {}
 }

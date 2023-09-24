@@ -21,7 +21,6 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\UrlField;
 
 class ProjectController extends AbstractCrudController
 {
-
     public static function getEntityFqcn(): string
     {
         return Project::class;
@@ -43,7 +42,7 @@ class ProjectController extends AbstractCrudController
             DateField::new('startsAt'),
             DateField::new('endsAt'),
             NumberField::new('creationYear')->formatValue(
-                static fn($value) => str_replace(chr(0xC2) . chr(0xA0), '', $value)
+                static fn ($value) => str_replace(chr(0xC2) . chr(0xA0), '', $value)
             ),
             AssociationField::new('festival'),
             CollectionField::new('awards')

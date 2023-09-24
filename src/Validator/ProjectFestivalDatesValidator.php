@@ -9,7 +9,5 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 class ProjectFestivalDatesValidator
 {
-    public static function validate(Project $festival, ExecutionContextInterface $context, $payload): void
-    {
-    }
+    public static function validate(Project $festival, ExecutionContextInterface $context, $payload): void {}
 }

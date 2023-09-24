@@ -28,8 +28,7 @@ final class ProjectAuthorController extends AbstractController
         private readonly UserService $userService,
         private readonly AuthService $authService,
         private readonly EntityManagerInterface $entityManager,
-    ) {
-    }
+    ) {}
 
     #[Route('/project-author/signup', name: 'app_project_author_signup')]
     public function signup(Request $request): Response
@@ -69,7 +68,8 @@ final class ProjectAuthorController extends AbstractController
     #[Route('/project-author/create', name: 'app_project_author_create')]
     #[IsGranted('IS_AUTHENTICATED_FULLY')]
     public function createProjectAuthorForExistingUser(
-        #[CurrentUser] User $user,
+        #[CurrentUser]
+        User $user,
         Request $request,
     ): Response {
         if ($this->isGranted(ProjectAuthorVoter::IS_PROJECT_AUTHOR)) {
@@ -96,7 +96,8 @@ final class ProjectAuthorController extends AbstractController
 
     #[Route('/project-author/update', name: 'app_project_author_update')]
     public function projectAuthorUpdate(
-        #[CurrentUser] User $user,
+        #[CurrentUser]
+        User $user,
         Request $request,
     ): Response {
         if (!$this->isGranted(ProjectAuthorVoter::IS_PROJECT_AUTHOR)) {

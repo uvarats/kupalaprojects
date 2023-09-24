@@ -16,7 +16,6 @@ use Ramsey\Collection\AbstractCollection;
  */
 final class ProjectCollection extends AbstractCollection
 {
-
     public function getType(): string
     {
         return Project::class;

@@ -18,8 +18,7 @@ final class FestivalController extends AbstractController
 {
     public function __construct(
         private readonly FestivalService $festivalService
-    ) {
-    }
+    ) {}
 
     #[Route('/festivals/dates', name: 'app_api_festivals_dates')]
     public function getFestivalsDates(): JsonResponse

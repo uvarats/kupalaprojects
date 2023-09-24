@@ -21,8 +21,7 @@ final class ProjectVoter extends Voter
 
     public function __construct(
         private readonly AuthorizationCheckerInterface $authorizationChecker,
-    ) {
-    }
+    ) {}
 
 
     protected function supports(string $attribute, mixed $subject): bool
@@ -79,13 +78,7 @@ final class ProjectVoter extends Voter
         return $authorUser !== $user;
     }
 
-    private function canViewAwards(User $user, Project $project): bool
-    {
+    private function canViewAwards(User $user, Project $project): bool {}
 
-    }
-
-    private function canViewParticipants(User $user, Project $project): bool
-    {
-
-    }
+    private function canViewParticipants(User $user, Project $project): bool {}
 }

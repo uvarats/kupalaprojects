@@ -5,6 +5,4 @@ declare(strict_types=1);
 namespace App\Attribute;
 
 #[\Attribute(\Attribute::TARGET_PARAMETER)]
-final class MapQueryParameter
-{
-}
+final class MapQueryParameter {}

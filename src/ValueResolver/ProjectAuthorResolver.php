@@ -15,8 +15,7 @@ final readonly class ProjectAuthorResolver implements ValueResolverInterface
 {
     public function __construct(
         private Security $security,
-    ) {
-    }
+    ) {}
 
     public function resolve(Request $request, ArgumentMetadata $argument): iterable
     {

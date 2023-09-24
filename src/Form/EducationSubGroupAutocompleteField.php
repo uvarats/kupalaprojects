@@ -19,7 +19,7 @@ class EducationSubGroupAutocompleteField extends AbstractType
             'placeholder' => 'Выберите группы участников',
             'choice_label' => 'name',
             'multiple' => true,
-            'query_builder' => function(EducationSubGroupRepository $educationSubGroupRepository) {
+            'query_builder' => function (EducationSubGroupRepository $educationSubGroupRepository) {
                 return $educationSubGroupRepository->createQueryBuilder('educationSubGroup');
             },
             'no_more_results_text' => 'Больше результатов нет',

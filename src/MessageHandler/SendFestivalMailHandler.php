@@ -13,8 +13,7 @@ final readonly class SendFestivalMailHandler
     public function __construct(
         private FestivalMailer $mailer,
         private FestivalMailRepository $mailRepository,
-    ) {
-    }
+    ) {}
 
     public function __invoke(SendFestivalMail $message): void
     {

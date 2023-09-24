@@ -17,4 +17,3 @@ enum ProjectTransitionEnum: string
     case END_VOTING = 'end_voting';
     case END = 'end';
 }
-

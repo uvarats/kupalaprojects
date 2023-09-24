@@ -17,8 +17,7 @@ final readonly class FestivalMailer
     public function __construct(
         private MailerInterface $mailer,
         private ProjectRepository $projectRepository,
-    ) {
-    }
+    ) {}
 
     public function send(FestivalMail $mail): void
     {

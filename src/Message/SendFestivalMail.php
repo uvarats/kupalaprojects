@@ -8,8 +8,7 @@ final readonly class SendFestivalMail
 {
     public function __construct(
         private string $mailId
-    ) {
-    }
+    ) {}
 
     public static function fromMail(FestivalMail $mail): SendFestivalMail
     {

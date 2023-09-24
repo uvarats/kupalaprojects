@@ -15,7 +15,6 @@ use Ramsey\Collection\AbstractCollection;
  */
 final class ParticipantCollection extends AbstractCollection
 {
-
     public function getType(): string
     {
         return Participant::class;
