@@ -22,7 +22,7 @@ class ProjectAward
     #[ORM\Column(length: 500)]
     private ?string $diplomaLink = null;
 
-    #[ORM\ManyToOne(inversedBy: 'awards')]
+    #[ORM\ManyToOne(targetEntity: Project::class, inversedBy: 'awards')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Project $project = null;
 

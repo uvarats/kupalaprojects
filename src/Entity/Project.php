@@ -36,11 +36,11 @@ class Project implements DateRangeInterface
     #[ORM\ManyToMany(targetEntity: ProjectSubject::class, inversedBy: 'projects')]
     private Collection $subjects;
 
-    #[ORM\ManyToOne(inversedBy: 'projects')]
+    #[ORM\ManyToOne(targetEntity: Festival::class, inversedBy: 'projects')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Festival $festival = null;
 
-    #[ORM\ManyToOne(inversedBy: 'projects')]
+    #[ORM\ManyToOne(targetEntity: ProjectAuthor::class, inversedBy: 'projects')]
     #[ORM\JoinColumn(nullable: false)]
     private ?ProjectAuthor $author = null;
 

@@ -9,7 +9,6 @@ use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\Doctrine\UuidGenerator;
 use Ramsey\Uuid\UuidInterface;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
-use Symfony\Component\Translation\TranslatableMessage;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: ParticipantRepository::class)]
@@ -21,6 +20,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 class Participant
 {
     use NameTrait;
+
     #[ORM\Id]
     #[ORM\Column(type: 'uuid', unique: true)]
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]
@@ -39,10 +39,10 @@ class Participant
     #[ORM\Column(length: 255)]
     private ?string $educationEstablishment = null;
 
-    #[ORM\ManyToOne(inversedBy: 'participants')]
+    #[ORM\ManyToOne(targetEntity: Team::class, inversedBy: 'participants')]
     private ?Team $team = null;
 
-    #[ORM\ManyToOne(inversedBy: 'participants')]
+    #[ORM\ManyToOne(targetEntity: Project::class, inversedBy: 'participants')]
     private ?Project $project = null;
 
     #[ORM\Column(length: 255)]

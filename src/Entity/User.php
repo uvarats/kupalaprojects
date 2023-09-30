@@ -39,7 +39,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $middleName = null;
 
-    #[ORM\OneToOne(mappedBy: 'userEntity', cascade: ['persist', 'remove'])]
+    #[ORM\OneToOne(mappedBy: 'userEntity', targetEntity: ProjectAuthor::class, cascade: ['persist', 'remove'])]
     private ?ProjectAuthor $projectAuthor = null;
 
     public function getId(): ?UuidInterface

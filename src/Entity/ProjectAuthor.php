@@ -19,7 +19,7 @@ class ProjectAuthor implements ProjectAuthorInterface
     #[ORM\CustomIdGenerator(class: UuidGenerator::class)]
     private ?UuidInterface $id = null;
 
-    #[ORM\OneToOne(inversedBy: 'projectAuthor', cascade: ['persist', 'remove'])]
+    #[ORM\OneToOne(inversedBy: 'projectAuthor', targetEntity: User::class, cascade: ['persist', 'remove'])]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $userEntity = null;
 

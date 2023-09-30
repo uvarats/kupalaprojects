@@ -17,7 +17,7 @@ class FestivalMail
     #[ORM\CustomIdGenerator(class: UuidGenerator::class)]
     private ?UuidInterface $id = null;
 
-    #[ORM\ManyToOne]
+    #[ORM\ManyToOne(targetEntity: Festival::class)]
     #[ORM\JoinColumn(nullable: false)]
     private ?Festival $festival = null;
 
@@ -27,7 +27,7 @@ class FestivalMail
     #[ORM\Column(type: Types::TEXT)]
     private ?string $content = null;
 
-    #[ORM\ManyToOne]
+    #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $mailAuthor = null;
 

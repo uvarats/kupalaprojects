@@ -21,7 +21,7 @@ class EducationSubGroup
     #[ORM\Column(length: 255)]
     private ?string $name = null;
 
-    #[ORM\ManyToOne(inversedBy: 'subGroups')]
+    #[ORM\ManyToOne(targetEntity: EducationGroup::class, inversedBy: 'subGroups')]
     #[ORM\JoinColumn(nullable: false)]
     private ?EducationGroup $educationGroup = null;
 

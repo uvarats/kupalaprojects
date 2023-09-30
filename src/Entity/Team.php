@@ -21,14 +21,14 @@ class Team
     #[ORM\Column(length: 255)]
     private ?string $name = null;
 
-    #[ORM\OneToOne(cascade: ['persist', 'remove'])]
+    #[ORM\OneToOne(targetEntity: Participant::class, cascade: ['persist', 'remove'])]
     #[ORM\JoinColumn(nullable: false)]
     private ?Participant $teamCreator = null;
 
     #[ORM\OneToMany(mappedBy: 'team', targetEntity: Participant::class)]
     private Collection $participants;
 
-    #[ORM\ManyToOne(inversedBy: 'teams')]
+    #[ORM\ManyToOne(targetEntity: Project::class, inversedBy: 'teams')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Project $project = null;
 
