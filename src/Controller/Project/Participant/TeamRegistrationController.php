@@ -17,6 +17,7 @@ final class TeamRegistrationController extends AbstractController
     #[Route('/project/{id}/registration/team', name: 'app_project_registration_team')]
     public function __invoke(Project $project, Request $request): Response
     {
+        // change it do dtos, do not use entities in forms.
         $team = new Team();
         $team->setProject($project);
 

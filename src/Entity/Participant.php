@@ -42,6 +42,7 @@ class Participant
     #[ORM\ManyToOne(targetEntity: Team::class, inversedBy: 'participants')]
     private ?Team $team = null;
 
+    // not null?
     #[ORM\ManyToOne(targetEntity: Project::class, inversedBy: 'participants')]
     private ?Project $project = null;
 
