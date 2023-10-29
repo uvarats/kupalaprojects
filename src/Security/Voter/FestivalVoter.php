@@ -39,18 +39,17 @@ class FestivalVoter extends Voter
             return false;
         }
 
-        switch ($attribute) {
-            case self::IS_JURY_MEMBER:
-                $jury = $subject->getJury();
+        $festivalRelatedUsers = match ($attribute) {
+            self::IS_JURY_MEMBER => $subject->getJury(),
+            self::IS_ORGANIZATION_COMMITTEE_MEMBER => $subject->getOrganizationCommittee(),
+            default => null,
+        };
 
-                return $jury->contains($user);
-            case self::IS_ORGANIZATION_COMMITTEE_MEMBER:
-                $organizationCommittee = $subject->getOrganizationCommittee();
-
-                return $organizationCommittee->contains($user);
+        if ($festivalRelatedUsers === null) {
+            return false;
         }
 
-        return false;
+        return $festivalRelatedUsers->contains($user);
     }
 
 }

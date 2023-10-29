@@ -9,11 +9,13 @@
         <div class="row row-cols-2 row-cols-md-3" id="">
             {# @var project \App\Entity\Project #}
             {% for project in projects %}
+                {% if project.isActive or is_granted('IS_ORGANIZATION_COMMITTEE_MEMBER', festival) %}
                     <div class="col">
                         <turbo-frame id="project_frame_{{ project.id }}">
                             {{ include('festival/_project_card.html.twig', {'project': project}) }}
                         </turbo-frame>
                     </div>
+                {% endif %}
             {% endfor %}
         </div>
         {% if projects.count > 50 %}

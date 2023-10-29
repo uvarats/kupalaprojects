@@ -5,24 +5,23 @@ namespace App\Entity;
 use App\Enum\ProjectStateEnum;
 use App\Interface\DateRangeInterface;
 use App\Repository\ProjectRepository;
-use App\Validator\DateRangeValidator;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use Ramsey\Uuid\Doctrine\UuidGenerator;
-use Ramsey\Uuid\UuidInterface;
+use Symfony\Bridge\Doctrine\Types\UuidType;
+use Symfony\Component\Uid\Uuid;
 use Symfony\Component\Validator\Constraints as Assert;
 
+// todo: make rich domain models, move forms to dto
 #[ORM\Entity(repositoryClass: ProjectRepository::class)]
-#[Assert\Callback([DateRangeValidator::class, 'validate'])]
 class Project implements DateRangeInterface
 {
     #[ORM\Id]
-    #[ORM\Column(type: 'uuid', unique: true)]
+    #[ORM\Column(type: UuidType::NAME, unique: true)]
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]
-    #[ORM\CustomIdGenerator(class: UuidGenerator::class)]
-    private ?UuidInterface $id = null;
+    #[ORM\CustomIdGenerator(class: 'doctrine.uuid_generator')]
+    private ?Uuid $id = null;
 
     #[ORM\Column(length: 255)]
     private string $name;
@@ -51,6 +50,7 @@ class Project implements DateRangeInterface
     private string $state;
 
     #[ORM\Embedded(columnPrefix: false)]
+    #[Assert\Valid]
     private EventDates $dates;
 
     #[ORM\ManyToMany(targetEntity: EducationSubGroup::class, inversedBy: 'projects')]
@@ -103,7 +103,7 @@ class Project implements DateRangeInterface
         return $project;
     }
 
-    public function getId(): ?UuidInterface
+    public function getId(): ?Uuid
     {
         return $this->id;
     }
@@ -243,14 +243,19 @@ class Project implements DateRangeInterface
             && $state !== ProjectStateEnum::REJECTED;
     }
 
-    public function getStartsAt(): ?\DateTimeImmutable
+    public function getStartsAt(): \DateTimeImmutable
     {
-        return $this->dates?->getStartsAt();
+        return $this->dates->getStartsAt();
     }
 
-    public function getEndsAt(): ?\DateTimeImmutable
+    public function getEndsAt(): \DateTimeImmutable
     {
-        return $this->dates?->getEndsAt();
+        return $this->dates->getEndsAt();
+    }
+
+    public function getDates(): EventDates
+    {
+        return $this->dates;
     }
 
     public function setDates(EventDates $dates): Project

@@ -53,6 +53,7 @@ class ProjectRepository extends ServiceEntityRepository implements EagerLoadInte
             ->leftJoin('project.author', 'author')
             ->addSelect('author')
             ->where('author.userEntity = :user')
+            ->orderBy('project.id', 'DESC')
             ->setParameter('user', $user)
             ->getQuery();
     }
