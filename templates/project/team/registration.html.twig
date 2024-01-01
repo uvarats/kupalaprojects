@@ -3,4 +3,8 @@
 {% block title %}Регистрация команды для участия в проекте{% endblock %}
 
 {% block body %}
+    {{ component('TeamRegistrationForm', {
+        initialFormData: team,
+        form: form,
+    }) }}
 {% endblock %}

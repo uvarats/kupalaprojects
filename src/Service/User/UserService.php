@@ -9,7 +9,7 @@ use App\Service\Util\PasswordGeneratorService;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
-final readonly class UserService
+final readonly class UserService implements UserResolverInterface
 {
     public function __construct(
         private UserPasswordHasherInterface $hasher,
@@ -17,9 +17,13 @@ final readonly class UserService
         private Security $security
     ) {}
 
-    public function getCurrentUser(): User
+    public function getCurrentUser(): ?User
     {
         $user = $this->security->getUser();
+
+        if ($user === null) {
+            return null;
+        }
 
         if (!$user instanceof User) {
             throw new \LogicException();

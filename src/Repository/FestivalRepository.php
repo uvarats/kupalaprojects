@@ -2,8 +2,10 @@
 
 namespace App\Repository;
 
+use App\Collection\FestivalCollection;
 use App\Entity\Festival;
 use App\Entity\User;
+use App\Repository\Interface\FestivalRepositoryInterface;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
@@ -17,7 +19,7 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method Festival[]    findAll()
  * @method Festival[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class FestivalRepository extends ServiceEntityRepository
+class FestivalRepository extends ServiceEntityRepository implements FestivalRepositoryInterface
 {
     public function __construct(ManagerRegistry $registry)
     {
@@ -82,28 +84,21 @@ class FestivalRepository extends ServiceEntityRepository
                 ->getSingleScalarResult() > 0;
     }
 
-    //    /**
-    //     * @return Festival[] Returns an array of Festival objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('f')
-    //            ->andWhere('f.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('f.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+    #[\Override]
+    public function findActive(): FestivalCollection
+    {
+        $festivals = $this->createActiveQuery()
+            ->getQuery()
+            ->getResult();
 
-    //    public function findOneBySomeField($value): ?Festival
-    //    {
-    //        return $this->createQueryBuilder('f')
-    //            ->andWhere('f.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+        return new FestivalCollection($festivals);
+    }
+
+    public function createActiveQuery(): QueryBuilder
+    {
+        return $this->createQueryBuilder('festival')
+            ->where('festival.isActive = true')
+            ->addOrderBy('festival.startsAt')
+            ->addOrderBy('festival.endsAt');
+    }
 }

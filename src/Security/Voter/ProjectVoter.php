@@ -5,24 +5,18 @@ namespace App\Security\Voter;
 use App\Entity\Project;
 use App\Entity\User;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
-use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
-use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * Checks if user has rights to do actions with project
+ * @extends Voter<string, Project>
  */
 final class ProjectVoter extends Voter
 {
-    public const IS_PROJECT_OWNER = 'IS_PROJECT_OWNER';
-    public const CAN_VOTE_FOR_PROJECT = 'CAN_VOTE_FOR_PROJECT';
-    public const CAN_VIEW_PARTICIPANTS = 'CAN_VIEW_PARTICIPANTS';
-    public const CAN_VIEW_AWARDS = 'CAN_VIEW_AWARDS';
-
-    public function __construct(
-        private readonly AuthorizationCheckerInterface $authorizationChecker,
-    ) {}
-
+    public const string IS_PROJECT_OWNER = 'IS_PROJECT_OWNER';
+    public const string CAN_VOTE_FOR_PROJECT = 'CAN_VOTE_FOR_PROJECT';
+    public const string CAN_VIEW_PARTICIPANTS = 'CAN_VIEW_PARTICIPANTS';
+    public const string CAN_VIEW_AWARDS = 'CAN_VIEW_AWARDS';
 
     protected function supports(string $attribute, mixed $subject): bool
     {

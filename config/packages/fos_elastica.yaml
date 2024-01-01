@@ -46,6 +46,11 @@ fos_elastica:
           type: date
         creationYear:
           type: integer
+        festival:
+          type: 'nested'
+          properties:
+            _id:
+              type: keyword
         subjects:
           type: 'nested'
           properties:

@@ -25,6 +25,11 @@ final readonly class ProjectService
     public function handleSubmittedProject(Project $project): void
     {
         $user = $this->userService->getCurrentUser();
+
+        if ($user === null) {
+            throw new \LogicException('Expected, that user is authenticated for using this logic.');
+        }
+
         $projectAuthor = $user->getProjectAuthor();
 
         $project

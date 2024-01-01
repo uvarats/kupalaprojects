@@ -5,7 +5,7 @@
 {% block body %}
     <div class="container mt-2">
         <div class="d-flex justify-content-center mb-2">
-            <h1>Регистрация участника на проект "{{ project.name }}"</h1>
+            <h1>Регистрация участника на проект "{{ participant.project.name }}"</h1>
         </div>
         {{ include('project/participant/success-alert.html.twig', {
             'participant': participant,

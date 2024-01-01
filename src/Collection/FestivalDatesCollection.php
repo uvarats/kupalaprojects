@@ -5,15 +5,11 @@ declare(strict_types=1);
 namespace App\Collection;
 
 use App\Dto\FestivalDates;
-use IteratorAggregate;
-use Ramsey\Collection\AbstractCollection;
 
 /**
- * @extends AbstractCollection<FestivalDates>
- *
- * @implements IteratorAggregate<FestivalDates>
+ * @extends Collection<FestivalDates>
  */
-final class FestivalDatesCollection extends AbstractCollection
+final class FestivalDatesCollection extends Collection
 {
     public function getType(): string
     {

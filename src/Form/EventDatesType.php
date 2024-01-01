@@ -15,8 +15,8 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class EventDatesType extends AbstractType implements DataMapperInterface
 {
-    private const STARTS_AT = 'startsAt';
-    private const ENDS_AT = 'endsAt';
+    private const string STARTS_AT = 'startsAt';
+    private const string ENDS_AT = 'endsAt';
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {

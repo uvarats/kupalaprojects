@@ -12,15 +12,14 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
+#[Route('/project/{id}/registration/team', name: 'app_project_registration_team')]
 final class TeamRegistrationController extends AbstractController
 {
-    #[Route('/project/{id}/registration/team', name: 'app_project_registration_team')]
     public function __invoke(Project $project, Request $request): Response
     {
         // change it do dtos, do not use entities in forms.
         $team = new Team();
         $team->setProject($project);
-
         $form = $this->createForm(TeamType::class, $team);
 
         $form->handleRequest($request);
@@ -29,6 +28,7 @@ final class TeamRegistrationController extends AbstractController
         }
 
         return $this->render('project/team/registration.html.twig', [
+            'team' => $team,
             'form' => $form->createView(),
         ]);
     }

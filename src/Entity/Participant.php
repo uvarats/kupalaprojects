@@ -1,10 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Entity;
 
 use App\Enum\AcceptanceEnum;
+use App\Enum\NameFormatEnum;
 use App\Repository\ParticipantRepository;
 use App\Trait\NameTrait;
+use App\ValueObject\PersonName;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Types\UuidType;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
@@ -28,10 +32,10 @@ class Participant
     private ?Uuid $id = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $lastName = null;
+    private string $lastName;
 
     #[ORM\Column(length: 255)]
-    private ?string $firstName = null;
+    private string $firstName;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $middleName = null;
@@ -53,33 +57,41 @@ class Participant
     #[ORM\Column(enumType: AcceptanceEnum::class)]
     private AcceptanceEnum $acceptance = AcceptanceEnum::NO_DECISION;
 
+    private function __construct() {}
+
+    public static function make(
+        Project $project,
+        PersonName $name,
+        string $educationEstablishment,
+        string $email,
+        ?Team $team = null,
+    ): Participant {
+        $instance = new self();
+
+        $instance->project = $project;
+        $instance->lastName = $name->getLastName();
+        $instance->firstName = $name->getFirstName();
+        $instance->middleName = $name->getMiddleName();
+        $instance->educationEstablishment = $educationEstablishment;
+        $instance->email = $email;
+        $instance->team = $team;
+
+        return $instance;
+    }
+
     public function getId(): ?Uuid
     {
         return $this->id;
     }
 
-    public function getLastName(): ?string
+    public function getLastName(): string
     {
         return $this->lastName;
     }
 
-    public function setLastName(string $lastName): self
-    {
-        $this->lastName = $lastName;
-
-        return $this;
-    }
-
-    public function getFirstName(): ?string
+    public function getFirstName(): string
     {
         return $this->firstName;
-    }
-
-    public function setFirstName(string $firstName): self
-    {
-        $this->firstName = $firstName;
-
-        return $this;
     }
 
     public function getMiddleName(): ?string
@@ -87,23 +99,9 @@ class Participant
         return $this->middleName;
     }
 
-    public function setMiddleName(?string $middleName): self
-    {
-        $this->middleName = $middleName;
-
-        return $this;
-    }
-
-    public function getEducationEstablishment(): ?string
+    public function getEducationEstablishment(): string
     {
         return $this->educationEstablishment;
-    }
-
-    public function setEducationEstablishment(string $educationEstablishment): self
-    {
-        $this->educationEstablishment = $educationEstablishment;
-
-        return $this;
     }
 
     public function getTeam(): ?Team
@@ -111,15 +109,12 @@ class Participant
         return $this->team;
     }
 
-    public function setTeam(?Team $team): self
+    public function getProject(): Project
     {
-        $this->team = $team;
+        if ($this->project === null) {
+            throw new \LogicException('Project must not be null');
+        }
 
-        return $this;
-    }
-
-    public function getProject(): ?Project
-    {
         return $this->project;
     }
 
@@ -133,13 +128,6 @@ class Participant
     public function getEmail(): ?string
     {
         return $this->email;
-    }
-
-    public function setEmail(string $email): self
-    {
-        $this->email = $email;
-
-        return $this;
     }
 
     public function isAccepted(): bool
@@ -157,5 +145,26 @@ class Participant
         $this->acceptance = $acceptance;
 
         return $this;
+    }
+
+    public function getFirstAndMiddleName(): string
+    {
+        $personName = $this->getName();
+
+        return $personName->format(NameFormatEnum::FIRST_MIDDLE);
+    }
+
+    public function getFullName(): string
+    {
+        return $this->getName()->format(NameFormatEnum::LAST_FIRST_MIDDLE);
+    }
+
+    public function getName(): PersonName
+    {
+        return PersonName::make(
+            lastName: $this->lastName,
+            firstName: $this->firstName,
+            middleName: $this->middleName,
+        );
     }
 }

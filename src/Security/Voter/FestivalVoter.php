@@ -3,15 +3,17 @@
 namespace App\Security\Voter;
 
 use App\Entity\Festival;
-use App\Entity\Project;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 use Symfony\Component\Security\Core\User\UserInterface;
 
+/**
+ * @extends Voter<string, Festival>
+ */
 class FestivalVoter extends Voter
 {
-    public const IS_JURY_MEMBER = 'IS_JURY_MEMBER';
-    public const IS_ORGANIZATION_COMMITTEE_MEMBER = 'IS_ORGANIZATION_COMMITTEE_MEMBER';
+    public const string IS_JURY_MEMBER = 'IS_JURY_MEMBER';
+    public const string IS_ORGANIZATION_COMMITTEE_MEMBER = 'IS_ORGANIZATION_COMMITTEE_MEMBER';
 
     protected function supports(string $attribute, mixed $subject): bool
     {
@@ -25,12 +27,6 @@ class FestivalVoter extends Voter
             && $subject instanceof Festival;
     }
 
-    /**
-     * @param string $attribute
-     * @param Festival $subject
-     * @param TokenInterface $token
-     * @return bool
-     */
     protected function voteOnAttribute(string $attribute, mixed $subject, TokenInterface $token): bool
     {
         $user = $token->getUser();

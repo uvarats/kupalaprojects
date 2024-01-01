@@ -126,6 +126,11 @@ class Festival implements DateRangeInterface
         return $this->jury;
     }
 
+    public function isJuryMember(User $user): bool
+    {
+        return $this->jury->contains($user);
+    }
+
     public function addJury(User $jury): self
     {
         if (!$this->jury->contains($jury)) {
@@ -195,7 +200,6 @@ class Festival implements DateRangeInterface
 
         return "{$name} ({$startsAtFormat} - {$endsAtFormat})";
     }
-
     public function __toString(): string
     {
         return $this->getLabel();

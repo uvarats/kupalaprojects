@@ -63,15 +63,23 @@ class Team implements AcceptableInterface
         return $this->id;
     }
 
-    public function getName(): ?string
+    public function getName(): string
     {
         return $this->name;
     }
 
-    public function getTeamCreator(): ?Participant
+    public function setName(string $name): self
+    {
+        $this->name = $name;
+
+        return $this;
+    }
+
+    public function getTeamCreator(): Participant
     {
         return $this->teamCreator;
     }
+
 
     /**
      * @return Collection<int, Participant>

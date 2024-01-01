@@ -9,31 +9,9 @@ namespace App\Trait;
  */
 trait NameTrait
 {
-    public function getFullName(): string
-    {
-        $lastName = $this->getLastName();
-        $firstAndMiddleName = $this->getFirstAndMiddleName();
+    abstract public function getLastName(): string;
 
-        return $lastName . ' ' . $firstAndMiddleName;
-    }
-
-    public function getFirstAndMiddleName(): string
-    {
-        $firstName = $this->getFirstName();
-        $middleName = $this->getMiddleName();
-
-        $string = "{$firstName}";
-
-        if ($middleName !== null) {
-            $string .= " {$middleName}";
-        }
-
-        return $string;
-    }
-
-    abstract public function getLastName(): ?string;
-
-    abstract public function getFirstName(): ?string;
+    abstract public function getFirstName(): string;
 
     abstract public function getMiddleName(): ?string;
 }

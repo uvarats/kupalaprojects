@@ -25,6 +25,7 @@ class EducationSubGroup
     #[ORM\JoinColumn(nullable: false)]
     private ?EducationGroup $educationGroup = null;
 
+    // todo: make unidirectional relation. Sub Group must not know about projects :)
     #[ORM\ManyToMany(targetEntity: Project::class, mappedBy: 'orientedOn')]
     private Collection $projects;
 

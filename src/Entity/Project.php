@@ -13,7 +13,6 @@ use Symfony\Bridge\Doctrine\Types\UuidType;
 use Symfony\Component\Uid\Uuid;
 use Symfony\Component\Validator\Constraints as Assert;
 
-// todo: make rich domain models, move forms to dto
 #[ORM\Entity(repositoryClass: ProjectRepository::class)]
 class Project implements DateRangeInterface
 {
@@ -234,12 +233,16 @@ class Project implements DateRangeInterface
         return $this;
     }
 
+    /**
+     * Do not remove this method. It is used for elastic index
+     */
     public function isActive(): bool
     {
         $stateString = $this->state;
         $state = ProjectStateEnum::from($stateString);
 
-        return $state !== ProjectStateEnum::UNDER_MODERATION
+        return $this->festival->isActive()
+            && $state !== ProjectStateEnum::UNDER_MODERATION
             && $state !== ProjectStateEnum::REJECTED;
     }
 
