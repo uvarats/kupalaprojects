@@ -8,7 +8,8 @@ use App\Entity\User;
 
 final class ProjectFactory
 {
-    public function create(?User $user) {
+    public function create(?User $user)
+    {
         if ($user === null) {
             $user = new User();
         }

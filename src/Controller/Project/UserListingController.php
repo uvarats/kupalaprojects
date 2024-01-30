@@ -19,7 +19,8 @@ final class UserListingController extends AbstractController
     #[Route('/personal/projects/{page}', name: 'app_projects_personal')]
     #[IsGranted('IS_AUTHENTICATED_FULLY')]
     public function __invoke(
-        #[CurrentUser] User $user,
+        #[CurrentUser]
+        User $user,
         ProjectRepository $projectRepository,
         int $page = 1,
     ): Response {

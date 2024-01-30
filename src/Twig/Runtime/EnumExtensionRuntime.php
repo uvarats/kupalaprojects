@@ -15,7 +15,7 @@ class EnumExtensionRuntime implements RuntimeExtensionInterface
 
     public function enum(string $enumFQN): object
     {
-        return new class($enumFQN) {
+        return new class ($enumFQN) {
             public function __construct(private readonly string $enum)
             {
                 if (!enum_exists($this->enum)) {

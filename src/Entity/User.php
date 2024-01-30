@@ -1,14 +1,18 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Entity;
 
+use App\Entity\Embeddable\PersonName;
+use App\Enum\NameFormatEnum;
 use App\Repository\UserRepository;
 use App\Trait\NameTrait;
 use Doctrine\ORM\Mapping as ORM;
-use Ramsey\Uuid\Doctrine\UuidGenerator;
-use Ramsey\Uuid\UuidInterface;
+use Symfony\Bridge\Doctrine\Types\UuidType;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Uid\Uuid;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
@@ -17,37 +21,37 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     use NameTrait;
 
     #[ORM\Id]
-    #[ORM\Column(type: 'uuid', unique: true)]
+    #[ORM\Column(type: UuidType::NAME, unique: true)]
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]
-    #[ORM\CustomIdGenerator(class: UuidGenerator::class)]
-    private ?UuidInterface $id = null;
+    #[ORM\CustomIdGenerator(class: 'doctrine.uuid_generator')]
+    private ?Uuid $id = null;
 
     #[ORM\Column(length: 180, unique: true)]
-    private ?string $email = null;
+    private string $email;
 
     #[ORM\Column]
     private array $roles = [];
     #[ORM\Column]
-    private ?string $password = null;
+    private string $password;
 
     #[ORM\Column(length: 255)]
-    private ?string $lastName = null;
+    private string $lastName;
 
     #[ORM\Column(length: 255)]
-    private ?string $firstName = null;
+    private string $firstName;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $middleName = null;
 
-    #[ORM\OneToOne(mappedBy: 'userEntity', cascade: ['persist', 'remove'])]
+    #[ORM\OneToOne(mappedBy: 'userEntity', targetEntity: ProjectAuthor::class, cascade: ['persist', 'remove'])]
     private ?ProjectAuthor $projectAuthor = null;
 
-    public function getId(): ?UuidInterface
+    public function getId(): ?Uuid
     {
         return $this->id;
     }
 
-    public function getEmail(): ?string
+    public function getEmail(): string
     {
         return $this->email;
     }
@@ -66,7 +70,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function getUserIdentifier(): string
     {
-        return (string) $this->email;
+        return $this->email;
     }
 
     /**
@@ -112,7 +116,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         // $this->plainPassword = null;
     }
 
-    public function getLastName(): ?string
+    public function getLastName(): string
     {
         return $this->lastName;
     }
@@ -124,7 +128,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getFirstName(): ?string
+    public function getFirstName(): string
     {
         return $this->firstName;
     }
@@ -165,10 +169,24 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
+    public function getPersonName(): PersonName
+    {
+        return PersonName::make(
+            lastName: $this->lastName,
+            firstName: $this->firstName,
+            middleName: $this->middleName,
+        );
+    }
+
+    public function getFullName(): string
+    {
+        return $this->getPersonName()->format(NameFormatEnum::LAST_FIRST_MIDDLE);
+    }
+
     public function getDisplayString(): string
     {
         $email = $this->getEmail();
-        $fullName = $this->getFullName();
+        $fullName = $this->getPersonName()->format(NameFormatEnum::LAST_FIRST_MIDDLE);
 
         return $fullName . " ({$email})";
     }

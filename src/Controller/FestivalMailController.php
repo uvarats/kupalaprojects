@@ -25,8 +25,7 @@ final class FestivalMailController extends AbstractController
 {
     public function __construct(
         private readonly FestivalMailService $mailService,
-    ) {
-    }
+    ) {}
 
     #[Route('/festival/{id}/mail/{page}', name: 'app_festival_mail')]
     public function index(
@@ -64,7 +63,8 @@ final class FestivalMailController extends AbstractController
     #[Route('/festival/{id}/new-mail', name: 'app_festival_mail_new')]
     public function newMail(
         Festival $festival,
-        #[CurrentUser] User $user,
+        #[CurrentUser]
+        User $user,
         Request $request,
     ): Response {
         $this->denyAccessUnlessGranted(FestivalVoter::IS_ORGANIZATION_COMMITTEE_MEMBER, $festival);

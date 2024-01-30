@@ -30,6 +30,9 @@
                     <a class="nav-link" href="{{ path('app_index') }}">Домой</a>
                 </li>
                 <li class="nav-item">
+                    <a class="nav-link" href="{{ path('app_festivals') }}">Фестивали</a>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link" href="{{ path('app_projects') }}">Проекты</a>
                 </li>
                 {% if is_granted('IS_AUTHENTICATED_FULLY') %}
@@ -40,9 +43,6 @@
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownMenuLink">
                             <li><a class="dropdown-item" href="{{ path('app_projects_personal') }}">Мои проекты</a></li>
-                            {% if is_granted('IS_RELATED_WITH_ANY_FESTIVAL') %}
-                                <li><a class="dropdown-item" href="{{ path('app_festivals') }}">Фестивали</a></li>
-                            {% endif %}
                             <li><a class="dropdown-item" href="{{ path('app_settings') }}">Настройки</a></li>
                             {% if is_granted('ROLE_ADMIN') %}
                                 <li><a class="dropdown-item" href="{{ path('app_admin') }}">Панель управления</a></li>

@@ -8,8 +8,7 @@ final class FieldConfig
 {
     public function __construct(
         private array $config = [],
-    ) {
-    }
+    ) {}
 
     public function getConfig(): array
     {

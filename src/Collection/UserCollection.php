@@ -5,15 +5,11 @@ declare(strict_types=1);
 namespace App\Collection;
 
 use App\Entity\User;
-use IteratorAggregate;
-use Ramsey\Collection\AbstractCollection;
 
 /**
- * @extends AbstractCollection<User>
- *
- * @implements IteratorAggregate<User>
+ * @extends Collection<User>
  */
-final class UserCollection extends AbstractCollection
+final class UserCollection extends Collection
 {
     public function getType(): string
     {

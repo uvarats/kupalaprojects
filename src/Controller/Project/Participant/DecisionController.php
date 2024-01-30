@@ -19,8 +19,7 @@ final class DecisionController extends AbstractController
 {
     public function __construct(
         private readonly ParticipantService $participantService,
-    ) {
-    }
+    ) {}
 
     #[Route('/project/{id}/participant/{participant_id}/{decision}', name: 'app_project_participant_decision')]
     public function __invoke(

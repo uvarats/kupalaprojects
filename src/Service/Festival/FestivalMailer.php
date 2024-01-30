@@ -7,6 +7,7 @@ namespace App\Service\Festival;
 use App\Entity\FestivalMail;
 use App\Entity\Project;
 use App\Enum\FestivalMailPlaceholderEnum;
+use App\Enum\NameFormatEnum;
 use App\Repository\ProjectRepository;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
@@ -17,8 +18,7 @@ final readonly class FestivalMailer
     public function __construct(
         private MailerInterface $mailer,
         private ProjectRepository $projectRepository,
-    ) {
-    }
+    ) {}
 
     public function send(FestivalMail $mail): void
     {
@@ -70,7 +70,7 @@ final readonly class FestivalMailer
 
         return match ($placeholderEnum) {
             FestivalMailPlaceholderEnum::FESTIVAL_NAME => $festival->getName(),
-            FestivalMailPlaceholderEnum::USER_NAME => $user->getFirstAndMiddleName(),
+            FestivalMailPlaceholderEnum::USER_NAME => $user->getPersonName()->format(NameFormatEnum::FIRST_MIDDLE),
         };
     }
 

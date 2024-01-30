@@ -9,4 +9,3 @@ enum FestivalMailPlaceholderEnum: string
     case FESTIVAL_NAME = 'festival.name';
     case USER_NAME = 'user.name';
 }
-

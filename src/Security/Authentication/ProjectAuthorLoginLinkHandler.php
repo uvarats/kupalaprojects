@@ -15,8 +15,7 @@ final readonly class ProjectAuthorLoginLinkHandler implements AuthenticationSucc
 {
     public function __construct(
         private UrlGeneratorInterface $urlGenerator,
-    ) {
-    }
+    ) {}
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token): Response
     {

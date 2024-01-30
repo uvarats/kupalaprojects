@@ -21,8 +21,6 @@ class ProjectType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $years = range((int)date('Y'), ((int)date('Y')) + 5);
-
         $builder
             ->add('name', TextType::class)
             ->add('goal', TextareaType::class, [
@@ -31,12 +29,7 @@ class ProjectType extends AbstractType
                 ]
             ])
             ->add('siteUrl', UrlType::class)
-            ->add('startsAt', DateType::class, [
-                'years' => $years,
-            ])
-            ->add('endsAt', DateType::class, [
-                'years' => $years,
-            ])
+            ->add('dates', EventDatesType::class)
             ->add('creationYear', NumberType::class)
             ->add('orientedOn', EducationSubGroupAutocompleteField::class)
             ->add('subjects', ProjectSubjectAutocompleteField::class)

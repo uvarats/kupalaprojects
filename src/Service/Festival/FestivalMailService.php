@@ -15,9 +15,7 @@ final readonly class FestivalMailService
     public function __construct(
         private EntityManagerInterface $entityManager,
         private MessageBusInterface $bus,
-    )
-    {
-    }
+    ) {}
 
     public function processMail(FestivalMail $mail): void
     {

@@ -5,17 +5,12 @@ declare(strict_types=1);
 namespace App\Collection;
 
 use App\FormConfig\FieldConfig;
-use IteratorAggregate;
-use Ramsey\Collection\AbstractCollection;
 
 /**
- * @extends AbstractCollection<FieldConfig>
- *
- * @implements IteratorAggregate<FieldConfig>
+ * @extends Collection<FieldConfig>
  */
-final class FieldConfigCollection extends AbstractCollection
+final class FieldConfigCollection extends Collection
 {
-
     public function getType(): string
     {
         return FieldConfig::class;

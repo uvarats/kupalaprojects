@@ -8,13 +8,16 @@ use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 use Symfony\Component\Security\Core\User\UserInterface;
 
+/**
+ * @extends Voter<string, null>
+ *
+ * @deprecated It seems unused because of festivals page is shown for all users (also anonymous) now
+ */
 final class UserVoter extends Voter
 {
-    public const IS_RELATED_WITH_ANY_FESTIVAL = 'IS_RELATED_WITH_ANY_FESTIVAL';
+    public const string IS_RELATED_WITH_ANY_FESTIVAL = 'IS_RELATED_WITH_ANY_FESTIVAL';
 
-    public function __construct(private readonly FestivalRepository $festivalRepository) {
-
-    }
+    public function __construct(private readonly FestivalRepository $festivalRepository) {}
 
     protected function supports(string $attribute, mixed $subject): bool
     {

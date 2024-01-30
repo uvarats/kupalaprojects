@@ -12,9 +12,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 final class ProjectAuthorType extends AbstractType
 {
-    public function __construct(private readonly FormService $formService)
-    {
-    }
+    public function __construct(private readonly FormService $formService) {}
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {

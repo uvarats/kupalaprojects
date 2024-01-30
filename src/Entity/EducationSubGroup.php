@@ -6,25 +6,26 @@ use App\Repository\EducationSubGroupRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Ramsey\Uuid\Doctrine\UuidGenerator;
-use Ramsey\Uuid\UuidInterface;
+use Symfony\Bridge\Doctrine\Types\UuidType;
+use Symfony\Component\Uid\Uuid;
 
 #[ORM\Entity(repositoryClass: EducationSubGroupRepository::class)]
 class EducationSubGroup
 {
     #[ORM\Id]
-    #[ORM\Column(type: 'uuid', unique: true)]
+    #[ORM\Column(type: UuidType::NAME, unique: true)]
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]
-    #[ORM\CustomIdGenerator(class: UuidGenerator::class)]
-    private ?UuidInterface $id = null;
+    #[ORM\CustomIdGenerator(class: 'doctrine.uuid_generator')]
+    private ?Uuid $id = null;
 
     #[ORM\Column(length: 255)]
     private ?string $name = null;
 
-    #[ORM\ManyToOne(inversedBy: 'subGroups')]
+    #[ORM\ManyToOne(targetEntity: EducationGroup::class, inversedBy: 'subGroups')]
     #[ORM\JoinColumn(nullable: false)]
     private ?EducationGroup $educationGroup = null;
 
+    // todo: make unidirectional relation. Sub Group must not know about projects :)
     #[ORM\ManyToMany(targetEntity: Project::class, mappedBy: 'orientedOn')]
     private Collection $projects;
 
@@ -33,7 +34,7 @@ class EducationSubGroup
         $this->projects = new ArrayCollection();
     }
 
-    public function getId(): ?UuidInterface
+    public function getId(): ?Uuid
     {
         return $this->id;
     }

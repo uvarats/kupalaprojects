@@ -3,50 +3,53 @@
 {% block title %}Проекты{% endblock %}
 
 {% block body %}
-<div class="container my-4">
-    <div class="d-flex flex-column">
-        <form class="mb-3" method="get">
-            <div class="mb-3">
-                <label for="searchQuery" class="form-label">Запрос</label>
-                <input type="text" class="form-control" name="query" id="searchQuery" placeholder="Введите ваш запрос">
-            </div>
+    <div class="container my-4">
+        <div class="d-flex flex-column">
+            {{ form_start(search, {'attr': {'class': 'mb-3'}}) }}
+            {{ form_row(search.query) }}
+            {{ form_row(search.festival) }}
             <button type="submit" class="btn btn-primary">Поиск</button>
-        </form>
-        <div id="projects" class="mb-3">
-            {% if projects.count > 0 %}
-                {# @var project \App\Entity\Project #}
-                {% for project in projects %}
-                    <div class="list-group mb-3">
-                        <a href="{{ path('app_project_details', { 'id': project.id }) }}" class="list-group-item list-group-item-action mb-2">
-                            <div class="d-flex w-100 justify-content-between align-items-center">
-                                <h5 class="mb-1">{{ project.name }}</h5>
-                            </div>
-                            <p class="mb-0">Цель: {{ project.goal }}</p>
-                            <p class="mb-0">Даты проведения: {{ project.startsAt|date('d.m.Y') }} - {{ project.endsAt|date('d.m.Y') }}</p>
-                            <p class="mb-0">Участники: {{ project|orientedOn }}</p>
-                            <p class="mb-0">Предметные области: {{ project|subjects }}</p>
-                        </a>
-                        <div class="d-flex flex-row">
-                            <div class="me-2">
-                                <form method="get" action="{{ path('app_project_participant_registration', {'id': project.id }) }}">
-                                    <button class="btn btn-primary">Регистрация участника</button>
-                                </form>
-                            </div>
-                            {% if project.teamsAllowed %}
-                                <div>
-                                    <form method="post">
-                                        <button class="btn btn-secondary">Регистрация команды</button>
+            <a href="{{ path('app_projects') }}" class="btn btn-danger">Очистить фильтр</a>
+            {{ form_end(search) }}
+            <div id="projects" class="mb-3">
+                {% if projects.count > 0 %}
+                    {# @var project \App\Entity\Project #}
+                    {% for project in projects %}
+                        <div class="list-group mb-3">
+                            <a href="{{ path('app_project_details', { 'id': project.id }) }}"
+                               class="list-group-item list-group-item-action mb-2">
+                                <div class="d-flex w-100 justify-content-between align-items-center">
+                                    <h5 class="mb-1">{{ project.name }}</h5>
+                                </div>
+                                <p class="mb-0">Цель: {{ project.goal }}</p>
+                                <p class="mb-0">Даты проведения: {{ project.startsAt|date('d.m.Y') }}
+                                    - {{ project.endsAt|date('d.m.Y') }}</p>
+                                <p class="mb-0">Участники: {{ project|orientedOn }}</p>
+                                <p class="mb-0">Предметные области: {{ project|subjects }}</p>
+                            </a>
+                            <div class="d-flex flex-row">
+                                <div class="me-2">
+                                    <form method="get"
+                                          action="{{ path('app_project_participant_registration', {'id': project.id }) }}">
+                                        <button class="btn btn-primary">Регистрация участника</button>
                                     </form>
                                 </div>
-                            {% endif %}
+                                {% if project.teamsAllowed %}
+                                    <div>
+                                        <form
+                                                action="{{ path('app_project_registration_team', {'id': project.id}) }}">
+                                            <button class="btn btn-secondary">Регистрация команды</button>
+                                        </form>
+                                    </div>
+                                {% endif %}
+                            </div>
                         </div>
-                    </div>
-                {% endfor %}
-            {% else %}
-                Результатов не обнаружено...
-            {% endif %}
+                    {% endfor %}
+                {% else %}
+                    Результатов не обнаружено...
+                {% endif %}
+            </div>
         </div>
+        {{ pagerfanta(projects, 'twitter_bootstrap5', {'omitFirstPage': true}) }}
     </div>
-    {{ pagerfanta(projects, 'twitter_bootstrap5', {'omitFirstPage': true}) }}
-</div>
 {% endblock %}

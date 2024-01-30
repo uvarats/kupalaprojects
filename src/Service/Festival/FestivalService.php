@@ -15,9 +15,7 @@ final readonly class FestivalService
     public function __construct(
         private FestivalRepository $festivalRepository,
         private FestivalDatesFactory $datesFactory,
-    ) {
-
-    }
+    ) {}
 
     public function getActiveFestivalsDates(): FestivalDatesCollection
     {

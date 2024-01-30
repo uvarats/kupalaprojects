@@ -5,62 +5,58 @@ namespace App\Entity;
 use App\Enum\ProjectStateEnum;
 use App\Interface\DateRangeInterface;
 use App\Repository\ProjectRepository;
-use App\Validator\DateRangeValidator;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use Ramsey\Uuid\Doctrine\UuidGenerator;
-use Ramsey\Uuid\UuidInterface;
+use Symfony\Bridge\Doctrine\Types\UuidType;
+use Symfony\Component\Uid\Uuid;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: ProjectRepository::class)]
-#[Assert\Callback([DateRangeValidator::class, 'validate'])]
 class Project implements DateRangeInterface
 {
     #[ORM\Id]
-    #[ORM\Column(type: 'uuid', unique: true)]
+    #[ORM\Column(type: UuidType::NAME, unique: true)]
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]
-    #[ORM\CustomIdGenerator(class: UuidGenerator::class)]
-    private ?UuidInterface $id = null;
+    #[ORM\CustomIdGenerator(class: 'doctrine.uuid_generator')]
+    private ?Uuid $id = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $name = null;
+    private string $name;
 
     #[ORM\Column(length: 255)]
-    private ?string $siteUrl = null;
+    private string $siteUrl;
 
     #[ORM\Column]
-    private ?int $creationYear = null;
+    private int $creationYear;
 
     #[ORM\ManyToMany(targetEntity: ProjectSubject::class, inversedBy: 'projects')]
     private Collection $subjects;
 
-    #[ORM\ManyToOne(inversedBy: 'projects')]
+    #[ORM\ManyToOne(targetEntity: Festival::class, inversedBy: 'projects')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?Festival $festival = null;
+    private Festival $festival;
 
-    #[ORM\ManyToOne(inversedBy: 'projects')]
+    #[ORM\ManyToOne(targetEntity: ProjectAuthor::class, inversedBy: 'projects')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?ProjectAuthor $author = null;
+    private ProjectAuthor $author;
 
     #[ORM\OneToMany(mappedBy: 'project', targetEntity: ProjectAward::class, orphanRemoval: true)]
     private Collection $awards;
 
     #[ORM\Column(length: 50)]
-    private ?string $state = null;
+    private string $state;
 
-    #[ORM\Column]
-    private ?\DateTimeImmutable $startsAt = null;
-
-    #[ORM\Column]
-    private ?\DateTimeImmutable $endsAt = null;
+    #[ORM\Embedded(columnPrefix: false)]
+    #[Assert\Valid]
+    private EventDates $dates;
 
     #[ORM\ManyToMany(targetEntity: EducationSubGroup::class, inversedBy: 'projects')]
     private Collection $orientedOn;
 
     #[ORM\Column(type: Types::TEXT)]
-    private ?string $goal = null;
+    private string $goal;
 
     #[ORM\OneToMany(mappedBy: 'project', targetEntity: Participant::class)]
     private Collection $participants;
@@ -80,7 +76,33 @@ class Project implements DateRangeInterface
         $this->teams = new ArrayCollection();
     }
 
-    public function getId(): ?UuidInterface
+    public static function create(
+        string $name,
+        string $siteUrl,
+        int $creationYear,
+        EventDates $dates,
+        Festival $festival,
+        ProjectAuthor $author,
+        ProjectStateEnum $state,
+        string $goal,
+        bool $teamsAllowed = false,
+    ): Project {
+        $project = new Project();
+
+        $project->name = $name;
+        $project->siteUrl = $siteUrl;
+        $project->creationYear = $creationYear;
+        $project->dates = $dates;
+        $project->festival = $festival;
+        $project->author = $author;
+        $project->state = $state->value;
+        $project->goal = $goal;
+        $project->teamsAllowed = $teamsAllowed;
+
+        return $project;
+    }
+
+    public function getId(): ?Uuid
     {
         return $this->id;
     }
@@ -211,35 +233,37 @@ class Project implements DateRangeInterface
         return $this;
     }
 
+    /**
+     * Do not remove this method. It is used for elastic index
+     */
     public function isActive(): bool
     {
-        $stateString = $this->getState();
+        $stateString = $this->state;
         $state = ProjectStateEnum::from($stateString);
 
-        return $state !== ProjectStateEnum::UNDER_MODERATION
+        return $this->festival->isActive()
+            && $state !== ProjectStateEnum::UNDER_MODERATION
             && $state !== ProjectStateEnum::REJECTED;
     }
 
-    public function getStartsAt(): ?\DateTimeImmutable
+    public function getStartsAt(): \DateTimeImmutable
     {
-        return $this->startsAt;
+        return $this->dates->getStartsAt();
     }
 
-    public function setStartsAt(\DateTimeImmutable $startsAt): self
+    public function getEndsAt(): \DateTimeImmutable
     {
-        $this->startsAt = $startsAt;
-
-        return $this;
+        return $this->dates->getEndsAt();
     }
 
-    public function getEndsAt(): ?\DateTimeImmutable
+    public function getDates(): EventDates
     {
-        return $this->endsAt;
+        return $this->dates;
     }
 
-    public function setEndsAt(\DateTimeImmutable $endsAt): self
+    public function setDates(EventDates $dates): Project
     {
-        $this->endsAt = $endsAt;
+        $this->dates = $dates;
 
         return $this;
     }
@@ -345,9 +369,16 @@ class Project implements DateRangeInterface
         return $this->teamsAllowed;
     }
 
-    public function setTeamsAllowed(bool $teamsAllowed): self
+    public function allowTeams(): Project
     {
-        $this->teamsAllowed = $teamsAllowed;
+        $this->teamsAllowed = true;
+
+        return $this;
+    }
+
+    public function disallowTeams(): Project
+    {
+        $this->teamsAllowed = false;
 
         return $this;
     }

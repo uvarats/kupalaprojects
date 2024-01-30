@@ -10,4 +10,3 @@ enum VoteEnum: int
     case ABSTAIN = 0;
     case POSITIVE = 1;
 }
-

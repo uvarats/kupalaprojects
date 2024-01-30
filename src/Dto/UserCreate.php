@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace App\Dto;
 
-use Uvarats\Dto\Data;
-
-final class UserCreate extends Data
+final readonly class UserCreate
 {
     public function __construct(
         public string $fullName,

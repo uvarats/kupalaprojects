@@ -18,8 +18,7 @@ final class StateController extends AbstractController
 {
     public function __construct(
         private readonly ProjectService $projectService,
-    ) {
-    }
+    ) {}
 
     #[Route(
         path: '/project/{id}/transition/{transition}',
@@ -28,7 +27,8 @@ final class StateController extends AbstractController
             'transition' => new EnumRequirement(
                 ProjectTransitionEnum::class
             )
-        ])
+        ]
+    )
     ]
     public function __invoke(
         #[MapEntity(expr: 'repository.eagerLoad(id)')]

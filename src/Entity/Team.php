@@ -2,50 +2,68 @@
 
 namespace App\Entity;
 
+use App\Entity\Embeddable\Acceptance;
+use App\Entity\Interface\AcceptableInterface;
+use App\Enum\AcceptanceEnum;
 use App\Repository\TeamRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Ramsey\Uuid\Doctrine\UuidGenerator;
-use Ramsey\Uuid\UuidInterface;
+use Symfony\Bridge\Doctrine\Types\UuidType;
+use Symfony\Component\Uid\Uuid;
 
 #[ORM\Entity(repositoryClass: TeamRepository::class)]
-class Team
+class Team implements AcceptableInterface
 {
     #[ORM\Id]
-    #[ORM\Column(type: 'uuid', unique: true)]
+    #[ORM\Column(type: UuidType::NAME, unique: true)]
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]
-    #[ORM\CustomIdGenerator(class: UuidGenerator::class)]
-    private ?UuidInterface $id = null;
+    #[ORM\CustomIdGenerator(class: 'doctrine.uuid_generator')]
+    private ?Uuid $id = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $name = null;
+    private string $name;
 
-    #[ORM\OneToOne(cascade: ['persist', 'remove'])]
+    #[ORM\OneToOne(targetEntity: Participant::class, cascade: ['persist', 'remove'])]
     #[ORM\JoinColumn(nullable: false)]
-    private ?Participant $teamCreator = null;
+    private Participant $teamCreator;
 
     #[ORM\OneToMany(mappedBy: 'team', targetEntity: Participant::class)]
     private Collection $participants;
 
-    #[ORM\ManyToOne(inversedBy: 'teams')]
+    #[ORM\ManyToOne(targetEntity: Project::class, inversedBy: 'teams')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?Project $project = null;
+    private Project $project;
 
-    #[ORM\Column(options: ['default' => false])]
-    private bool $accepted = false;
+    #[ORM\Embedded(class: Acceptance::class, columnPrefix: false)]
+    private Acceptance $acceptance;
 
     public function __construct()
     {
         $this->participants = new ArrayCollection();
+        $this->acceptance = new Acceptance();
     }
 
-    public function getId(): ?UuidInterface
+    public static function create(
+        string $name,
+        Participant $creator,
+        Project $project,
+    ): Team {
+        $instance = new self();
+
+        $instance->name = $name;
+        $instance->teamCreator = $creator;
+        $instance->project = $project;
+
+        return $instance;
+    }
+
+    public function getId(): ?Uuid
     {
         return $this->id;
     }
 
-    public function getName(): ?string
+    public function getName(): string
     {
         return $this->name;
     }
@@ -57,17 +75,11 @@ class Team
         return $this;
     }
 
-    public function getTeamCreator(): ?Participant
+    public function getTeamCreator(): Participant
     {
         return $this->teamCreator;
     }
 
-    public function setTeamCreator(Participant $teamCreator): self
-    {
-        $this->teamCreator = $teamCreator;
-
-        return $this;
-    }
 
     /**
      * @return Collection<int, Participant>
@@ -111,15 +123,38 @@ class Team
         return $this;
     }
 
-    public function isAccepted(): bool
+    public function getAcceptance(): AcceptanceEnum
     {
-        return $this->accepted;
+        return $this->acceptance->getAcceptance();
     }
 
-    public function setAccepted(bool $accepted): self
+    public function isApproved(): bool
     {
-        $this->accepted = $accepted;
+        return $this->acceptance->isApproved();
+    }
 
-        return $this;
+    public function isRejected(): bool
+    {
+        return $this->acceptance->isRejected();
+    }
+
+    public function isWaitingForDecision(): bool
+    {
+        return $this->acceptance->isWaitingForDecision();
+    }
+
+    public function approve(): void
+    {
+        $this->acceptance->approve();
+    }
+
+    public function reject(): void
+    {
+        $this->acceptance->reject();
+    }
+
+    public function stage(): void
+    {
+        $this->acceptance->stage();
     }
 }

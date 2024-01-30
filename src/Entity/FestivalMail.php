@@ -5,19 +5,19 @@ namespace App\Entity;
 use App\Repository\FestivalMailRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use Ramsey\Uuid\Doctrine\UuidGenerator;
-use Ramsey\Uuid\UuidInterface;
+use Symfony\Bridge\Doctrine\Types\UuidType;
+use Symfony\Component\Uid\Uuid;
 
 #[ORM\Entity(repositoryClass: FestivalMailRepository::class)]
 class FestivalMail
 {
     #[ORM\Id]
-    #[ORM\Column(type: 'uuid', unique: true)]
+    #[ORM\Column(type: UuidType::NAME, unique: true)]
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]
-    #[ORM\CustomIdGenerator(class: UuidGenerator::class)]
-    private ?UuidInterface $id = null;
+    #[ORM\CustomIdGenerator(class: 'doctrine.uuid_generator')]
+    private ?Uuid $id = null;
 
-    #[ORM\ManyToOne]
+    #[ORM\ManyToOne(targetEntity: Festival::class)]
     #[ORM\JoinColumn(nullable: false)]
     private ?Festival $festival = null;
 
@@ -27,14 +27,14 @@ class FestivalMail
     #[ORM\Column(type: Types::TEXT)]
     private ?string $content = null;
 
-    #[ORM\ManyToOne]
+    #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $mailAuthor = null;
 
     #[ORM\Column]
     private ?\DateTimeImmutable $sentAt = null;
 
-    public function getId(): ?UuidInterface
+    public function getId(): ?Uuid
     {
         return $this->id;
     }

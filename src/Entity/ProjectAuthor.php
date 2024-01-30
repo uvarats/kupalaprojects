@@ -7,19 +7,19 @@ use App\Repository\ProjectAuthorRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Ramsey\Uuid\Doctrine\UuidGenerator;
-use Ramsey\Uuid\UuidInterface;
+use Symfony\Bridge\Doctrine\Types\UuidType;
+use Symfony\Component\Uid\Uuid;
 
 #[ORM\Entity(repositoryClass: ProjectAuthorRepository::class)]
 class ProjectAuthor implements ProjectAuthorInterface
 {
     #[ORM\Id]
-    #[ORM\Column(type: 'uuid', unique: true)]
+    #[ORM\Column(type: UuidType::NAME, unique: true)]
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]
-    #[ORM\CustomIdGenerator(class: UuidGenerator::class)]
-    private ?UuidInterface $id = null;
+    #[ORM\CustomIdGenerator(class: 'doctrine.uuid_generator')]
+    private ?Uuid $id = null;
 
-    #[ORM\OneToOne(inversedBy: 'projectAuthor', cascade: ['persist', 'remove'])]
+    #[ORM\OneToOne(inversedBy: 'projectAuthor', targetEntity: User::class, cascade: ['persist', 'remove'])]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $userEntity = null;
 
@@ -40,7 +40,7 @@ class ProjectAuthor implements ProjectAuthorInterface
         $this->projects = new ArrayCollection();
     }
 
-    public function getId(): ?UuidInterface
+    public function getId(): ?Uuid
     {
         return $this->id;
     }

@@ -10,4 +10,3 @@ enum FestivalPeriodEnum: string
     case WINTER = 'winter';
     case SPRING = 'spring';
 }
-
