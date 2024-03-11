@@ -50,7 +50,7 @@ class Acceptance implements AcceptableInterface
 
     public function reject(): void
     {
-        if ($this->acceptance == AcceptanceEnum::APPROVED) {
+        if ($this->acceptance === AcceptanceEnum::APPROVED) {
             throw new \LogicException('Can not reject already approved entity');
         }
 

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Security\Voter;
 
 use App\Entity\Project;
@@ -29,9 +31,9 @@ final class ProjectVoter extends Voter
     }
 
     /**
-     * @param string $attribute
-     * @param Project $subject
-     * @param TokenInterface $token
+     * @param  string         $attribute
+     * @param  Project        $subject
+     * @param  TokenInterface $token
      * @return bool
      */
     protected function voteOnAttribute(string $attribute, mixed $subject, TokenInterface $token): bool

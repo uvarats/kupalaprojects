@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Controller\Admin;
 
 use App\Entity\Project;
-use App\Entity\ProjectAward;
 use App\Form\ProjectAwardType;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
@@ -42,7 +41,7 @@ class ProjectController extends AbstractCrudController
             DateField::new('startsAt'),
             DateField::new('endsAt'),
             NumberField::new('creationYear')->formatValue(
-                static fn ($value) => str_replace(chr(0xC2) . chr(0xA0), '', $value)
+                static fn($value) => str_replace(chr(0xC2) . chr(0xA0), '', $value)
             ),
             AssociationField::new('festival'),
             CollectionField::new('awards')

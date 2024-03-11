@@ -11,7 +11,7 @@ use App\Service\Project\ProjectService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/projects/create', name: 'app_projects_create')]
@@ -20,8 +20,7 @@ final class CreateController extends AbstractController
 {
     public function __construct(
         private readonly ProjectService $projectService,
-    ) {
-    }
+    ) {}
 
 
     public function __invoke(

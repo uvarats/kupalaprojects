@@ -10,7 +10,7 @@ use App\Form\Project\TeamType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 
 #[Route('/project/{id}/registration/team', name: 'app_project_registration_team')]
 final class TeamRegistrationController extends AbstractController

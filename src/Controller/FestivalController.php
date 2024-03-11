@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Controller;
 
 use App\Entity\Festival;
@@ -9,14 +11,13 @@ use Pagerfanta\Doctrine\ORM\QueryAdapter;
 use Pagerfanta\Pagerfanta;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 
 final class FestivalController extends AbstractController
 {
     public function __construct(
         private readonly ProjectRepository $projectRepository
-    ) {
-    }
+    ) {}
 
     #[Route('/festivals/{page}', name: 'app_festivals')]
     public function index(FestivalRepository $festivalRepository, int $page = 1): Response

@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Validator;
 
-use App\Entity\Festival;
 use App\Interface\DateRangeInterface;
 use Cake\Chronos\Chronos;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;

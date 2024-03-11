@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Service\Util;
 
-use App\Collection\FieldConfigCollection;
 use App\FormConfig\FormFieldsConfig;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 

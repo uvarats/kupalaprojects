@@ -11,9 +11,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 final class PersonNameType extends AbstractType
 {
-    public function buildForm(FormBuilderInterface $builder, array $options)
-    {
-    }
+    public function buildForm(FormBuilderInterface $builder, array $options) {}
 
     public function configureOptions(OptionsResolver $resolver)
     {
