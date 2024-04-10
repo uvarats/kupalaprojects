@@ -64,7 +64,6 @@ class Participant
         PersonName $name,
         string $educationEstablishment,
         string $email,
-        ?Team $team = null,
     ): Participant {
         $instance = new self();
 
@@ -74,7 +73,6 @@ class Participant
         $instance->middleName = $name->getMiddleName();
         $instance->educationEstablishment = $educationEstablishment;
         $instance->email = $email;
-        $instance->team = $team;
 
         return $instance;
     }
@@ -107,6 +105,13 @@ class Participant
     public function getTeam(): ?Team
     {
         return $this->team;
+    }
+
+    public function setTeam(?Team $team): Participant
+    {
+        $this->team = $team;
+
+        return $this;
     }
 
     public function getProject(): Project

@@ -3,86 +3,9 @@
 {% block title %}Заявка проекта{% endblock %}
 
 {% block body %}
-    <div class="container mt-3" {{ stimulus_controller('project-create', {
-        'datesEndpoint': path('app_api_festivals_dates'),
-    }) }}>
-        {{ form_start(form) }}
-
-        <div class="d-flex justify-content-center mt-4">
-            <h3>Заявка проекта</h3>
-        </div>
-        <div class="mb-3">
-            {{ form_row(form.name) }}
-        </div>
-        <div class="mb-3">
-            {{ form_label(form.festival) }}
-            {{ form_widget(form.festival, {
-                'attr': {
-                    'data-project-create-target': 'festivalSelect',
-                    'data-action': 'project-create#festivalSelection'
-                }
-            }) }}
-            {{ form_errors(form.festival) }}
-            {{ form_help(form.festival) }}
-        </div>
-        <div class="mb-3">
-            {{ form_row(form.goal) }}
-        </div>
-        <div class="mb-3">
-            <div class="d-flex justify-content-between flex-row">
-                <div class="flex-grow-1">
-                    {{ form_label(form.dates.startsAt) }}
-                    {{ form_widget(form.dates.startsAt, {
-                        'attr': {
-                            'data-project-create-target': 'startsAt'
-                        }
-                    }) }}
-                    {{ form_errors(form.dates.startsAt) }}
-                    {{ form_help(form.dates.startsAt) }}
-                </div>
-                <div class="ms-3 flex-grow-1">
-                    {{ form_label(form.dates.endsAt) }}
-                    {{ form_widget(form.dates.endsAt, {
-                        'attr': {
-                            'data-project-create-target': 'endsAt'
-                        }
-                    }) }}
-                    {{ form_errors(form.dates.endsAt) }}
-                    {{ form_help(form.dates.endsAt) }}
-                </div>
-                {{ form_errors(form.dates) }}
-            </div>
-            <div class="form-text">Данные даты заполняются автоматически по датам проведения фестиваля. Изменяйте на своё усмотрение.</div>
-        </div>
-        <div class="mb-3">
-            {{ form_row(form.siteUrl) }}
-        </div>
-        <div class="mb-3">
-            {{ form_row(form.creationYear) }}
-        </div>
-        <div class="mb-3">
-            {{ form_row(form.orientedOn) }}
-        </div>
-        <div class="mb-3">
-            {{ form_row(form.subjects) }}
-        </div>
-        <div class="mb-3">
-            <label for="project_awards" class="form-label">{{ 'Awards'|trans }}</label>
-            <div class="mb-3" id="project_awards" {{ stimulus_controller('form-collection', {
-                'index': form.awards|length > 0 ? form.awards|last.vars.name + 1 : 0,
-                'prototype': form_widget(form.awards.vars.prototype)|e('html_attr')
-            }) }}>
-                <ul {{ stimulus_target('form-collection', 'collectionContainer') }}></ul>
-                <button type="button" {{ stimulus_action('form-collection', 'addCollectionElement')}} class="btn btn-primary">Добавить награду</button>
-            </div>
-            {{ form_rest(form.awards) }}
-        </div>
-        <div class="mb-3">
-            {{ form_row(form.teamsAllowed) }}
-        </div>
-        {{ form_rest(form) }}
-
-        <button type="submit" class="btn btn-primary mb-5">Отправить</button>
-        {{ form_end(form) }}
+    <div>
+        {{ component('ProjectForm', {
+            form: form,
+        }) }}
     </div>
 {% endblock %}

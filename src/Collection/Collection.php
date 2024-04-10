@@ -10,6 +10,4 @@ use Ramsey\Collection\AbstractCollection;
  * @template T
  * @extends AbstractCollection<T>
  */
-abstract class Collection extends AbstractCollection
-{
-}
+abstract class Collection extends AbstractCollection {}

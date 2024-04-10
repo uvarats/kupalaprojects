@@ -10,7 +10,6 @@ final readonly class FestivalDates
         public string $festivalId,
         public string $startsAt,
         public string $endsAt,
-    ) {
-    }
+    ) {}
 
 }

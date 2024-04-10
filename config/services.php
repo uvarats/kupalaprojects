@@ -33,6 +33,11 @@ return static function (ContainerConfigurator $container) {
     );
 
     $services->alias(
+        \App\Feature\Project\Interface\ProjectRepositoryInterface::class,
+        \App\Repository\ProjectRepository::class
+    );
+
+    $services->alias(
         \App\Service\User\UserResolverInterface::class,
         \App\Service\User\UserService::class
     );

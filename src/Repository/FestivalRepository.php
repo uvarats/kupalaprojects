@@ -1,11 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Repository;
 
 use App\Collection\FestivalCollection;
 use App\Entity\Festival;
 use App\Entity\User;
 use App\Repository\Interface\FestivalRepositoryInterface;
+use App\ValueObject\Entity\FestivalId;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
@@ -100,5 +103,15 @@ class FestivalRepository extends ServiceEntityRepository implements FestivalRepo
             ->where('festival.isActive = true')
             ->addOrderBy('festival.startsAt')
             ->addOrderBy('festival.endsAt');
+    }
+
+    #[\Override]
+    public function findById(FestivalId $id): ?Festival
+    {
+        return $this->createActiveQuery()
+            ->where('festival.id = :id')
+            ->setParameter('id', $id)
+            ->getQuery()
+            ->getOneOrNullResult();
     }
 }

@@ -10,7 +10,8 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @deprecated Do not use embeddables, use raw types in entites, but getters should return value objects
- * @see \App\ValueObject\PersonName
+ *
+ * @see \App\ValueObject\PersonName - use this VO
  */
 #[ORM\Embeddable]
 final class PersonName

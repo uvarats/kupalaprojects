@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Twig\Component;
 
-use App\Dto\Participant\ParticipantData;
+use App\Dto\Form\Participant\ParticipantData;
 use App\Form\Project\ParticipantDataType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormInterface;

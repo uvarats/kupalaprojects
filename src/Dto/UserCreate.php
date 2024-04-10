@@ -11,6 +11,5 @@ final readonly class UserCreate
         public string $email,
         public string $password,
         public bool $isAdmin = false,
-    ) {
-    }
+    ) {}
 }

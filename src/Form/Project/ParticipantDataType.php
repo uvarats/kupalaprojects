@@ -4,7 +4,12 @@ declare(strict_types=1);
 
 namespace App\Form\Project;
 
-use App\Dto\Participant\ParticipantData;
+use App\Dto\Form\Participant\ParticipantData;
+use App\Entity\Participant;
+use App\Entity\Project;
+use App\Validator\Constraint\UniqueInEntity;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -13,6 +18,10 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 final class ParticipantDataType extends AbstractType
 {
+    public function __construct(
+        private EntityManagerInterface $em,
+    ) {}
+
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
@@ -31,13 +40,29 @@ final class ParticipantDataType extends AbstractType
             ->add('email', EmailType::class, [
                 'help' => 'participant.email.help',
                 'empty_data' => '',
+            ])
+            ->add('project', EntityType::class, [
+                'class' => Project::class,
+                'choice_label' => 'name',
+                'label' => false,
+                'attr' => [
+                    'hidden' => 'hidden'
+                ],
             ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void
     {
+        //dd($this->em);
         $resolver->setDefaults([
             'data_class' => ParticipantData::class,
+            'constraints' => [
+                new UniqueInEntity(
+                    entityClass: Participant::class,
+                    fields: ['project', 'email'],
+                    message: 'participant.email.exists',
+                )
+            ],
         ]);
     }
 }

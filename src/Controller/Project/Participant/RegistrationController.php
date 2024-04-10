@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace App\Controller\Project\Participant;
 
-use App\Dto\Participant\ParticipantData;
+use App\Dto\Form\Participant\ParticipantData;
 use App\Entity\Project;
 use App\Form\Project\ParticipantDataType;
 use App\Service\Project\ParticipantService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 use Symfony\UX\Turbo\TurboBundle;
 
 final class RegistrationController extends AbstractController
@@ -24,7 +24,7 @@ final class RegistrationController extends AbstractController
     public function __invoke(Project $project, Request $request): Response
     {
         $participantData = new ParticipantData();
-        //$participant->setProject($project);
+        $participantData->setProject($project);
 
         $form = $this->createForm(ParticipantDataType::class, $participantData);
         $form->handleRequest($request);

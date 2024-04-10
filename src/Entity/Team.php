@@ -1,8 +1,9 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Entity;
 
-use App\Entity\Embeddable\Acceptance;
 use App\Entity\Interface\AcceptableInterface;
 use App\Enum\AcceptanceEnum;
 use App\Repository\TeamRepository;
@@ -28,20 +29,19 @@ class Team implements AcceptableInterface
     #[ORM\JoinColumn(nullable: false)]
     private Participant $teamCreator;
 
-    #[ORM\OneToMany(mappedBy: 'team', targetEntity: Participant::class)]
+    #[ORM\OneToMany(targetEntity: Participant::class, mappedBy: 'team', cascade: ['persist', 'remove'])]
     private Collection $participants;
 
     #[ORM\ManyToOne(targetEntity: Project::class, inversedBy: 'teams')]
     #[ORM\JoinColumn(nullable: false)]
     private Project $project;
 
-    #[ORM\Embedded(class: Acceptance::class, columnPrefix: false)]
-    private Acceptance $acceptance;
+    #[ORM\Column(enumType: AcceptanceEnum::class)]
+    private AcceptanceEnum $acceptance = AcceptanceEnum::NO_DECISION;
 
     public function __construct()
     {
         $this->participants = new ArrayCollection();
-        $this->acceptance = new Acceptance();
     }
 
     public static function create(
@@ -79,7 +79,6 @@ class Team implements AcceptableInterface
     {
         return $this->teamCreator;
     }
-
 
     /**
      * @return Collection<int, Participant>
@@ -125,36 +124,36 @@ class Team implements AcceptableInterface
 
     public function getAcceptance(): AcceptanceEnum
     {
-        return $this->acceptance->getAcceptance();
+        return $this->acceptance;
     }
 
     public function isApproved(): bool
     {
-        return $this->acceptance->isApproved();
+        return $this->acceptance === AcceptanceEnum::APPROVED;
     }
 
     public function isRejected(): bool
     {
-        return $this->acceptance->isRejected();
+        return $this->acceptance === AcceptanceEnum::REJECTED;
     }
 
     public function isWaitingForDecision(): bool
     {
-        return $this->acceptance->isWaitingForDecision();
+        return $this->acceptance == AcceptanceEnum::NO_DECISION;
     }
 
     public function approve(): void
     {
-        $this->acceptance->approve();
+        $this->acceptance = AcceptanceEnum::APPROVED;
     }
 
     public function reject(): void
     {
-        $this->acceptance->reject();
+        $this->acceptance = AcceptanceEnum::REJECTED;
     }
 
     public function stage(): void
     {
-        $this->acceptance->stage();
+        $this->acceptance = AcceptanceEnum::NO_DECISION;
     }
 }

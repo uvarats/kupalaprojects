@@ -15,8 +15,7 @@ final readonly class PersonNameData
         public string $firstName,
         #[Assert\NotBlank(allowNull: true)]
         public ?string $middleName = null,
-    ) {
-    }
+    ) {}
 
     public static function fromString(string $fullName): PersonNameData
     {

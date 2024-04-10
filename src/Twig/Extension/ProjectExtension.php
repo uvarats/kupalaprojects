@@ -1,11 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Twig\Extension;
 
 use App\Twig\Runtime\ProjectExtensionRuntime;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;
-use Twig\TwigFunction;
 
 class ProjectExtension extends AbstractExtension
 {

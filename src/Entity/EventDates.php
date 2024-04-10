@@ -21,9 +21,9 @@ final class EventDates implements DateRangeInterface
 
     public static function make(\DateTimeImmutable $startsAt, \DateTimeImmutable $endsAt): self
     {
-//        if ($startsAt > $endsAt) {
-//            throw new \LogicException('Event start date can not be after end date.');
-//        }
+        //        if ($startsAt > $endsAt) {
+        //            throw new \LogicException('Event start date can not be after end date.');
+        //        }
 
         $self = new self();
 

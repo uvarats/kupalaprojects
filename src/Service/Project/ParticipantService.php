@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Service\Project;
 
-use App\Dto\Participant\ParticipantData;
+use App\Dto\Form\Participant\ParticipantData;
 use App\Entity\Participant;
 use App\Entity\Project;
 use App\Enum\AcceptanceEnum;
