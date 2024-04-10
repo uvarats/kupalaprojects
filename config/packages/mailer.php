@@ -10,6 +10,6 @@ return static function (FrameworkConfig $config): void {
     $mailer = $config->mailer();
 
     $mailer->dsn(env('MAILER_DSN'));
-    $mailer->envelope()->sender(env('MAILER_DSN'));
-    $mailer->header('From', env('MAILER_DSN'));
+    $mailer->envelope()->sender(env('MAILER_SENDER'));
+    $mailer->header('From', env('MAILER_FROM'));
 };

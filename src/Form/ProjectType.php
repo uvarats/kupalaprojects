@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Form;
 
+use App\Dto\Form\Project\ProjectData;
 use App\Entity\Festival;
-use App\Entity\Project;
 use App\Repository\FestivalRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -23,11 +23,14 @@ class ProjectType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('name', TextType::class)
+            ->add('name', TextType::class, [
+                'empty_data' => '',
+            ])
             ->add('goal', TextareaType::class, [
                 'attr' => [
                     'rows' => 4,
-                ]
+                ],
+                'empty_data' => '',
             ])
             ->add('siteUrl', UrlType::class)
             ->add('dates', EventDatesType::class)
@@ -51,13 +54,14 @@ class ProjectType extends AbstractType
             ])
             ->add('teamsAllowed', CheckboxType::class, [
                 'required' => false,
+                'empty_data' => false,
             ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => Project::class,
+            'data_class' => ProjectData::class,
         ]);
     }
 }

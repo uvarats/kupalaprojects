@@ -2,8 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Dto\Participant;
+namespace App\Dto\Form\Participant;
 
+use App\Entity\Project;
 use Symfony\Component\Validator\Constraints as Assert;
 
 final class TeamData
@@ -12,12 +13,14 @@ final class TeamData
     private string $name = '';
 
     #[Assert\NotNull]
+    #[Assert\Valid]
     private ?ParticipantData $teamCreator = null;
 
     /**
      * @var ParticipantData[] $participants
      */
     private array $participants = [];
+    private ?Project $project = null;
 
     public function getName(): string
     {
@@ -46,7 +49,26 @@ final class TeamData
 
     public function addParticipant(ParticipantData $data): void
     {
-        $this->participants[] = $data;
+        $email = $data->getEmail();
+
+        $this->participants[$email] = $data;
+    }
+
+    public function removeParticipant(ParticipantData $data): void
+    {
+        $email = $data->getEmail();
+
+        unset($this->participants[$email]);
+    }
+
+    public function getProject(): ?Project
+    {
+        return $this->project;
+    }
+
+    public function setProject(?Project $project): void
+    {
+        $this->project = $project;
     }
 
 

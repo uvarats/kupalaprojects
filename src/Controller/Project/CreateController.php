@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller\Project;
 
-use App\Entity\Project;
+use App\Dto\Form\Project\ProjectData;
 use App\Form\ProjectType;
 use App\Security\Voter\ProjectAuthorVoter;
 use App\Service\Project\ProjectService;
@@ -30,7 +30,7 @@ final class CreateController extends AbstractController
             return $this->redirectToRoute('app_project_author_create');
         }
 
-        $project = new Project();
+        $project = new ProjectData();
         $form = $this->createForm(ProjectType::class, $project);
 
         $form->handleRequest($request);
@@ -42,6 +42,7 @@ final class CreateController extends AbstractController
 
         return $this->render('project/create.html.twig', [
             'form' => $form->createView(),
+            'project' => $project,
         ]);
     }
 }

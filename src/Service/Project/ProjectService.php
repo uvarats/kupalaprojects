@@ -4,8 +4,9 @@ declare(strict_types=1);
 
 namespace App\Service\Project;
 
+use App\Dto\Form\Project\ProjectData;
+use App\Entity\EventDates;
 use App\Entity\Project;
-use App\Entity\ProjectAward;
 use App\Enum\ProjectStateEnum;
 use App\Enum\ProjectTransitionEnum;
 use App\Service\Mail\ProjectMailerService;
@@ -22,7 +23,7 @@ final readonly class ProjectService
         private ProjectMailerService $projectMailer,
     ) {}
 
-    public function handleSubmittedProject(Project $project): void
+    public function handleSubmittedProject(ProjectData $projectData): void
     {
         $user = $this->userService->getCurrentUser();
 
@@ -32,24 +33,52 @@ final readonly class ProjectService
 
         $projectAuthor = $user->getProjectAuthor();
 
-        $project
-            ->setAuthor($projectAuthor)
-            ->setState(ProjectStateEnum::UNDER_MODERATION->value);
+        $dates = $projectData->getDates();
 
-        $this->saveAwards($project);
+        $project = Project::create(
+            name: $projectData->getName(),
+            siteUrl: $projectData->getSiteUrl(),
+            creationYear: $projectData->getCreationYear(),
+            dates: EventDates::make(
+                startsAt: $dates->getStartsAt(),
+                endsAt: $dates->getEndsAt(),
+            ),
+            festival: $projectData->getFestival(),
+            author: $projectAuthor,
+            state: ProjectStateEnum::UNDER_MODERATION,
+            goal: $projectData->getGoal(),
+            teamsAllowed: $projectData->isTeamsAllowed(),
+        );
+
+        $subjects = $projectData->getSubjects();
+        foreach ($subjects as $subject) {
+            $project->addSubject($subject);
+        }
+
+        $orientedOn = $projectData->getOrientedOn();
+        foreach ($orientedOn as $oriented) {
+            $project->addOrientedOn($oriented);
+        }
+
+        $awards = $projectData->getAwards();
+        foreach ($awards as $award) {
+            $project->addAward($award);
+        }
+
+        $this->saveAwards($projectData);
 
         $this->entityManager->persist($project);
         $this->entityManager->flush();
     }
 
-    private function saveAwards(Project $project): void
+    private function saveAwards(ProjectData $projectData): void
     {
-        $awards = $project->getAwards();
+        $awards = $projectData->getAwards();
 
-        /** @var ProjectAward $award */
         foreach ($awards as $award) {
             $this->entityManager->persist($award);
         }
+
         //$this->entityManager->flush();
     }
 

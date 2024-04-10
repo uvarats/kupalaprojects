@@ -4,16 +4,13 @@ declare(strict_types=1);
 
 namespace App\Form;
 
-use App\Entity\EventDates;
+use App\Dto\EventDatesData;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\DataMapperInterface;
-use Symfony\Component\Form\Exception\UnexpectedTypeException;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class EventDatesType extends AbstractType implements DataMapperInterface
+class EventDatesType extends AbstractType
 {
     private const string STARTS_AT = 'startsAt';
     private const string ENDS_AT = 'endsAt';
@@ -28,43 +25,13 @@ class EventDatesType extends AbstractType implements DataMapperInterface
             ->add(self::ENDS_AT, DateType::class, [
                 'years' => $years,
             ])
-            ->setDataMapper($this);
+        ;
     }
 
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => EventDates::class,
+            'data_class' => EventDatesData::class,
         ]);
-    }
-
-    public function mapDataToForms(mixed $viewData, \Traversable $forms): void
-    {
-        if ($viewData === null) {
-            return;
-        }
-
-        if (!$viewData instanceof EventDates) {
-            throw new UnexpectedTypeException($viewData, EventDates::class);
-        }
-
-        /** @var array<string, FormInterface> $forms */
-        $forms = iterator_to_array($forms);
-
-        $startsAt = $viewData->getStartsAt();
-        $forms[self::STARTS_AT]->setData($startsAt);
-
-        $endsAt = $viewData->getEndsAt();
-        $forms[self::ENDS_AT]->setData($endsAt);
-    }
-
-    public function mapFormsToData(\Traversable $forms, mixed &$viewData): void
-    {
-        /** @var array<string, FormInterface> $forms */
-        $forms = iterator_to_array($forms);
-
-        $startsAt = $forms[self::STARTS_AT]->getData();
-        $endsAt = $forms[self::ENDS_AT]->getData();
-        $viewData = EventDates::make($startsAt, $endsAt);
     }
 }

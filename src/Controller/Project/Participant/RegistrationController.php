@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller\Project\Participant;
 
-use App\Dto\Participant\ParticipantData;
+use App\Dto\Form\Participant\ParticipantData;
 use App\Entity\Project;
 use App\Form\Project\ParticipantDataType;
 use App\Service\Project\ParticipantService;
@@ -24,7 +24,7 @@ final class RegistrationController extends AbstractController
     public function __invoke(Project $project, Request $request): Response
     {
         $participantData = new ParticipantData();
-        //$participant->setProject($project);
+        $participantData->setProject($project);
 
         $form = $this->createForm(ParticipantDataType::class, $participantData);
         $form->handleRequest($request);

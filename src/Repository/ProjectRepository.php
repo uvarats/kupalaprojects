@@ -10,7 +10,9 @@ use App\Entity\Project;
 use App\Entity\User;
 use App\Enum\AcceptanceEnum;
 use App\Enum\ProjectStateEnum;
+use App\Feature\Project\Interface\ProjectRepositoryInterface;
 use App\Repository\Interface\EagerLoadInterface;
+use App\ValueObject\Entity\ProjectId;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
@@ -24,7 +26,7 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method Project[]    findAll()
  * @method Project[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class ProjectRepository extends ServiceEntityRepository implements EagerLoadInterface
+class ProjectRepository extends ServiceEntityRepository implements EagerLoadInterface, ProjectRepositoryInterface
 {
     public function __construct(ManagerRegistry $registry)
     {
@@ -171,4 +173,13 @@ class ProjectRepository extends ServiceEntityRepository implements EagerLoadInte
     //            ->getOneOrNullResult()
     //        ;
     //    }
+    #[\Override]
+    public function findOneById(ProjectId $projectId): ?Project
+    {
+        return $this->createQueryBuilder('p')
+            ->where('p.id = :id')
+            ->setParameter('id', $projectId)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
 }

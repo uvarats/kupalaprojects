@@ -17,8 +17,8 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 final class ProjectQueryType extends AbstractType
 {
     public function __construct(
-        private FestivalRepository $festivalRepository,
-        private TranslatorInterface $translator,
+        private readonly FestivalRepository $festivalRepository,
+        private readonly TranslatorInterface $translator,
     ) {}
 
     public function buildForm(FormBuilderInterface $builder, array $options): void

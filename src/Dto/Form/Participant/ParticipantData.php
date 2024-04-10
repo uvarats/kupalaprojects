@@ -2,8 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Dto\Participant;
+namespace App\Dto\Form\Participant;
 
+use App\Entity\Project;
 use Symfony\Component\Validator\Constraints as Assert;
 
 final class ParticipantData
@@ -23,6 +24,10 @@ final class ParticipantData
     #[Assert\NotBlank]
     #[Assert\Email]
     private string $email = '';
+
+    private ?Project $project = null;
+
+    public function __construct() {}
 
     public function getLastName(): string
     {
@@ -72,5 +77,15 @@ final class ParticipantData
     public function setEmail(string $email): void
     {
         $this->email = $email;
+    }
+
+    public function getProject(): ?Project
+    {
+        return $this->project;
+    }
+
+    public function setProject(?Project $project): void
+    {
+        $this->project = $project;
     }
 }
