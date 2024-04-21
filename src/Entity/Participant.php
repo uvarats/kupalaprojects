@@ -15,12 +15,8 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Uid\Uuid;
 use Symfony\Component\Validator\Constraints as Assert;
 
+// todo: participant can participate in many projects and many teams
 #[ORM\Entity(repositoryClass: ParticipantRepository::class)]
-#[ORM\UniqueConstraint(columns: ['project_id', 'email'])]
-#[UniqueEntity(
-    fields: ['project', 'email'],
-    message: 'Участник с таким e-mail уже зарегистрирован в данном проекте',
-)]
 class Participant
 {
     use NameTrait;
@@ -43,31 +39,25 @@ class Participant
     #[ORM\Column(length: 255)]
     private ?string $educationEstablishment = null;
 
-    #[ORM\ManyToOne(targetEntity: Team::class, inversedBy: 'participants')]
-    private ?Team $team = null;
-
-    // not null?
-    #[ORM\ManyToOne(targetEntity: Project::class, inversedBy: 'participants')]
-    private ?Project $project = null;
-
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, unique: true)]
     #[Assert\Email]
     private ?string $email = null;
 
     #[ORM\Column(enumType: AcceptanceEnum::class)]
     private AcceptanceEnum $acceptance = AcceptanceEnum::NO_DECISION;
 
+    #[ORM\ManyToOne]
+    private ?User $account = null;
+
     private function __construct() {}
 
     public static function make(
-        Project $project,
         PersonName $name,
         string $educationEstablishment,
         string $email,
     ): Participant {
         $instance = new self();
 
-        $instance->project = $project;
         $instance->lastName = $name->getLastName();
         $instance->firstName = $name->getFirstName();
         $instance->middleName = $name->getMiddleName();
@@ -97,37 +87,9 @@ class Participant
         return $this->middleName;
     }
 
-    public function getEducationEstablishment(): string
+    public function getEducationEstablishment(): ?string
     {
         return $this->educationEstablishment;
-    }
-
-    public function getTeam(): ?Team
-    {
-        return $this->team;
-    }
-
-    public function setTeam(?Team $team): Participant
-    {
-        $this->team = $team;
-
-        return $this;
-    }
-
-    public function getProject(): Project
-    {
-        if ($this->project === null) {
-            throw new \LogicException('Project must not be null');
-        }
-
-        return $this->project;
-    }
-
-    public function setProject(?Project $project): self
-    {
-        $this->project = $project;
-
-        return $this;
     }
 
     public function getEmail(): ?string
@@ -171,5 +133,17 @@ class Participant
             firstName: $this->firstName,
             middleName: $this->middleName,
         );
+    }
+
+    public function getAccount(): ?User
+    {
+        return $this->account;
+    }
+
+    public function setAccount(?User $account): static
+    {
+        $this->account = $account;
+
+        return $this;
     }
 }

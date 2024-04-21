@@ -60,22 +60,25 @@ class Project implements DateRangeInterface
     #[ORM\Column(type: Types::TEXT)]
     private string $goal;
 
-    #[ORM\OneToMany(mappedBy: 'project', targetEntity: Participant::class)]
-    private Collection $participants;
-
     #[ORM\OneToMany(mappedBy: 'project', targetEntity: Team::class, orphanRemoval: true)]
     private Collection $teams;
 
     #[ORM\Column(options: ['default' => false])]
     private bool $teamsAllowed = false;
 
+    /**
+     * @var Collection<int, Participant>
+     */
+    #[ORM\ManyToMany(targetEntity: Participant::class)]
+    private Collection $зфparticipants;
+
     public function __construct()
     {
         $this->subjects = new ArrayCollection();
         $this->awards = new ArrayCollection();
         $this->orientedOn = new ArrayCollection();
-        $this->participants = new ArrayCollection();
         $this->teams = new ArrayCollection();
+        $this->зфparticipants = new ArrayCollection();
     }
 
     public static function create(
@@ -307,36 +310,6 @@ class Project implements DateRangeInterface
     }
 
     /**
-     * @return Collection<int, Participant>
-     */
-    public function getParticipants(): Collection
-    {
-        return $this->participants;
-    }
-
-    public function addParticipant(Participant $participant): self
-    {
-        if (!$this->participants->contains($participant)) {
-            $this->participants->add($participant);
-            $participant->setProject($this);
-        }
-
-        return $this;
-    }
-
-    public function removeParticipant(Participant $participant): self
-    {
-        if ($this->participants->removeElement($participant)) {
-            // set the owning side to null (unless already changed)
-            if ($participant->getProject() === $this) {
-                $participant->setProject(null);
-            }
-        }
-
-        return $this;
-    }
-
-    /**
      * @return Collection<int, Team>
      */
     public function getTeams(): Collection
@@ -381,6 +354,30 @@ class Project implements DateRangeInterface
     public function disallowTeams(): Project
     {
         $this->teamsAllowed = false;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Participant>
+     */
+    public function getзфparticipants(): Collection
+    {
+        return $this->зфparticipants;
+    }
+
+    public function addParticipant(Participant $participant): static
+    {
+        if (!$this->зфparticipants->contains($participant)) {
+            $this->зфparticipants->add($participant);
+        }
+
+        return $this;
+    }
+
+    public function removeParticipant(Participant $participant): static
+    {
+        $this->зфparticipants->removeElement($participant);
 
         return $this;
     }

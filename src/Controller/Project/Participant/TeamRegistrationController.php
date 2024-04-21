@@ -36,6 +36,8 @@ final class TeamRegistrationController extends AbstractController
             ]);
         }
 
+        dd($team, $form, $project);
+
         if ($form->isValid()) {
 
         }

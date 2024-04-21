@@ -86,6 +86,7 @@ final class ParticipantData
 
     public function setProject(?Project $project): void
     {
+        dd($project, debug_backtrace());
         $this->project = $project;
     }
 }

@@ -19,6 +19,7 @@ final class TeamData
     /**
      * @var ParticipantData[] $participants
      */
+    #[Assert\Valid]
     private array $participants = [];
     private ?Project $project = null;
 
@@ -49,16 +50,18 @@ final class TeamData
 
     public function addParticipant(ParticipantData $data): void
     {
-        $email = $data->getEmail();
-
-        $this->participants[$email] = $data;
+        $this->participants[] = $data;
     }
 
     public function removeParticipant(ParticipantData $data): void
     {
-        $email = $data->getEmail();
+        foreach ($this->participants as $index => $participant) {
+            if ($data === $participant) {
+                unset($this->participants[$index]);
 
-        unset($this->participants[$email]);
+                break;
+            }
+        }
     }
 
     public function getProject(): ?Project

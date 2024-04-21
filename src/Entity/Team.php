@@ -25,13 +25,6 @@ class Team implements AcceptableInterface
     #[ORM\Column(length: 255)]
     private string $name;
 
-    #[ORM\OneToOne(targetEntity: Participant::class, cascade: ['persist', 'remove'])]
-    #[ORM\JoinColumn(nullable: false)]
-    private Participant $teamCreator;
-
-    #[ORM\OneToMany(targetEntity: Participant::class, mappedBy: 'team', cascade: ['persist', 'remove'])]
-    private Collection $participants;
-
     #[ORM\ManyToOne(targetEntity: Project::class, inversedBy: 'teams')]
     #[ORM\JoinColumn(nullable: false)]
     private Project $project;
@@ -39,9 +32,15 @@ class Team implements AcceptableInterface
     #[ORM\Column(enumType: AcceptanceEnum::class)]
     private AcceptanceEnum $acceptance = AcceptanceEnum::NO_DECISION;
 
+    /**
+     * @var Collection<int, TeamParticipant>
+     */
+    #[ORM\OneToMany(targetEntity: TeamParticipant::class, mappedBy: 'team', orphanRemoval: true)]
+    private Collection $teamParticipants;
+
     public function __construct()
     {
-        $this->participants = new ArrayCollection();
+        $this->teamParticipants = new ArrayCollection();
     }
 
     public static function create(
@@ -52,7 +51,6 @@ class Team implements AcceptableInterface
         $instance = new self();
 
         $instance->name = $name;
-        $instance->teamCreator = $creator;
         $instance->project = $project;
 
         return $instance;
@@ -71,41 +69,6 @@ class Team implements AcceptableInterface
     public function setName(string $name): self
     {
         $this->name = $name;
-
-        return $this;
-    }
-
-    public function getTeamCreator(): Participant
-    {
-        return $this->teamCreator;
-    }
-
-    /**
-     * @return Collection<int, Participant>
-     */
-    public function getParticipants(): Collection
-    {
-        return $this->participants;
-    }
-
-    public function addParticipant(Participant $participant): self
-    {
-        if (!$this->participants->contains($participant)) {
-            $this->participants->add($participant);
-            $participant->setTeam($this);
-        }
-
-        return $this;
-    }
-
-    public function removeParticipant(Participant $participant): self
-    {
-        if ($this->participants->removeElement($participant)) {
-            // set the owning side to null (unless already changed)
-            if ($participant->getTeam() === $this) {
-                $participant->setTeam(null);
-            }
-        }
 
         return $this;
     }
@@ -155,5 +118,29 @@ class Team implements AcceptableInterface
     public function stage(): void
     {
         $this->acceptance = AcceptanceEnum::NO_DECISION;
+    }
+
+    /**
+     * @return Collection<int, TeamParticipant>
+     */
+    public function getTeamParticipants(): Collection
+    {
+        return $this->teamParticipants;
+    }
+
+    public function addTeamParticipant(TeamParticipant $teamParticipant): static
+    {
+        if (!$this->teamParticipants->contains($teamParticipant)) {
+            $this->teamParticipants->add($teamParticipant);
+        }
+
+        return $this;
+    }
+
+    public function removeTeamParticipant(TeamParticipant $teamParticipant): static
+    {
+        $this->teamParticipants->removeElement($teamParticipant);
+
+        return $this;
     }
 }
