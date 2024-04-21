@@ -1,0 +1,30 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="container">
+        <h2 class="text-center">Карточка участника проектов</h2>
+        <div>
+            {% if participant is null %}
+                <div>
+                    <span>Карточка участника для текущего аккаунта не обнаружена. <a href="{{ path('app_account_participant_create') }}">Страница создания.</a></span>
+                </div>
+            {% else %}
+                <table class="table table-striped">
+                    <tr>
+                        <th>ФИО</th>
+                        <td>{{ participant.fullName }}</td>
+                    </tr>
+                    <tr>
+                        <th>Учреждение образования</th>
+                        <td>{{ participant.educationEstablishment }}</td>
+                    </tr>
+                    <tr>
+                        <th>E-Mail</th>
+                        <td>{{ participant.email }}</td>
+                    </tr>
+                </table>
+            {% endif %}
+            <a href="{{ path('app_settings') }}" class="btn btn-primary">К настройкам</a>
+        </div>
+    </div>
+{% endblock %}

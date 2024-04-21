@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
-use App\Entity\Embeddable\PersonName;
 use App\Enum\NameFormatEnum;
 use App\Repository\UserRepository;
 use App\Trait\NameTrait;
+use App\ValueObject\PersonName;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Types\UuidType;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -45,6 +45,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\OneToOne(mappedBy: 'userEntity', targetEntity: ProjectAuthor::class, cascade: ['persist', 'remove'])]
     private ?ProjectAuthor $projectAuthor = null;
+
+    #[ORM\OneToOne(targetEntity: Participant::class, mappedBy: 'account')]
+    private ?Participant $participant = null;
 
     public function getId(): ?Uuid
     {
@@ -194,6 +197,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function __toString(): string
     {
         return $this->getDisplayString();
+    }
+
+    public function getParticipant(): ?Participant
+    {
+        return $this->participant;
     }
 
 }

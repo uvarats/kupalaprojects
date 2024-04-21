@@ -35,7 +35,6 @@ final class Version20240421171244 extends AbstractMigration
     public function down(Schema $schema): void
     {
         // this down() migration is auto-generated, please modify it to your needs
-        $this->addSql('CREATE SCHEMA public');
         $this->addSql('ALTER TABLE team ADD team_creator_id UUID NOT NULL');
         $this->addSql('ALTER TABLE team ADD CONSTRAINT fk_c4e0a61f5ffb7c63 FOREIGN KEY (team_creator_id) REFERENCES participant (id) NOT DEFERRABLE INITIALLY IMMEDIATE');
         $this->addSql('CREATE UNIQUE INDEX uniq_c4e0a61f5ffb7c63 ON team (team_creator_id)');

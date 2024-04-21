@@ -67,10 +67,10 @@ class Project implements DateRangeInterface
     private bool $teamsAllowed = false;
 
     /**
-     * @var Collection<int, Participant>
+     * @var Collection<int, ProjectParticipant>
      */
-    #[ORM\ManyToMany(targetEntity: Participant::class)]
-    private Collection $зфparticipants;
+    #[ORM\OneToMany(targetEntity: ProjectParticipant::class, mappedBy: 'project', orphanRemoval: true)]
+    private Collection $participants;
 
     public function __construct()
     {
@@ -78,7 +78,7 @@ class Project implements DateRangeInterface
         $this->awards = new ArrayCollection();
         $this->orientedOn = new ArrayCollection();
         $this->teams = new ArrayCollection();
-        $this->зфparticipants = new ArrayCollection();
+        $this->participants = new ArrayCollection();
     }
 
     public static function create(
@@ -359,25 +359,31 @@ class Project implements DateRangeInterface
     }
 
     /**
-     * @return Collection<int, Participant>
+     * @return Collection<int, ProjectParticipant>
      */
-    public function getзфparticipants(): Collection
+    public function getParticipants(): Collection
     {
-        return $this->зфparticipants;
+        return $this->participants;
     }
 
-    public function addParticipant(Participant $participant): static
+    public function addParticipant(ProjectParticipant $participant): static
     {
-        if (!$this->зфparticipants->contains($participant)) {
-            $this->зфparticipants->add($participant);
+        if (!$this->participants->contains($participant)) {
+            $this->participants->add($participant);
+            $participant->setProject($this);
         }
 
         return $this;
     }
 
-    public function removeParticipant(Participant $participant): static
+    public function removeParticipant(ProjectParticipant $participant): static
     {
-        $this->зфparticipants->removeElement($participant);
+        if ($this->participants->removeElement($participant)) {
+            // set the owning side to null (unless already changed)
+            if ($participant->getProject() === $this) {
+                $participant->setProject(null);
+            }
+        }
 
         return $this;
     }

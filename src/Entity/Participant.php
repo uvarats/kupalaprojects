@@ -11,11 +11,9 @@ use App\Trait\NameTrait;
 use App\ValueObject\PersonName;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Types\UuidType;
-use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Uid\Uuid;
 use Symfony\Component\Validator\Constraints as Assert;
 
-// todo: participant can participate in many projects and many teams
 #[ORM\Entity(repositoryClass: ParticipantRepository::class)]
 class Participant
 {
@@ -43,10 +41,8 @@ class Participant
     #[Assert\Email]
     private ?string $email = null;
 
-    #[ORM\Column(enumType: AcceptanceEnum::class)]
-    private AcceptanceEnum $acceptance = AcceptanceEnum::NO_DECISION;
-
-    #[ORM\ManyToOne]
+    #[ORM\OneToOne(targetEntity: User::class, inversedBy: 'participant')]
+    #[ORM\JoinColumn(name: 'account_id', referencedColumnName: 'id', nullable: true)]
     private ?User $account = null;
 
     private function __construct() {}
@@ -95,23 +91,6 @@ class Participant
     public function getEmail(): ?string
     {
         return $this->email;
-    }
-
-    public function isAccepted(): bool
-    {
-        return $this->acceptance === AcceptanceEnum::APPROVED;
-    }
-
-    public function getAcceptance(): AcceptanceEnum
-    {
-        return $this->acceptance;
-    }
-
-    public function setAcceptance(AcceptanceEnum $acceptance): self
-    {
-        $this->acceptance = $acceptance;
-
-        return $this;
     }
 
     public function getFirstAndMiddleName(): string

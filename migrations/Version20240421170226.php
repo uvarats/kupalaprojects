@@ -124,7 +124,6 @@ final class Version20240421170226 extends AbstractMigration
     public function down(Schema $schema): void
     {
         // this down() migration is auto-generated, please modify it to your needs
-        $this->addSql('CREATE SCHEMA public');
         $this->addSql('ALTER TABLE festival_jury_member ALTER festival_id TYPE UUID');
         $this->addSql('ALTER TABLE festival_jury_member ALTER user_id TYPE UUID');
         $this->addSql('COMMENT ON COLUMN festival_jury_member.festival_id IS \'(DC2Type:uuid)\'');
