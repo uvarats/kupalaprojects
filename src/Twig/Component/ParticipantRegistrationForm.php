@@ -13,6 +13,9 @@ use Symfony\UX\LiveComponent\Attribute\LiveProp;
 use Symfony\UX\LiveComponent\ComponentWithFormTrait;
 use Symfony\UX\LiveComponent\DefaultActionTrait;
 
+/**
+ * @deprecated New participant registration system and entity structure
+ */
 #[AsLiveComponent]
 final class ParticipantRegistrationForm extends AbstractController
 {

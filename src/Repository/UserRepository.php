@@ -58,6 +58,11 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         $this->save($user, true);
     }
 
+    public function findWithRelatedEntities(): ?User
+    {
+        // todo
+    }
+
     //    /**
     //     * @return User[] Returns an array of User objects
     //     */

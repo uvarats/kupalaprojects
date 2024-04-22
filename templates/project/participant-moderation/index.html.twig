@@ -18,13 +18,13 @@
                 </tr>
                 </thead>
                 <tbody>
-                {# @var participant \App\Entity\Participant #}
-                {% for participant in participants %}
+                {# @var projectParticipant \App\Entity\ProjectParticipant #}
+                {% for projectParticipant in participants %}
                     <turbo-frame>
-                        <tr id="participant_{{ participant.id }}">
-                            <td>{{ participant.fullName }}</td>
-                            <td>{{ participant.educationEstablishment }}</td>
-                            <td>{{ participant.email }}</td>
+                        <tr id="participant_{{ projectParticipant.id }}">
+                            <td>{{ projectParticipant.participant.fullName }}</td>
+                            <td>{{ projectParticipant.participant.educationEstablishment }}</td>
+                            <td>{{ projectParticipant.participant.email }}</td>
                             <td>
                                 <div class="d-flex">
                                     <div>

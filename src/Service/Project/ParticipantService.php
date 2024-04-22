@@ -7,6 +7,7 @@ namespace App\Service\Project;
 use App\Dto\Form\Participant\ParticipantData;
 use App\Entity\Participant;
 use App\Entity\Project;
+use App\Entity\ProjectParticipant;
 use App\Enum\AcceptanceEnum;
 use App\ValueObject\PersonName;
 use Doctrine\ORM\EntityManagerInterface;
@@ -21,6 +22,13 @@ final readonly class ParticipantService
         private MailerInterface $mailer,
         private TranslatorInterface $translator,
     ) {}
+
+    public function submitParticipant(Project $project, Participant $participant): void
+    {
+        $project->submitParticipant($participant);
+
+        $this->entityManager->flush();
+    }
 
     public function handleParticipantRegistration(ParticipantData $participantData, Project $project): Participant
     {
@@ -45,7 +53,7 @@ final readonly class ParticipantService
         return $participant;
     }
 
-    public function makeParticipantDecision(Participant $participant, string $decision): void
+    public function makeParticipantDecision(ProjectParticipant $participant, string $decision): void
     {
         $currentAcceptance = $participant->getAcceptance();
         if ($currentAcceptance !== AcceptanceEnum::NO_DECISION) {

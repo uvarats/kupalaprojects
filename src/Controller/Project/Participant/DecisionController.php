@@ -6,6 +6,7 @@ namespace App\Controller\Project\Participant;
 
 use App\Entity\Participant;
 use App\Entity\Project;
+use App\Entity\ProjectParticipant;
 use App\Security\Voter\ProjectVoter;
 use App\Service\Project\ParticipantService;
 use Symfony\Bridge\Doctrine\Attribute\MapEntity;
@@ -25,7 +26,7 @@ final class DecisionController extends AbstractController
     public function __invoke(
         Project $project,
         #[MapEntity(mapping: ['participant_id' => 'id'])]
-        Participant $participant,
+        ProjectParticipant $participant,
         string $decision,
         Request $request
     ): Response {

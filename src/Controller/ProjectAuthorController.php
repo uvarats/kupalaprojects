@@ -30,6 +30,11 @@ final class ProjectAuthorController extends AbstractController
         private readonly EntityManagerInterface $entityManager,
     ) {}
 
+    /**
+     * @deprecated New general signup system
+     * Now both participants and project authors must create an account.
+     * And only after general registration, they can fill "project author" and "participant" cards
+     */
     #[Route('/project-author/signup', name: 'app_project_author_signup')]
     public function signup(Request $request): Response
     {

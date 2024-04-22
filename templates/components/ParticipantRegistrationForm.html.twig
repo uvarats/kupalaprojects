@@ -1,3 +1,4 @@
+{% deprecated "Participant registration form is deprecated. Now you need to create account and fill \"participant card\". Then you can automatically submit registration to projects." %}
 <div {{ attributes }}>
     <turbo-frame id="registration-frame">
         <div id="registration-form">
@@ -16,9 +17,6 @@
             </div>
             <div class="mb-3">
                 {{ form_row(form.email) }}
-            </div>
-            <div>
-                {{ form_widget(form.project) }}
             </div>
             <div class="mb-3">
                 {{ form_errors(form) }}

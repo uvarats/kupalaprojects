@@ -69,7 +69,7 @@ class Project implements DateRangeInterface
     /**
      * @var Collection<int, ProjectParticipant>
      */
-    #[ORM\OneToMany(targetEntity: ProjectParticipant::class, mappedBy: 'project', orphanRemoval: true)]
+    #[ORM\OneToMany(targetEntity: ProjectParticipant::class, mappedBy: 'project', orphanRemoval: true, cascade: ['persist', 'remove'])]
     private Collection $participants;
 
     public function __construct()
@@ -366,25 +366,19 @@ class Project implements DateRangeInterface
         return $this->participants;
     }
 
-    public function addParticipant(ProjectParticipant $participant): static
+    public function submitParticipant(Participant $participant): ProjectParticipant
     {
-        if (!$this->participants->contains($participant)) {
-            $this->participants->add($participant);
-            $participant->setProject($this);
-        }
+        $projectParticipant = ProjectParticipant::make($this, $participant);
 
-        return $this;
+        $this->participants->add($projectParticipant);
+
+        return $projectParticipant;
     }
 
-    public function removeParticipant(ProjectParticipant $participant): static
+    public function hasParticipant(Participant $participant): bool
     {
-        if ($this->participants->removeElement($participant)) {
-            // set the owning side to null (unless already changed)
-            if ($participant->getProject() === $this) {
-                $participant->setProject(null);
-            }
-        }
-
-        return $this;
+        return !$this->participants->filter(function (ProjectParticipant $projectParticipant) use ($participant) {
+            return $projectParticipant->getParticipant() === $participant;
+        })->isEmpty();
     }
 }

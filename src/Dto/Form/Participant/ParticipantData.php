@@ -6,6 +6,9 @@ namespace App\Dto\Form\Participant;
 
 use Symfony\Component\Validator\Constraints as Assert;
 
+/**
+ * @deprecated New participant entity structure and registration system
+ */
 final class ParticipantData
 {
     #[Assert\NotBlank]
