@@ -6,7 +6,7 @@ namespace App\Service\User;
 
 use App\Collection\UserCollection;
 use App\Entity\User;
-use App\Service\Util\PasswordGeneratorService;
+use App\Feature\Account\Service\PasswordGenerator;
 use Doctrine\ORM\EntityManagerInterface;
 use Faker\Factory;
 use Faker\Generator;
@@ -22,7 +22,7 @@ final class UserGenerator
 
     public function __construct(
         private readonly UserPasswordHasherInterface $hasher,
-        private readonly PasswordGeneratorService $passwordGenerator,
+        private readonly PasswordGenerator $passwordGenerator,
         private readonly EntityManagerInterface $entityManager,
     ) {
         $this->faker = Factory::create('ru_RU');
@@ -60,7 +60,7 @@ final class UserGenerator
         if ($this->defaultPassword !== null) {
             $password = $this->defaultPassword;
         } else {
-            $password = $this->passwordGenerator->getRandomPassword();
+            $password = $this->passwordGenerator->generatePlain();
         }
 
         $hashedPassword = $this->hasher->hashPassword($user, $password);

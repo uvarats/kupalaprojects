@@ -1,0 +1,25 @@
+<div {{ attributes }}>
+    <div>
+        {{ form_start(form) }}
+        <div class="mb-3">
+            {{ form_row(form.lastName) }}
+        </div>
+        <div class="mb-3">
+            {{ form_row(form.firstName) }}
+        </div>
+        <div class="mb-3">
+            {{ form_row(form.middleName) }}
+        </div>
+        <div class="mb-3">
+            {{ form_row(form.email) }}
+        </div>
+        {{ form_rest(form) }}
+        <div class="mb-3">
+            <span class="form-text">После регистрации на Вашу почту будут высланы данные для входа в аккаунт.</span>
+        </div>
+        <div class="mb-3">
+            <button type="submit" class="btn btn-primary">Зарегистрироваться</button>
+        </div>
+        {{ form_end(form) }}
+    </div>
+</div>

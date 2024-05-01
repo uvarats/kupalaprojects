@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Repository;
 
 use App\Entity\TeamParticipant;
+use App\Entity\User;
+use App\Feature\Team\Collection\TeamParticipantCollection;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -23,28 +25,21 @@ class TeamParticipantRepository extends ServiceEntityRepository
         parent::__construct($registry, TeamParticipant::class);
     }
 
-    //    /**
-    //     * @return TeamParticipant[] Returns an array of TeamParticipant objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('t')
-    //            ->andWhere('t.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('t.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+    public function findAllForUser(User $user): TeamParticipantCollection
+    {
+        $qb = $this->createQueryBuilder('tp');
 
-    //    public function findOneBySomeField($value): ?TeamParticipant
-    //    {
-    //        return $this->createQueryBuilder('t')
-    //            ->andWhere('t.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+        $qb->select('tp', 'participant', 'team', 'project')
+            ->leftJoin('tp.participant', 'participant')
+            ->leftJoin('tp.team', 'team')
+            ->leftJoin('team.project', 'project')
+            ->where('participant.account = :user')
+            ->setParameter('user', $user);
+
+        $result = $qb
+            ->getQuery()
+            ->getResult();
+
+        return new TeamParticipantCollection($result);
+    }
 }

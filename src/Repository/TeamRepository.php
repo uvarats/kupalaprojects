@@ -4,8 +4,12 @@ declare(strict_types=1);
 
 namespace App\Repository;
 
+use App\Entity\Participant;
 use App\Entity\Team;
+use App\Enum\TeamParticipantRoleEnum;
+use App\Feature\Team\Collection\TeamCollection;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -41,28 +45,31 @@ class TeamRepository extends ServiceEntityRepository
         }
     }
 
-    //    /**
-    //     * @return Team[] Returns an array of Team objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('t')
-    //            ->andWhere('t.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('t.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+    public function findCreatedByParticipant(Participant $participant): TeamCollection
+    {
+        $result = $this->createParticipantAndRoleQuery($participant, TeamParticipantRoleEnum::CREATOR)
+            ->getQuery()
+            ->getResult();
 
-    //    public function findOneBySomeField($value): ?Team
-    //    {
-    //        return $this->createQueryBuilder('t')
-    //            ->andWhere('t.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+        return new TeamCollection($result);
+    }
+
+    public function findParticipatedByParticipant(Participant $participant): TeamCollection
+    {
+        $result = $this->createParticipantAndRoleQuery($participant, TeamParticipantRoleEnum::GENERAL_PARTICIPANT)
+            ->getQuery()
+            ->getResult();
+
+        return new TeamCollection($result);
+    }
+
+    private function createParticipantAndRoleQuery(Participant $participant, TeamParticipantRoleEnum $role): QueryBuilder
+    {
+        return $this->createQueryBuilder('t')
+            ->leftJoin('t.teamParticipants', 'tp')
+            ->where('tp.participant = :participant')
+            ->andWhere('tp.role = :role')
+            ->setParameter('participant', $participant)
+            ->setParameter('role', $role);
+    }
 }

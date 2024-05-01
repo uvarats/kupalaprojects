@@ -1,0 +1,15 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Создание новой команды - Купаловские проекты{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <div class="d-flex justify-content-center">
+            <h2>Новая команда</h2>
+        </div>
+        {{ component('TeamForm', {
+            form: form,
+            data: data,
+        }) }}
+    </div>
+{% endblock %}

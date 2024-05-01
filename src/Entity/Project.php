@@ -60,9 +60,6 @@ class Project implements DateRangeInterface
     #[ORM\Column(type: Types::TEXT)]
     private string $goal;
 
-    #[ORM\OneToMany(mappedBy: 'project', targetEntity: Team::class, orphanRemoval: true)]
-    private Collection $teams;
-
     #[ORM\Column(options: ['default' => false])]
     private bool $teamsAllowed = false;
 
@@ -71,6 +68,9 @@ class Project implements DateRangeInterface
      */
     #[ORM\OneToMany(targetEntity: ProjectParticipant::class, mappedBy: 'project', orphanRemoval: true, cascade: ['persist', 'remove'])]
     private Collection $participants;
+
+    #[ORM\ManyToMany(targetEntity: Team::class, orphanRemoval: true)]
+    private Collection $teams;
 
     public function __construct()
     {

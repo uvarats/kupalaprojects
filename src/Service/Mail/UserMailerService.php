@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Service\Mail;
 
-use App\Dto\NewProjectAuthor;
+use App\Feature\Account\Dto\NewUserMailData;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Address;
@@ -15,7 +15,7 @@ final readonly class UserMailerService
         private MailerInterface $mailer
     ) {}
 
-    public function sendToNewUser(NewProjectAuthor $authorDto): void
+    public function sendToNewUser(NewUserMailData $authorDto): void
     {
         $user = $authorDto->user;
         $rawPassword = $authorDto->password;
@@ -26,7 +26,7 @@ final readonly class UserMailerService
         $letter
             ->to($recipient)
             ->subject('Регистрация на платформе "Купаловские проекты"')
-            ->htmlTemplate('mail/new_project_author.html.twig')
+            ->htmlTemplate('mail/new_user.html.twig')
             ->context([
                 'user' => $user,
                 'rawPassword' => $rawPassword,

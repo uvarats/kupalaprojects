@@ -6,7 +6,7 @@ namespace App\Command;
 
 use App\Dto\PersonNameData;
 use App\Entity\User;
-use App\Service\Util\PasswordGeneratorService;
+use App\Feature\Account\Service\PasswordGenerator;
 use Doctrine\ORM\EntityManagerInterface;
 use Faker\Factory;
 use Faker\Generator;
@@ -30,7 +30,7 @@ class UserCreateCommand extends Command
 
     public function __construct(
         private readonly UserPasswordHasherInterface $hasher,
-        private readonly PasswordGeneratorService $passwordGenerator,
+        private readonly PasswordGenerator $passwordGenerator,
         private readonly EntityManagerInterface $entityManager,
     ) {
         parent::__construct();
@@ -62,7 +62,7 @@ class UserCreateCommand extends Command
             ->setLastName($fullNameDto->lastName)
             ->setMiddleName($fullNameDto->middleName);
 
-        $password = $this->passwordGenerator->getRandomPassword();
+        $password = $this->passwordGenerator->generatePlain();
         $hashedPassword = $this->hasher->hashPassword($user, $password);
         $user->setPassword($hashedPassword);
 

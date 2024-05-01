@@ -16,12 +16,18 @@ final class UserDataType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('lastName', TextType::class)
-            ->add('firstName', TextType::class)
+            ->add('lastName', TextType::class, [
+                'empty_data' => '',
+            ])
+            ->add('firstName', TextType::class, [
+                'empty_data' => '',
+            ])
             ->add('middleName', TextType::class, [
                 'required' => false,
             ])
-            ->add('email', EmailType::class);
+            ->add('email', EmailType::class, [
+                'empty_data' => '',
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void

@@ -18,4 +18,19 @@ enum AcceptanceEnum: int
             default => throw new \InvalidArgumentException('Allowed values: approve and reject'),
         };
     }
+
+    public function isApproved(): bool
+    {
+        return $this === self::APPROVED;
+    }
+
+    public function isRejected(): bool
+    {
+        return $this === self::REJECTED;
+    }
+
+    public function isNoDecision(): bool
+    {
+        return $this === self::NO_DECISION;
+    }
 }

@@ -1,0 +1,12 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Успешная регистрация{% endblock %}
+
+{% block body %}
+    <div class="container mt-5">
+        <div class="alert alert-success" role="alert">
+            Вы успешно зарегистрировались на платформе "Купаловские проекты".
+            Данные для входа направлены в письме на почту {{ user.email }}.
+        </div>
+    </div>
+{% endblock %}

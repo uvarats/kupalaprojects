@@ -28,29 +28,8 @@ final readonly class ParticipantService
         $project->submitParticipant($participant);
 
         $this->entityManager->flush();
-    }
-
-    public function handleParticipantRegistration(ParticipantData $participantData, Project $project): Participant
-    {
-        $name = PersonName::make(
-            lastName: $participantData->getLastName(),
-            firstName: $participantData->getFirstName(),
-            middleName: $participantData->getMiddleName(),
-        );
-
-        $participant = Participant::make(
-            project: $project,
-            name: $name,
-            educationEstablishment: $participantData->getEducationEstablishment(),
-            email: $participantData->getEmail(),
-        );
-
-        $this->entityManager->persist($participant);
-        $this->entityManager->flush();
 
         $this->sendMail($participant);
-
-        return $participant;
     }
 
     public function makeParticipantDecision(ProjectParticipant $participant, string $decision): void

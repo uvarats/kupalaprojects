@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace App\Entity;
 
 use App\Enum\NameFormatEnum;
-use App\Repository\UserRepository;
+use App\Feature\Account\Repository\UserRepository;
+use App\Feature\Account\ValueObject\Password;
 use App\Trait\NameTrait;
+use App\ValueObject\Email;
 use App\ValueObject\PersonName;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Types\UuidType;
@@ -48,6 +50,22 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\OneToOne(targetEntity: Participant::class, mappedBy: 'account')]
     private ?Participant $participant = null;
+
+    public static function create(
+        PersonName $name,
+        Email $email,
+        Password $password,
+    ): User {
+        $user = new self();
+
+        $user->lastName = $name->getLastName();
+        $user->firstName = $name->getFirstName();
+        $user->middleName = $name->getMiddleName();
+        $user->email = $email->toString();
+        $user->password = $password->getHashedPassword();
+
+        return $user;
+    }
 
     public function getId(): ?Uuid
     {

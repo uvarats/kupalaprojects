@@ -7,6 +7,9 @@ namespace App\Dto\Form\Participant;
 use App\Entity\Project;
 use Symfony\Component\Validator\Constraints as Assert;
 
+/**
+ * @deprecated
+ */
 final class TeamData
 {
     #[Assert\NotBlank]

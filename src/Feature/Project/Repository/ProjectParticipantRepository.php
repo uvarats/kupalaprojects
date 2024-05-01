@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace App\Feature\Project\Repository;
 
+use App\Entity\Participant;
 use App\Entity\Project;
 use App\Entity\ProjectParticipant;
+use App\Entity\User;
 use App\Enum\AcceptanceEnum;
 use App\Feature\Project\Collection\ProjectParticipantCollection;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
@@ -36,6 +38,22 @@ class ProjectParticipantRepository extends ServiceEntityRepository
             //->leftJoin('project_participants.participant', 'participant')
             ->setParameter('acceptance', AcceptanceEnum::NO_DECISION->value)
             ->setParameter('project', $project)
+            ->getQuery()
+            ->getResult();
+
+        return new ProjectParticipantCollection($result);
+    }
+
+    public function findAllForUser(User $user): ProjectParticipantCollection
+    {
+        $qb = $this->createQueryBuilder('pp')
+            ->select('pp', 'participant', 'project')
+            ->leftJoin('pp.participant', 'participant')
+            ->leftJoin('pp.project', 'project')
+            ->where('participant.account = :user')
+            ->setParameter('user', $user);
+
+        $result = $qb
             ->getQuery()
             ->getResult();
 

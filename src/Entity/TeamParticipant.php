@@ -20,6 +20,9 @@ class TeamParticipant
     #[ORM\CustomIdGenerator(class: 'doctrine.uuid_generator')]
     private ?Uuid $id = null;
 
+    #[ORM\Column(nullable: true)]
+    private ?\DateTimeImmutable $leftAt = null;
+
     public function __construct(
         #[ORM\ManyToOne]
         #[ORM\JoinColumn(nullable: false)]
@@ -29,6 +32,8 @@ class TeamParticipant
         private readonly Team $team,
         #[ORM\Column(length: 255, enumType: TeamParticipantRoleEnum::class)]
         private TeamParticipantRoleEnum $role,
+        #[ORM\Column]
+        private readonly \DateTimeImmutable $joinedAt,
     ) {}
 
     public function getId(): ?Uuid
@@ -54,6 +59,23 @@ class TeamParticipant
     public function setRole(TeamParticipantRoleEnum $role): static
     {
         $this->role = $role;
+
+        return $this;
+    }
+
+    public function getJoinedAt(): ?\DateTimeImmutable
+    {
+        return $this->joinedAt;
+    }
+
+    public function getLeftAt(): ?\DateTimeImmutable
+    {
+        return $this->leftAt;
+    }
+
+    public function setLeftAt(?\DateTimeImmutable $leftAt): static
+    {
+        $this->leftAt = $leftAt;
 
         return $this;
     }

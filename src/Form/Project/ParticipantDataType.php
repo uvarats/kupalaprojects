@@ -5,11 +5,6 @@ declare(strict_types=1);
 namespace App\Form\Project;
 
 use App\Dto\Form\Participant\ParticipantData;
-use App\Entity\Participant;
-use App\Entity\Project;
-use App\Validator\Constraint\UniqueInEntity;
-use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
