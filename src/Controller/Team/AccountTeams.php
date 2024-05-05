@@ -6,7 +6,7 @@ namespace App\Controller\Team;
 
 use App\Attribute\CurrentParticipant;
 use App\Entity\Participant;
-use App\Repository\TeamRepository;
+use App\Feature\Team\Repository\TeamRepository;
 use App\Security\Voter\ParticipantVoter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;

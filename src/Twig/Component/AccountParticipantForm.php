@@ -4,10 +4,8 @@ declare(strict_types=1);
 
 namespace App\Twig\Component;
 
-use App\Dto\Form\Participant\ParticipantData;
 use App\Feature\Account\Dto\AccountParticipantData;
 use App\Feature\Account\Form\AccountParticipantType;
-use App\Form\Project\ParticipantDataType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormInterface;
 use Symfony\UX\LiveComponent\Attribute\AsLiveComponent;

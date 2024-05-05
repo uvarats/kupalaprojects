@@ -15,7 +15,7 @@ use Symfony\Component\HttpKernel\ControllerMetadata\ArgumentMetadata;
 final class ParticipantResolver implements ValueResolverInterface
 {
     public function __construct(
-        private Security $security,
+        private readonly Security $security,
     ) {}
 
     #[\Override]

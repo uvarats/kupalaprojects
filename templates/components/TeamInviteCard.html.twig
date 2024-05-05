@@ -1,0 +1,10 @@
+<div class="list-group-item" {{ attributes }}>
+    <div class="d-flex w-100">
+        <h5 class="mb-1">{{ this.invite.recipient.name.format(constant('App\\Enum\\NameFormatEnum::LAST_FIRST')) }}</h5>
+        <small class="ms-2 mt-1">{{ this.invite.recipient.email }}</small>
+    </div>
+    <p class="mb-1">Статус: {{ this.invite.status|html }} ({{ this.invite.updatedAt|date('d.m.Y H:i:s') }})</p>
+    {% if this.invite.status.pending %}
+        <button type="button" data-action="live#action" data-live-action-param="revoke" class="btn btn-danger float-right">Отозвать</button>
+    {% endif %}
+</div>

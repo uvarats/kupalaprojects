@@ -2,10 +2,13 @@
 
 declare(strict_types=1);
 
-namespace App\Repository;
+namespace App\Feature\Participant\Repository;
 
 use App\Entity\Participant;
 use App\Entity\User;
+use App\Feature\Core\Collection\EmailCollection;
+use App\Feature\Participant\Collection\ParticipantCollection;
+use App\Feature\Participant\ValueObject\ParticipantId;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -48,5 +51,25 @@ class ParticipantRepository extends ServiceEntityRepository
             ->setParameter('user', $user)
             ->getQuery()
             ->getOneOrNullResult();
+    }
+
+    public function findById(ParticipantId $id): ?Participant
+    {
+        return $this->createQueryBuilder('p')
+            ->where('p.id = :id')
+            ->setParameter('id', $id)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
+    public function findByEmails(EmailCollection $emails): ParticipantCollection
+    {
+        $participants = $this->createQueryBuilder('p')
+            ->where('p.email in (:emails)')
+            ->setParameter('emails', $emails->toArray())
+            ->getQuery()
+            ->getResult();
+
+        return new ParticipantCollection($participants);
     }
 }

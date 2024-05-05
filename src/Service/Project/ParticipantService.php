@@ -4,12 +4,10 @@ declare(strict_types=1);
 
 namespace App\Service\Project;
 
-use App\Dto\Form\Participant\ParticipantData;
 use App\Entity\Participant;
 use App\Entity\Project;
 use App\Entity\ProjectParticipant;
 use App\Enum\AcceptanceEnum;
-use App\ValueObject\PersonName;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\Mailer\MailerInterface;

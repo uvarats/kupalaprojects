@@ -2,8 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Collection;
+namespace App\Feature\Participant\Collection;
 
+use App\Collection\Collection;
 use App\Entity\Participant;
 
 /**

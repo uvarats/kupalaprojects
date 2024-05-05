@@ -4,9 +4,8 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
-use App\Enum\AcceptanceEnum;
 use App\Enum\NameFormatEnum;
-use App\Repository\ParticipantRepository;
+use App\Feature\Participant\Repository\ParticipantRepository;
 use App\Trait\NameTrait;
 use App\ValueObject\PersonName;
 use Doctrine\ORM\Mapping as ORM;

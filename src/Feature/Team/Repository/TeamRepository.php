@@ -2,12 +2,13 @@
 
 declare(strict_types=1);
 
-namespace App\Repository;
+namespace App\Feature\Team\Repository;
 
 use App\Entity\Participant;
 use App\Entity\Team;
 use App\Enum\TeamParticipantRoleEnum;
 use App\Feature\Team\Collection\TeamCollection;
+use App\Feature\Team\ValueObject\TeamId;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
@@ -43,6 +44,15 @@ class TeamRepository extends ServiceEntityRepository
         if ($flush) {
             $this->getEntityManager()->flush();
         }
+    }
+
+    public function findById(TeamId $id): ?Team
+    {
+        return $this->createQueryBuilder('t')
+            ->where('t.id = :id')
+            ->setParameter('id', $id)
+            ->getQuery()
+            ->getOneOrNullResult();
     }
 
     public function findCreatedByParticipant(Participant $participant): TeamCollection

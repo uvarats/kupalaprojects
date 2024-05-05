@@ -5,12 +5,12 @@ declare(strict_types=1);
 namespace App\Controller\Account;
 
 use App\Entity\User;
-use App\Feature\Account\Dto\UserSignUpRequest;
 use App\Feature\Account\Dto\UserData;
+use App\Feature\Account\Dto\UserSignUpRequest;
 use App\Feature\Account\Form\UserDataType;
 use App\Feature\Account\Service\AuthService;
 use App\Feature\Account\Service\PasswordGenerator;
-use App\ValueObject\Email;
+use App\Feature\Core\ValueObject\Email;
 use App\ValueObject\PersonName;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;

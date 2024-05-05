@@ -4,10 +4,9 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
-use App\Entity\Interface\AcceptableInterface;
 use App\Enum\AcceptanceEnum;
 use App\Enum\TeamParticipantRoleEnum;
-use App\Repository\TeamRepository;
+use App\Feature\Team\Repository\TeamRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -15,7 +14,7 @@ use Symfony\Bridge\Doctrine\Types\UuidType;
 use Symfony\Component\Uid\Uuid;
 
 #[ORM\Entity(repositoryClass: TeamRepository::class)]
-class Team implements AcceptableInterface
+class Team
 {
     #[ORM\Id]
     #[ORM\Column(type: UuidType::NAME, unique: true)]
@@ -26,18 +25,23 @@ class Team implements AcceptableInterface
     #[ORM\Column(length: 255)]
     private string $name;
 
-    #[ORM\Column(enumType: AcceptanceEnum::class)]
-    private AcceptanceEnum $acceptance = AcceptanceEnum::NO_DECISION;
-
     /**
      * @var Collection<int, TeamParticipant>
      */
     #[ORM\OneToMany(targetEntity: TeamParticipant::class, mappedBy: 'team', cascade: ['persist', 'remove'], orphanRemoval: true)]
     private Collection $teamParticipants;
 
+    #[ORM\Column]
+    private \DateTimeImmutable $createdAt;
+
+    #[ORM\Column]
+    private \DateTimeImmutable $updatedAt;
+
     public function __construct()
     {
         $this->teamParticipants = new ArrayCollection();
+        $this->createdAt = new \DateTimeImmutable();
+        $this->updatedAt = new \DateTimeImmutable();
     }
 
     public static function create(
@@ -74,41 +78,6 @@ class Team implements AcceptableInterface
         $this->name = $name;
 
         return $this;
-    }
-
-    public function getAcceptance(): AcceptanceEnum
-    {
-        return $this->acceptance;
-    }
-
-    public function isApproved(): bool
-    {
-        return $this->acceptance === AcceptanceEnum::APPROVED;
-    }
-
-    public function isRejected(): bool
-    {
-        return $this->acceptance === AcceptanceEnum::REJECTED;
-    }
-
-    public function isWaitingForDecision(): bool
-    {
-        return $this->acceptance === AcceptanceEnum::NO_DECISION;
-    }
-
-    public function approve(): void
-    {
-        $this->acceptance = AcceptanceEnum::APPROVED;
-    }
-
-    public function reject(): void
-    {
-        $this->acceptance = AcceptanceEnum::REJECTED;
-    }
-
-    public function stage(): void
-    {
-        $this->acceptance = AcceptanceEnum::NO_DECISION;
     }
 
     /**
@@ -148,5 +117,22 @@ class Team implements AcceptableInterface
                 return $teamParticipant;
             }
         }
+    }
+
+    public function getCreatedAt(): \DateTimeImmutable
+    {
+        return $this->createdAt;
+    }
+
+    public function getUpdatedAt(): \DateTimeImmutable
+    {
+        return $this->updatedAt;
+    }
+
+    public function setUpdatedAt(\DateTimeImmutable $updatedAt): static
+    {
+        $this->updatedAt = $updatedAt;
+
+        return $this;
     }
 }

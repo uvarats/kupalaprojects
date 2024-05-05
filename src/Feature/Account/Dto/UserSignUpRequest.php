@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Feature\Account\Dto;
 
 use App\Feature\Account\ValueObject\Password;
-use App\ValueObject\Email;
+use App\Feature\Core\ValueObject\Email;
 use App\ValueObject\PersonName;
 
 final readonly class UserSignUpRequest

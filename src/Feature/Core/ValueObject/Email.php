@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\ValueObject;
+namespace App\Feature\Core\ValueObject;
 
 final readonly class Email implements \Stringable, \JsonSerializable
 {

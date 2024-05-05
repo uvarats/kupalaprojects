@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Controller\Account;
 
 use App\Entity\User;
-use App\Repository\ParticipantRepository;
+use App\Feature\Participant\Repository\ParticipantRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;

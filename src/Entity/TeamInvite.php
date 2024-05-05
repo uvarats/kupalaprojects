@@ -4,35 +4,45 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
-use App\Repository\TeamInviteRepository;
+use App\Feature\Team\Enum\InviteStatusEnum;
+use App\Feature\Team\Repository\TeamInviteRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Types\UuidType;
+use Symfony\Component\Uid\Uuid;
 
 #[ORM\Entity(repositoryClass: TeamInviteRepository::class)]
 class TeamInvite
 {
     #[ORM\Id]
-    #[ORM\GeneratedValue]
+    #[ORM\Column(type: UuidType::NAME, unique: true)]
+    #[ORM\GeneratedValue(strategy: 'CUSTOM')]
+    #[ORM\CustomIdGenerator(class: 'doctrine.uuid_generator')]
+    private ?Uuid $id = null;
+
+    #[ORM\Column(length: 255, enumType: InviteStatusEnum::class)]
+    private InviteStatusEnum $status = InviteStatusEnum::PENDING;
     #[ORM\Column]
-    private ?int $id = null;
-
-    #[ORM\ManyToOne]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?Participant $issuer = null;
-
-    #[ORM\ManyToOne]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?Participant $recipient = null;
-
-    #[ORM\Column(length: 255)]
-    private ?string $status = null;
+    private \DateTimeImmutable $issuedAt;
 
     #[ORM\Column]
-    private ?\DateTimeImmutable $issuedAt = null;
+    private \DateTimeImmutable $updatedAt;
 
-    #[ORM\Column]
-    private ?\DateTimeImmutable $updatedAt = null;
+    public function __construct(
+        #[ORM\ManyToOne]
+        #[ORM\JoinColumn(nullable: false)]
+        private readonly Team $team,
+        #[ORM\ManyToOne]
+        #[ORM\JoinColumn(nullable: false)]
+        private readonly Participant $issuer,
+        #[ORM\ManyToOne]
+        #[ORM\JoinColumn(nullable: false)]
+        private readonly Participant $recipient,
+    ) {
+        $this->issuedAt = new \DateTimeImmutable();
+        $this->updatedAt = new \DateTimeImmutable();
+    }
 
-    public function getId(): ?int
+    public function getId(): ?Uuid
     {
         return $this->id;
     }
@@ -42,58 +52,46 @@ class TeamInvite
         return $this->issuer;
     }
 
-    public function setIssuer(?Participant $issuer): static
-    {
-        $this->issuer = $issuer;
-
-        return $this;
-    }
-
     public function getRecipient(): ?Participant
     {
         return $this->recipient;
     }
 
-    public function setRecipient(?Participant $recipient): static
-    {
-        $this->recipient = $recipient;
-
-        return $this;
-    }
-
-    public function getStatus(): ?string
+    public function getStatus(): InviteStatusEnum
     {
         return $this->status;
     }
 
-    public function setStatus(string $status): static
+    public function revoke(): void
+    {
+        $this->status = InviteStatusEnum::REVOKED;
+        $this->touchUpdatedAt();
+    }
+
+    public function setStatus(InviteStatusEnum $status): static
     {
         $this->status = $status;
 
         return $this;
     }
 
-    public function getIssuedAt(): ?\DateTimeImmutable
+    public function getIssuedAt(): \DateTimeImmutable
     {
         return $this->issuedAt;
     }
 
-    public function setIssuedAt(\DateTimeImmutable $issuedAt): static
-    {
-        $this->issuedAt = $issuedAt;
-
-        return $this;
-    }
-
-    public function getUpdatedAt(): ?\DateTimeImmutable
+    public function getUpdatedAt(): \DateTimeImmutable
     {
         return $this->updatedAt;
     }
 
-    public function setUpdatedAt(\DateTimeImmutable $updatedAt): static
+    public function touchUpdatedAt(): void
     {
-        $this->updatedAt = $updatedAt;
+        $this->updatedAt = new \DateTimeImmutable();
+    }
 
-        return $this;
+    public function getTeam(): Team
+    {
+        return $this->team;
     }
 }
