@@ -4,15 +4,16 @@ declare(strict_types=1);
 
 namespace App\Controller\Project\Participant;
 
-use App\Dto\Form\Participant\ParticipantData;
 use App\Entity\Project;
-use App\Form\Project\ParticipantDataType;
+use App\Entity\User;
+use App\Security\Voter\ParticipantVoter;
 use App\Service\Project\ParticipantService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-use Symfony\UX\Turbo\TurboBundle;
+use Symfony\Component\Security\Http\Attribute\CurrentUser;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 final class RegistrationController extends AbstractController
 {
@@ -20,34 +21,17 @@ final class RegistrationController extends AbstractController
         private readonly ParticipantService $participantService,
     ) {}
 
-    #[Route('/project/{id}/registration/individual', name: 'app_project_participant_registration')]
-    public function __invoke(Project $project, Request $request): Response
+    #[Route('/project/{id}/participant/submit', name: 'app_project_participant_submit')]
+    #[IsGranted(ParticipantVoter::HAS_PARTICIPANT_DATA)]
+    public function __invoke(Project $project, #[CurrentUser] User $user, Request $request): Response
     {
-        $participantData = new ParticipantData();
-        $participantData->setProject($project);
+        $participant = $user->getParticipant();
 
-        $form = $this->createForm(ParticipantDataType::class, $participantData);
-        $form->handleRequest($request);
+        assert($participant !== null);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $participant = $this->participantService->handleParticipantRegistration($participantData, $project);
+        $this->participantService->submitParticipant($project, $participant);
 
-            if ($request->getPreferredFormat() === TurboBundle::STREAM_FORMAT) {
-                $request->setRequestFormat(TurboBundle::STREAM_FORMAT);
-
-                return $this->render('project/participant/success.stream.html.twig', [
-                    'participant' => $participant,
-                ]);
-            }
-
-            return $this->render('project/participant/registration-success.html.twig', [
-                'participant' => $participant
-            ]);
-        }
-
-        return $this->render('project/participant/registration.html.twig', [
-            'project' => $project,
-            'form' => $form->createView(),
-        ]);
+        $route = $request->headers->get('referer');
+        return $this->redirect($route);
     }
 }

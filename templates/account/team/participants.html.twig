@@ -1,0 +1,21 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Участники команды "{{ team.name }}" - Купаловские проекты{% endblock %}
+
+{% block body %}
+    <div class="container mt-5">
+        <h1>Участники команды "{{ team.name }}"</h1>
+
+        <!-- Participant List -->
+        <div class="list-group">
+            <!-- Participant Item -->
+            {# @var participant \App\Entity\TeamParticipant #}
+            {% for participant in participants %}
+                {{ component('TeamParticipantCard', {
+                    'participant': participant,
+                }) }}
+            {% endfor %}
+        </div>
+
+    </div>
+{% endblock %}

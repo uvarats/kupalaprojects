@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
-use App\Entity\Interface\AcceptableInterface;
 use App\Enum\AcceptanceEnum;
-use App\Repository\TeamRepository;
+use App\Enum\TeamParticipantRoleEnum;
+use App\Feature\Team\Repository\TeamRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -14,7 +14,7 @@ use Symfony\Bridge\Doctrine\Types\UuidType;
 use Symfony\Component\Uid\Uuid;
 
 #[ORM\Entity(repositoryClass: TeamRepository::class)]
-class Team implements AcceptableInterface
+class Team
 {
     #[ORM\Id]
     #[ORM\Column(type: UuidType::NAME, unique: true)]
@@ -25,35 +25,43 @@ class Team implements AcceptableInterface
     #[ORM\Column(length: 255)]
     private string $name;
 
-    #[ORM\OneToOne(targetEntity: Participant::class, cascade: ['persist', 'remove'])]
-    #[ORM\JoinColumn(nullable: false)]
-    private Participant $teamCreator;
+    /**
+     * @var Collection<int, TeamParticipant>
+     */
+    #[ORM\OneToMany(targetEntity: TeamParticipant::class, mappedBy: 'team', cascade: ['persist', 'remove'], orphanRemoval: true)]
+    private Collection $teamParticipants;
 
-    #[ORM\OneToMany(targetEntity: Participant::class, mappedBy: 'team', cascade: ['persist', 'remove'])]
-    private Collection $participants;
+    #[ORM\Column]
+    private \DateTimeImmutable $createdAt;
 
-    #[ORM\ManyToOne(targetEntity: Project::class, inversedBy: 'teams')]
-    #[ORM\JoinColumn(nullable: false)]
-    private Project $project;
+    #[ORM\Column]
+    private \DateTimeImmutable $updatedAt;
 
-    #[ORM\Column(enumType: AcceptanceEnum::class)]
-    private AcceptanceEnum $acceptance = AcceptanceEnum::NO_DECISION;
+    #[ORM\Column(options: ['default' => false])]
+    private bool $archived = false;
 
     public function __construct()
     {
-        $this->participants = new ArrayCollection();
+        $this->teamParticipants = new ArrayCollection();
+        $this->createdAt = new \DateTimeImmutable();
+        $this->updatedAt = new \DateTimeImmutable();
     }
 
     public static function create(
         string $name,
         Participant $creator,
-        Project $project,
     ): Team {
         $instance = new self();
 
         $instance->name = $name;
-        $instance->teamCreator = $creator;
-        $instance->project = $project;
+        $creator = new TeamParticipant(
+            $creator,
+            $instance,
+            TeamParticipantRoleEnum::CREATOR,
+            new \DateTimeImmutable(),
+        );
+
+        $instance->addTeamParticipant($creator);
 
         return $instance;
     }
@@ -75,85 +83,89 @@ class Team implements AcceptableInterface
         return $this;
     }
 
-    public function getTeamCreator(): Participant
-    {
-        return $this->teamCreator;
-    }
-
     /**
-     * @return Collection<int, Participant>
+     * @return Collection<int, TeamParticipant>
      */
-    public function getParticipants(): Collection
+    public function getTeamParticipants(): Collection
     {
-        return $this->participants;
+        return $this->teamParticipants;
     }
 
-    public function addParticipant(Participant $participant): self
+    public function addGeneralParticipant(Participant $participant): void
     {
-        if (!$this->participants->contains($participant)) {
-            $this->participants->add($participant);
-            $participant->setTeam($this);
-        }
+        $teamParticipant = TeamParticipant::makeGeneralParticipant($participant, $this);
 
-        return $this;
+        $this->addTeamParticipant($teamParticipant);
     }
 
-    public function removeParticipant(Participant $participant): self
+    public function hasParticipant(Participant $participant): bool
     {
-        if ($this->participants->removeElement($participant)) {
-            // set the owning side to null (unless already changed)
-            if ($participant->getTeam() === $this) {
-                $participant->setTeam(null);
+        foreach ($this->teamParticipants as $teamParticipant) {
+            if ($teamParticipant->getParticipant() === $participant) {
+                return true;
             }
         }
 
+        return false;
+    }
+
+    public function addTeamParticipant(TeamParticipant $teamParticipant): static
+    {
+        if (!$this->teamParticipants->contains($teamParticipant)) {
+            $this->teamParticipants->add($teamParticipant);
+        }
+
         return $this;
     }
 
-    public function getProject(): ?Project
+    public function removeTeamParticipant(TeamParticipant $teamParticipant): static
     {
-        return $this->project;
-    }
-
-    public function setProject(?Project $project): self
-    {
-        $this->project = $project;
+        $this->teamParticipants->removeElement($teamParticipant);
 
         return $this;
     }
 
-    public function getAcceptance(): AcceptanceEnum
-    {
-        return $this->acceptance;
+    public function isCreator(Participant $participant): bool{
+        $creator = $this->getCreator();
+
+        return $creator->getParticipant() === $participant;
     }
 
-    public function isApproved(): bool
+    private function getCreator(): TeamParticipant
     {
-        return $this->acceptance === AcceptanceEnum::APPROVED;
+        foreach ($this->teamParticipants as $teamParticipant) {
+            if ($teamParticipant->getRole() === TeamParticipantRoleEnum::CREATOR) {
+                return $teamParticipant;
+            }
+        }
+
+        throw new \LogicException('Team creator not found. What? This is impossible case. What did you do?');
     }
 
-    public function isRejected(): bool
+    public function getCreatedAt(): \DateTimeImmutable
     {
-        return $this->acceptance === AcceptanceEnum::REJECTED;
+        return $this->createdAt;
     }
 
-    public function isWaitingForDecision(): bool
+    public function getUpdatedAt(): \DateTimeImmutable
     {
-        return $this->acceptance == AcceptanceEnum::NO_DECISION;
+        return $this->updatedAt;
     }
 
-    public function approve(): void
+    public function setUpdatedAt(\DateTimeImmutable $updatedAt): static
     {
-        $this->acceptance = AcceptanceEnum::APPROVED;
+        $this->updatedAt = $updatedAt;
+
+        return $this;
     }
 
-    public function reject(): void
+    public function isArchived(): bool
     {
-        $this->acceptance = AcceptanceEnum::REJECTED;
+        return $this->archived;
     }
 
-    public function stage(): void
+    public function archive(): void
     {
-        $this->acceptance = AcceptanceEnum::NO_DECISION;
+        $this->archived = true;
     }
 }

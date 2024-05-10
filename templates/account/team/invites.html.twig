@@ -1,0 +1,27 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Приглашения проекта {{ team.name }} - Купаловские проекты{% endblock %}
+
+{% block body %}
+    <div class="container mt-5">
+        <h1>Приглашения команды "{{ team.name }}"</h1>
+
+        <!-- Invitation Form -->
+        {{ component('TeamInviteForm', {
+            'team': team,
+        }) }}
+
+        <!-- List of Invites -->
+        <h2>Приглашения</h2>
+        <div class="list-group">
+            <!-- Example Invite Item -->
+            {# @var invite \App\Entity\TeamInvite #}
+            {% for invite in invites %}
+                {{ component('TeamInviteCard', {
+                    'invite': invite,
+                }) }}
+            {% endfor %}
+        </div>
+
+    </div>
+{% endblock %}

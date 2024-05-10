@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace App\Entity;
 
 use App\Enum\ProjectStateEnum;
+use App\Feature\Project\Repository\ProjectRepository;
 use App\Interface\DateRangeInterface;
-use App\Repository\ProjectRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
@@ -60,14 +60,20 @@ class Project implements DateRangeInterface
     #[ORM\Column(type: Types::TEXT)]
     private string $goal;
 
-    #[ORM\OneToMany(mappedBy: 'project', targetEntity: Participant::class)]
-    private Collection $participants;
-
-    #[ORM\OneToMany(mappedBy: 'project', targetEntity: Team::class, orphanRemoval: true)]
-    private Collection $teams;
-
     #[ORM\Column(options: ['default' => false])]
     private bool $teamsAllowed = false;
+
+    /**
+     * @var Collection<int, ProjectParticipant>
+     */
+    #[ORM\OneToMany(targetEntity: ProjectParticipant::class, mappedBy: 'project', cascade: ['persist', 'remove'], orphanRemoval: true)]
+    private Collection $participants;
+
+    /**
+     * @var Collection<int, ProjectTeam>
+     */
+    #[ORM\OneToMany(targetEntity: ProjectTeam::class, mappedBy: 'project', cascade: ['persist', 'remove'], orphanRemoval: true)]
+    private Collection $teams;
 
     public function __construct()
     {
@@ -306,66 +312,6 @@ class Project implements DateRangeInterface
         return $this;
     }
 
-    /**
-     * @return Collection<int, Participant>
-     */
-    public function getParticipants(): Collection
-    {
-        return $this->participants;
-    }
-
-    public function addParticipant(Participant $participant): self
-    {
-        if (!$this->participants->contains($participant)) {
-            $this->participants->add($participant);
-            $participant->setProject($this);
-        }
-
-        return $this;
-    }
-
-    public function removeParticipant(Participant $participant): self
-    {
-        if ($this->participants->removeElement($participant)) {
-            // set the owning side to null (unless already changed)
-            if ($participant->getProject() === $this) {
-                $participant->setProject(null);
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Team>
-     */
-    public function getTeams(): Collection
-    {
-        return $this->teams;
-    }
-
-    public function addTeam(Team $team): self
-    {
-        if (!$this->teams->contains($team)) {
-            $this->teams->add($team);
-            $team->setProject($this);
-        }
-
-        return $this;
-    }
-
-    public function removeTeam(Team $team): self
-    {
-        if ($this->teams->removeElement($team)) {
-            // set the owning side to null (unless already changed)
-            if ($team->getProject() === $this) {
-                $team->setProject(null);
-            }
-        }
-
-        return $this;
-    }
-
     public function isTeamsAllowed(): bool
     {
         return $this->teamsAllowed;
@@ -381,6 +327,54 @@ class Project implements DateRangeInterface
     public function disallowTeams(): Project
     {
         $this->teamsAllowed = false;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, ProjectParticipant>
+     */
+    public function getParticipants(): Collection
+    {
+        return $this->participants;
+    }
+
+    public function submitParticipant(Participant $participant): ProjectParticipant
+    {
+        $projectParticipant = ProjectParticipant::make($this, $participant);
+
+        $this->participants->add($projectParticipant);
+
+        return $projectParticipant;
+    }
+
+    public function hasParticipant(Participant $participant): bool
+    {
+        return !$this->participants->filter(function (ProjectParticipant $projectParticipant) use ($participant) {
+            return $projectParticipant->getParticipant() === $participant;
+        })->isEmpty();
+    }
+
+    /**
+     * @return Collection<int, ProjectTeam>
+     */
+    public function getTeams(): Collection
+    {
+        return $this->teams;
+    }
+
+    public function addProjectTeam(ProjectTeam $projectTeam): static
+    {
+        if (!$this->teams->contains($projectTeam)) {
+            $this->teams->add($projectTeam);
+        }
+
+        return $this;
+    }
+
+    public function removeProjectTeam(ProjectTeam $projectTeam): static
+    {
+        $this->teams->removeElement($projectTeam);
 
         return $this;
     }

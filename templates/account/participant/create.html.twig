@@ -1,0 +1,16 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="container">
+        <h2 class="text-center">Создание участника для текущего аккаунта</h2>
+        <div>
+            <span class="text-info">Пожалуйста, заполните поле "Учреждение образования". Вся остальная информация (ФИО, email) будет унаследована из текущего аккаунта.</span>
+        </div>
+        <div>
+            {{ component('AccountParticipantForm', {
+                initialFormData: data,
+                form: form,
+            }) }}
+        </div>
+    </div>
+{% endblock %}

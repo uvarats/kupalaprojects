@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Entity;
 
 use App\Enum\ProjectStateEnum;
-use App\Repository\ProjectStateLogRepository;
+use App\Feature\Project\Repository\ProjectStateLogRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Types\UuidType;
 use Symfony\Component\Uid\Uuid;

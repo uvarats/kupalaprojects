@@ -12,6 +12,11 @@
             <a href="{{ path('app_projects') }}" class="btn btn-danger">Очистить фильтр</a>
             {{ form_end(search) }}
             <div id="projects" class="mb-3">
+                {% if not is_granted('HAS_PARTICIPANT_DATA') %}
+                    <div class="text-danger mb-3">
+                        <span>Для регистрации на проекты необходимо создать аккаунт и заполнить карточку участника. После этого кнопки станут активными.</span>
+                    </div>
+                {% endif %}
                 {% if projects.count > 0 %}
                     {# @var project \App\Entity\Project #}
                     {% for project in projects %}
@@ -27,22 +32,39 @@
                                 <p class="mb-0">Участники: {{ project|orientedOn }}</p>
                                 <p class="mb-0">Предметные области: {{ project|subjects }}</p>
                             </a>
-                            <div class="d-flex flex-row">
-                                <div class="me-2">
-                                    <form method="get"
-                                          action="{{ path('app_project_participant_registration', {'id': project.id }) }}">
-                                        <button class="btn btn-primary">Регистрация участника</button>
-                                    </form>
-                                </div>
-                                {% if project.teamsAllowed %}
-                                    <div>
-                                        <form
-                                                action="{{ path('app_project_registration_team', {'id': project.id}) }}">
-                                            <button class="btn btn-secondary">Регистрация команды</button>
+                            {% if is_granted('HAS_PARTICIPANT_DATA') %}
+                                <div class="d-flex flex-row">
+                                    <div class="me-2">
+                                        <form method="get"
+                                              action="{{ path('app_project_participant_submit', {'id': project.id }) }}">
+                                            <button class="btn btn-primary">Зарегистрироваться на проект</button>
                                         </form>
                                     </div>
-                                {% endif %}
-                            </div>
+                                    {% if project.teamsAllowed %}
+                                        <div>
+                                            <form
+                                                    action="{{ path('app_project_registration_team', {'id': project.id}) }}">
+                                                <button class="btn btn-secondary">Регистрация команды</button>
+                                            </form>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            {% else %}
+                                <div class="d-flex flex-row">
+                                    <div class="me-2">
+                                        <form>
+                                            <button class="btn btn-primary" disabled>Зарегистрироваться на проект</button>
+                                        </form>
+                                    </div>
+                                    {% if project.teamsAllowed %}
+                                        <div>
+                                            <form>
+                                                <button class="btn btn-secondary" disabled>Регистрация команды</button>
+                                            </form>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            {% endif %}
                         </div>
                     {% endfor %}
                 {% else %}

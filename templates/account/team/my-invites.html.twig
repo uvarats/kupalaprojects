@@ -1,0 +1,24 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Мои приглашения - Купаловские проекты{% endblock %}
+
+{% block body %}
+    <div class="container mt-5">
+        <h1>Мои приглашения</h1>
+
+        <!-- List of Team Invites -->
+        <div class="list-group">
+            {% if not invites.empty %}
+                {# @var invite \App\Entity\TeamInvite #}
+                {% for invite in invites %}
+                    {{ component('ParticipantTeamInvite', {
+                        'invite': invite,
+                    }) }}
+                {% endfor %}
+            {% else %}
+                <span>У Вас нет активных приглашений.</span>
+            {% endif %}
+        </div>
+
+    </div>
+{% endblock %}

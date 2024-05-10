@@ -9,7 +9,7 @@ use App\Entity\EventDates;
 use App\Entity\Project;
 use App\Enum\ProjectStateEnum;
 use App\Enum\ProjectTransitionEnum;
-use App\Service\Mail\ProjectMailerService;
+use App\Feature\Project\Service\ProjectMailerService;
 use App\Service\User\UserService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Workflow\WorkflowInterface;

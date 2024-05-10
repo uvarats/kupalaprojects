@@ -1,0 +1,48 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Участие в проектах - Купаловские проекты{% endblock %}
+
+{% block body %}
+    <div class="container mt-5">
+        <h1 class="mb-4">Участие в проектах</h1>
+
+        <h2>Индивидуальное участие</h2>
+        <div class="row">
+            <!-- Individual Project Cards -->
+            {# @var projectParticipant \App\Entity\ProjectParticipant #}
+            {% for projectParticipant in individualProjects %}
+                <div class="col-md-4 mb-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ projectParticipant.project.name }}</h5>
+                            <p class="card-text">Статус заявки: {{ projectParticipant.acceptance.name }}</p>
+                            <!-- If under moderation, show retract button -->
+                            {% if projectParticipant.acceptance.noDecision %}
+                                <button class="btn btn-danger">Retract Application</button>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+            <!-- Add more individual project cards here if needed -->
+        </div>
+
+        <h2 class="mt-5">Участие команд</h2>
+        <div class="row">
+            <!-- Team Project Cards -->
+            <div class="col-md-4 mb-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Project Name</h5>
+                        <p class="card-text">Application Status: Under Moderation</p>
+                        <!-- If team owner, show retract button -->
+                        <!-- <button class="btn btn-danger">Retract Application</button> -->
+                        <p class="card-text">Team Status: Owner</p>
+                    </div>
+                </div>
+            </div>
+            <!-- Add more team project cards here if needed -->
+        </div>
+
+    </div>
+{% endblock %}

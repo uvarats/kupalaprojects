@@ -1,0 +1,30 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Регистрация пользователя - Купаловские проекты{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <div class="d-flex justify-content-center mt-3">
+            <h2>Регистрация пользователя</h2>
+        </div>
+        <turbo-frame id="signup-form">
+            {{ component('AccountSignUpForm', {
+                form: form,
+                data: data,
+            }) }}
+        </turbo-frame>
+    </div>
+{% endblock %}
+
+{% block success_stream %}
+<turbo-stream action="replace" target="signup-form">
+    <template>
+        <div class="container mt-5">
+            <div class="alert alert-success" role="alert">
+                Вы успешно зарегистрировались на платформе "Купаловские проекты".
+                Данные для входа направлены в письме на почту {{ user.email }}.
+            </div>
+        </div>
+    </template>
+</turbo-stream>
+{% endblock %}

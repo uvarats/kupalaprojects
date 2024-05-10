@@ -1,0 +1,13 @@
+<div {{ attributes }}>
+    <div id="registration-form">
+        {{ form_start(form) }}
+        <div class="mb-3">
+            {{ form_row(form.educationEstablishment) }}
+        </div>
+        <div class="mb-3">
+            {{ form_errors(form) }}
+        </div>
+        <button class="btn btn-primary">Сохранить</button>
+        {{ form_end(form) }}
+    </div>
+</div>

@@ -4,11 +4,10 @@ declare(strict_types=1);
 
 namespace App\Service\Project;
 
-use App\Dto\Form\Participant\ParticipantData;
 use App\Entity\Participant;
 use App\Entity\Project;
+use App\Entity\ProjectParticipant;
 use App\Enum\AcceptanceEnum;
-use App\ValueObject\PersonName;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\Mailer\MailerInterface;
@@ -22,30 +21,16 @@ final readonly class ParticipantService
         private TranslatorInterface $translator,
     ) {}
 
-    public function handleParticipantRegistration(ParticipantData $participantData, Project $project): Participant
+    public function submitParticipant(Project $project, Participant $participant): void
     {
-        $name = PersonName::make(
-            lastName: $participantData->getLastName(),
-            firstName: $participantData->getFirstName(),
-            middleName: $participantData->getMiddleName(),
-        );
+        $project->submitParticipant($participant);
 
-        $participant = Participant::make(
-            project: $project,
-            name: $name,
-            educationEstablishment: $participantData->getEducationEstablishment(),
-            email: $participantData->getEmail(),
-        );
-
-        $this->entityManager->persist($participant);
         $this->entityManager->flush();
 
         $this->sendMail($participant);
-
-        return $participant;
     }
 
-    public function makeParticipantDecision(Participant $participant, string $decision): void
+    public function makeParticipantDecision(ProjectParticipant $participant, string $decision): void
     {
         $currentAcceptance = $participant->getAcceptance();
         if ($currentAcceptance !== AcceptanceEnum::NO_DECISION) {

@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Controller\Project;
 
 use App\Dto\Form\Project\ProjectData;
-use App\Form\ProjectType;
+use App\Feature\Project\Form\ProjectType;
 use App\Security\Voter\ProjectAuthorVoter;
 use App\Service\Project\ProjectService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
