@@ -31,7 +31,6 @@ final class Version20240505142842 extends AbstractMigration
     public function down(Schema $schema): void
     {
         // this down() migration is auto-generated, please modify it to your needs
-        $this->addSql('CREATE SCHEMA public');
         $this->addSql('ALTER TABLE team ALTER created_at TYPE TIMESTAMP(0) WITHOUT TIME ZONE');
         $this->addSql('ALTER TABLE team ALTER created_at SET DEFAULT CURRENT_TIMESTAMP');
         $this->addSql('ALTER TABLE team ALTER created_at DROP NOT NULL');

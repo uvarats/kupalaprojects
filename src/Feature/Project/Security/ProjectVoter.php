@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Security\Voter;
+namespace App\Feature\Project\Security;
 
 use App\Entity\Project;
 use App\Entity\User;

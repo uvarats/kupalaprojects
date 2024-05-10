@@ -2,10 +2,14 @@
 
 declare(strict_types=1);
 
-namespace App\Form;
+namespace App\Feature\Project\Form;
 
 use App\Dto\Form\Project\ProjectData;
 use App\Entity\Festival;
+use App\Form\EducationSubGroupAutocompleteField;
+use App\Form\EventDatesType;
+use App\Form\ProjectAwardType;
+use App\Form\ProjectSubjectAutocompleteField;
 use App\Repository\FestivalRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;

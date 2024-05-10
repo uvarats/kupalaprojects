@@ -104,6 +104,11 @@ class Participant
         return $this->getName()->format(NameFormatEnum::LAST_FIRST_MIDDLE);
     }
 
+    public function getLastAndFirstName(): string
+    {
+        return $this->getName()->format(NameFormatEnum::LAST_FIRST);
+    }
+
     public function getName(): PersonName
     {
         return PersonName::make(

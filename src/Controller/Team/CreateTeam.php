@@ -22,7 +22,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 final class CreateTeam extends AbstractController
 {
     public function __construct(
-        private AccountTeamService $teamService,
+        private readonly AccountTeamService $teamService,
     ) {}
 
     // todo: participant resolver

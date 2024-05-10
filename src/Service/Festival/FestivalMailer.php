@@ -8,7 +8,7 @@ use App\Entity\FestivalMail;
 use App\Entity\Project;
 use App\Enum\FestivalMailPlaceholderEnum;
 use App\Enum\NameFormatEnum;
-use App\Repository\ProjectRepository;
+use App\Feature\Project\Repository\ProjectRepository;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
 use Symfony\Component\String\UnicodeString;

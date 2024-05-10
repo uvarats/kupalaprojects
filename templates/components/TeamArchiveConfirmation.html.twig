@@ -1,0 +1,11 @@
+<div {{ attributes }}>
+    <h1>Подтверждение архивации</h1>
+
+    <div class="alert alert-danger" role="alert">
+        Вы действительно хотите архивировать команду "{{ this.team.name }}"? В архивные команды нельзя приглашать новых участников, исключать текущих, а также заявлять для участия в проектах.
+    </div>
+
+    <!-- Disbandment Confirmation Form -->
+    <button type="submit" data-action="live#action" data-live-action-param="confirm" class="btn btn-danger">Архивировать</button>
+    <button data-action="live#action" data-live-action-param="cancel" class="btn btn-secondary">Отмена</button>
+</div>

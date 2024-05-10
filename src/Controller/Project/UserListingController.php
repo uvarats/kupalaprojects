@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Controller\Project;
 
 use App\Entity\User;
-use App\Repository\ProjectRepository;
+use App\Feature\Project\Repository\ProjectRepository;
 use Pagerfanta\Doctrine\ORM\QueryAdapter;
 use Pagerfanta\Pagerfanta;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;

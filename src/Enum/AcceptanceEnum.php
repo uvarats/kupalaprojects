@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace App\Enum;
 
-enum AcceptanceEnum: int
+enum AcceptanceEnum: string
 {
-    case NO_DECISION = 0;
-    case APPROVED = 1;
-    case REJECTED = 2;
+    case NO_DECISION = 'no_decision';
+    case APPROVED = 'approved';
+    case REJECTED = 'rejected';
 
     public static function fromString(string $decision): AcceptanceEnum
     {

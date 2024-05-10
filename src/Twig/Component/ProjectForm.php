@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Twig\Component;
 
 use App\Dto\Form\Project\ProjectData;
-use App\Form\ProjectType;
+use App\Feature\Project\Form\ProjectType;
 use App\Repository\Interface\FestivalRepositoryInterface;
 use App\ValueObject\Entity\FestivalId;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;

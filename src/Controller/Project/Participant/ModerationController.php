@@ -6,7 +6,7 @@ namespace App\Controller\Project\Participant;
 
 use App\Entity\Project;
 use App\Feature\Project\Repository\ProjectParticipantRepository;
-use App\Security\Voter\ProjectVoter;
+use App\Feature\Project\Security\ProjectVoter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;

@@ -26,8 +26,8 @@
                         <div class="card-body">
                             <ul class="list-group list-group-flush">
                                 <li class="list-group-item"><a href="{{ path('app_account_team_invites', {id: createdTeam.id}) }}">Приглашения</a></li>
-                                <li class="list-group-item"><a href="#">Участники</a></li>
-                                <li class="list-group-item"><a href="#" class="text-danger">Распустить</a></li>
+                                <li class="list-group-item"><a href="{{ path('app_account_team_participants', {id: createdTeam.id}) }}">Участники</a></li>
+                                <li class="list-group-item"><a href="{{ path('app_account_team_archive', {id: createdTeam.id}) }}" class="text-danger">Архивировать</a></li>
                             </ul>
                         </div>
                     </div>

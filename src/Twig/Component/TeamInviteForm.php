@@ -17,6 +17,7 @@ use App\Feature\Team\Security\TeamVoter;
 use App\Feature\Team\Service\TeamInviteService;
 use App\Feature\Team\ValueObject\TeamId;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormInterface;
 use Symfony\UX\LiveComponent\Attribute\AsLiveComponent;
 use Symfony\UX\LiveComponent\Attribute\LiveAction;
@@ -42,17 +43,27 @@ final class TeamInviteForm extends AbstractController
     }
 
     #[LiveAction]
-    public function save(TeamInviteService $inviteService, #[CurrentParticipant] Participant $participant) {
+    public function save(TeamInviteService $inviteService, #[CurrentParticipant] Participant $participant)
+    {
+        $this->denyAccessUnlessGranted(TeamVoter::IS_TEAM_OWNER, $this->team);
+
         $this->submitForm();
 
         /** @var InviteData $data */
         $data = $this->getForm()->getData();
         $issueRequest = $this->makeIssueRequest($this->team, $participant, $data);
-        $inviteService->issue($issueRequest);
+        $issueResult = $inviteService->issue($issueRequest);
+
+        $this->formView = null;
+        foreach ($issueResult->getErrors() as $error) {
+            $this->getForm()->addError(new FormError($error));
+        }
 
         //$this->resetForm();
 
-        return $this->redirectToRoute('app_account_team_invites', ['id' => $this->team->getId()]);
+        if ($issueResult->isSuccess()) {
+            return $this->redirectToRoute('app_account_team_invites', ['id' => $this->team->getId()]);
+        }
     }
 
     private function makeIssueRequest(Team $team, Participant $participant, InviteData $data): IssueInvitesRequest

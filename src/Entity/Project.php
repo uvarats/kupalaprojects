@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace App\Entity;
 
 use App\Enum\ProjectStateEnum;
+use App\Feature\Project\Repository\ProjectRepository;
 use App\Interface\DateRangeInterface;
-use App\Repository\ProjectRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
@@ -66,10 +66,13 @@ class Project implements DateRangeInterface
     /**
      * @var Collection<int, ProjectParticipant>
      */
-    #[ORM\OneToMany(targetEntity: ProjectParticipant::class, mappedBy: 'project', orphanRemoval: true, cascade: ['persist', 'remove'])]
+    #[ORM\OneToMany(targetEntity: ProjectParticipant::class, mappedBy: 'project', cascade: ['persist', 'remove'], orphanRemoval: true)]
     private Collection $participants;
 
-    #[ORM\ManyToMany(targetEntity: Team::class, orphanRemoval: true)]
+    /**
+     * @var Collection<int, ProjectTeam>
+     */
+    #[ORM\OneToMany(targetEntity: ProjectTeam::class, mappedBy: 'project', cascade: ['persist', 'remove'], orphanRemoval: true)]
     private Collection $teams;
 
     public function __construct()
@@ -77,8 +80,8 @@ class Project implements DateRangeInterface
         $this->subjects = new ArrayCollection();
         $this->awards = new ArrayCollection();
         $this->orientedOn = new ArrayCollection();
-        $this->teams = new ArrayCollection();
         $this->participants = new ArrayCollection();
+        $this->teams = new ArrayCollection();
     }
 
     public static function create(
@@ -309,36 +312,6 @@ class Project implements DateRangeInterface
         return $this;
     }
 
-    /**
-     * @return Collection<int, Team>
-     */
-    public function getTeams(): Collection
-    {
-        return $this->teams;
-    }
-
-    public function addTeam(Team $team): self
-    {
-        if (!$this->teams->contains($team)) {
-            $this->teams->add($team);
-            $team->setProject($this);
-        }
-
-        return $this;
-    }
-
-    public function removeTeam(Team $team): self
-    {
-        if ($this->teams->removeElement($team)) {
-            // set the owning side to null (unless already changed)
-            if ($team->getProject() === $this) {
-                $team->setProject(null);
-            }
-        }
-
-        return $this;
-    }
-
     public function isTeamsAllowed(): bool
     {
         return $this->teamsAllowed;
@@ -380,5 +353,29 @@ class Project implements DateRangeInterface
         return !$this->participants->filter(function (ProjectParticipant $projectParticipant) use ($participant) {
             return $projectParticipant->getParticipant() === $participant;
         })->isEmpty();
+    }
+
+    /**
+     * @return Collection<int, ProjectTeam>
+     */
+    public function getTeams(): Collection
+    {
+        return $this->teams;
+    }
+
+    public function addProjectTeam(ProjectTeam $projectTeam): static
+    {
+        if (!$this->teams->contains($projectTeam)) {
+            $this->teams->add($projectTeam);
+        }
+
+        return $this;
+    }
+
+    public function removeProjectTeam(ProjectTeam $projectTeam): static
+    {
+        $this->teams->removeElement($projectTeam);
+
+        return $this;
     }
 }

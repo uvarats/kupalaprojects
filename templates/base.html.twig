@@ -45,7 +45,7 @@
                             <li><a class="dropdown-item" href="{{ path('app_projects_personal') }}">Мои проекты</a></li>
                             {% if is_granted('HAS_PARTICIPANT_DATA') %}
                                 <li><a class="dropdown-item" href="{{ path('app_account_teams') }}">Мои команды</a></li>
-                                <li><a class="dropdown-item" href="#">Мои приглашения</a></li>
+                                <li><a class="dropdown-item" href="{{ path('app_account_my_team_invites') }}">Мои приглашения</a></li>
                                 <li><a class="dropdown-item" href="{{ path('app_account_participant_projects') }}">Участие в проектах</a></li>
                             {% endif %}
                             <li><a class="dropdown-item" href="{{ path('app_settings') }}">Настройки</a></li>

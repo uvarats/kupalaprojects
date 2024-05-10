@@ -47,14 +47,24 @@ class TeamInvite
         return $this->id;
     }
 
-    public function getIssuer(): ?Participant
+    public function getIssuer(): Participant
     {
         return $this->issuer;
     }
 
-    public function getRecipient(): ?Participant
+    public function getRecipient(): Participant
     {
         return $this->recipient;
+    }
+
+    public function isRecipient(Participant $participant): bool
+    {
+        return $this->recipient === $participant;
+    }
+
+    public function isIssuer(Participant $participant): bool
+    {
+        return $this->issuer === $participant;
     }
 
     public function getStatus(): InviteStatusEnum
@@ -62,9 +72,58 @@ class TeamInvite
         return $this->status;
     }
 
+    public function isPending(): bool
+    {
+        return $this->status === InviteStatusEnum::PENDING;
+    }
+
+    public function isAccepted(): bool
+    {
+        return $this->status === InviteStatusEnum::ACCEPTED;
+    }
+
+    public function isRejected(): bool
+    {
+        return $this->status === InviteStatusEnum::REJECTED;
+    }
+
+    public function isRevoked(): bool
+    {
+        return $this->status === InviteStatusEnum::REVOKED;
+    }
+
+    public function accept(): void
+    {
+        if ($this->status !== InviteStatusEnum::PENDING) {
+            return;
+        }
+
+        $participant = $this->recipient;
+        $this->team->addGeneralParticipant($participant);
+
+        $this->changeStatus(InviteStatusEnum::ACCEPTED);
+    }
+
+    public function reject(): void
+    {
+        if ($this->status !== InviteStatusEnum::PENDING) {
+            return;
+        }
+
+        $this->changeStatus(InviteStatusEnum::REJECTED);
+    }
+
     public function revoke(): void
     {
-        $this->status = InviteStatusEnum::REVOKED;
+        if ($this->status !== InviteStatusEnum::PENDING) {
+            return;
+        }
+
+        $this->changeStatus(InviteStatusEnum::REVOKED);
+    }
+
+    private function changeStatus(InviteStatusEnum $status) {
+        $this->status = $status;
         $this->touchUpdatedAt();
     }
 

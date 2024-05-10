@@ -2,29 +2,28 @@
 
 declare(strict_types=1);
 
-namespace App\Repository;
+namespace App\Feature\Project\Repository;
 
-use App\Entity\ProjectSubject;
+use App\Entity\ProjectAuthor;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\ORM\Query;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @extends ServiceEntityRepository<ProjectSubject>
+ * @extends ServiceEntityRepository<ProjectAuthor>
  *
- * @method ProjectSubject|null find($id, $lockMode = null, $lockVersion = null)
- * @method ProjectSubject|null findOneBy(array $criteria, array $orderBy = null)
- * @method ProjectSubject[]    findAll()
- * @method ProjectSubject[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method ProjectAuthor|null find($id, $lockMode = null, $lockVersion = null)
+ * @method ProjectAuthor|null findOneBy(array $criteria, array $orderBy = null)
+ * @method ProjectAuthor[]    findAll()
+ * @method ProjectAuthor[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class ProjectSubjectRepository extends ServiceEntityRepository
+class ProjectAuthorRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, ProjectSubject::class);
+        parent::__construct($registry, ProjectAuthor::class);
     }
 
-    public function save(ProjectSubject $entity, bool $flush = false): void
+    public function save(ProjectAuthor $entity, bool $flush = false): void
     {
         $this->getEntityManager()->persist($entity);
 
@@ -33,7 +32,7 @@ class ProjectSubjectRepository extends ServiceEntityRepository
         }
     }
 
-    public function remove(ProjectSubject $entity, bool $flush = false): void
+    public function remove(ProjectAuthor $entity, bool $flush = false): void
     {
         $this->getEntityManager()->remove($entity);
 
@@ -42,14 +41,8 @@ class ProjectSubjectRepository extends ServiceEntityRepository
         }
     }
 
-    public function getQuery(): Query
-    {
-        return $this->createQueryBuilder('project_subject')
-            ->getQuery();
-    }
-
     //    /**
-    //     * @return ProjectSubject[] Returns an array of ProjectSubject objects
+    //     * @return ProjectAuthor[] Returns an array of ProjectAuthor objects
     //     */
     //    public function findByExampleField($value): array
     //    {
@@ -63,7 +56,7 @@ class ProjectSubjectRepository extends ServiceEntityRepository
     //        ;
     //    }
 
-    //    public function findOneBySomeField($value): ?ProjectSubject
+    //    public function findOneBySomeField($value): ?ProjectAuthor
     //    {
     //        return $this->createQueryBuilder('p')
     //            ->andWhere('p.exampleField = :val')

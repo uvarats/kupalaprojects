@@ -28,13 +28,23 @@ class TeamParticipant
         #[ORM\JoinColumn(nullable: false)]
         private readonly Participant $participant,
         #[ORM\ManyToOne(inversedBy: 'teamParticipants')]
-        #[ORM\JoinColumn(nullable: false)]
+        #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
         private readonly Team $team,
         #[ORM\Column(length: 255, enumType: TeamParticipantRoleEnum::class)]
         private TeamParticipantRoleEnum $role,
         #[ORM\Column]
         private readonly \DateTimeImmutable $joinedAt,
     ) {}
+
+    public static function makeGeneralParticipant(Participant $participant, Team $team): self
+    {
+        return new self(
+            participant: $participant,
+            team: $team,
+            role: TeamParticipantRoleEnum::GENERAL_PARTICIPANT,
+            joinedAt: new \DateTimeImmutable(),
+        );
+    }
 
     public function getId(): ?Uuid
     {
@@ -63,7 +73,12 @@ class TeamParticipant
         return $this;
     }
 
-    public function getJoinedAt(): ?\DateTimeImmutable
+    public function isCreator(): bool
+    {
+        return $this->role === TeamParticipantRoleEnum::CREATOR;
+    }
+
+    public function getJoinedAt(): \DateTimeImmutable
     {
         return $this->joinedAt;
     }

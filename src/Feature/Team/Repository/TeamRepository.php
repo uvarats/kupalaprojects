@@ -10,6 +10,7 @@ use App\Enum\TeamParticipantRoleEnum;
 use App\Feature\Team\Collection\TeamCollection;
 use App\Feature\Team\ValueObject\TeamId;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -75,11 +76,28 @@ class TeamRepository extends ServiceEntityRepository
 
     private function createParticipantAndRoleQuery(Participant $participant, TeamParticipantRoleEnum $role): QueryBuilder
     {
-        return $this->createQueryBuilder('t')
-            ->leftJoin('t.teamParticipants', 'tp')
-            ->where('tp.participant = :participant')
-            ->andWhere('tp.role = :role')
+        $qb = $this->createQueryBuilder('t');
+
+        return $qb
+            ->innerJoin(
+                't.teamParticipants', 'tp',
+                Join::WITH,
+                $qb->expr()->andX(
+                    $qb->expr()->eq('t.archived', ':archived'),
+                    $qb->expr()->eq('tp.participant', ':participant'),
+                    $qb->expr()->eq('tp.role', ':role'),
+                ),
+            )
             ->setParameter('participant', $participant)
-            ->setParameter('role', $role);
+            ->setParameter('role', $role)
+            ->setParameter('archived', false);
+    }
+
+    public function createQueryBuilderForTeamOnProjectRegistration(Participant $owner): QueryBuilder
+    {
+        return $this->createQueryBuilder('t')
+            ->innerJoin('t.teamParticipants', 'tp', Join::WITH, 'tp.participant = :participant AND tp.role = :role')
+            ->setParameter('participant', $owner)
+            ->setParameter('role', TeamParticipantRoleEnum::CREATOR);
     }
 }

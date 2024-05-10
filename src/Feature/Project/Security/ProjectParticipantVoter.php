@@ -2,11 +2,12 @@
 
 declare(strict_types=1);
 
-namespace App\Security\Voter;
+namespace App\Feature\Project\Security;
 
 use App\Entity\Participant;
 use App\Entity\Project;
 use App\Entity\User;
+use App\Security\Voter\ParticipantVoter;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;

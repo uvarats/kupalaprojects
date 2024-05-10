@@ -37,6 +37,9 @@ class Team
     #[ORM\Column]
     private \DateTimeImmutable $updatedAt;
 
+    #[ORM\Column(options: ['default' => false])]
+    private bool $archived = false;
+
     public function __construct()
     {
         $this->teamParticipants = new ArrayCollection();
@@ -88,6 +91,24 @@ class Team
         return $this->teamParticipants;
     }
 
+    public function addGeneralParticipant(Participant $participant): void
+    {
+        $teamParticipant = TeamParticipant::makeGeneralParticipant($participant, $this);
+
+        $this->addTeamParticipant($teamParticipant);
+    }
+
+    public function hasParticipant(Participant $participant): bool
+    {
+        foreach ($this->teamParticipants as $teamParticipant) {
+            if ($teamParticipant->getParticipant() === $participant) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public function addTeamParticipant(TeamParticipant $teamParticipant): static
     {
         if (!$this->teamParticipants->contains($teamParticipant)) {
@@ -117,6 +138,8 @@ class Team
                 return $teamParticipant;
             }
         }
+
+        throw new \LogicException('Team creator not found. What? This is impossible case. What did you do?');
     }
 
     public function getCreatedAt(): \DateTimeImmutable
@@ -134,5 +157,15 @@ class Team
         $this->updatedAt = $updatedAt;
 
         return $this;
+    }
+
+    public function isArchived(): bool
+    {
+        return $this->archived;
+    }
+
+    public function archive(): void
+    {
+        $this->archived = true;
     }
 }

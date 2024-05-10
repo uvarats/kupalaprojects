@@ -1,0 +1,15 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Подтверждение архивации команды - Купаловские проекты{% endblock %}
+
+{% block body %}
+    <div class="container mt-3">
+        {% if not team.archived %}
+            {{ component('TeamArchiveConfirmation', {'team': team}) }}
+        {% else %}
+            <div class="alert alert-warning">
+                Данная команда уже в архиве.
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}

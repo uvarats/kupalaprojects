@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Service\Mail;
+namespace App\Feature\Project\Service;
 
 use Symfony\Component\Mailer\MailerInterface;
 

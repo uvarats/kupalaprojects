@@ -2,28 +2,28 @@
 
 declare(strict_types=1);
 
-namespace App\Repository;
+namespace App\Feature\Project\Repository;
 
-use App\Entity\ProjectAuthor;
+use App\Entity\ProjectAward;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @extends ServiceEntityRepository<ProjectAuthor>
+ * @extends ServiceEntityRepository<ProjectAward>
  *
- * @method ProjectAuthor|null find($id, $lockMode = null, $lockVersion = null)
- * @method ProjectAuthor|null findOneBy(array $criteria, array $orderBy = null)
- * @method ProjectAuthor[]    findAll()
- * @method ProjectAuthor[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method ProjectAward|null find($id, $lockMode = null, $lockVersion = null)
+ * @method ProjectAward|null findOneBy(array $criteria, array $orderBy = null)
+ * @method ProjectAward[]    findAll()
+ * @method ProjectAward[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class ProjectAuthorRepository extends ServiceEntityRepository
+class ProjectAwardRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, ProjectAuthor::class);
+        parent::__construct($registry, ProjectAward::class);
     }
 
-    public function save(ProjectAuthor $entity, bool $flush = false): void
+    public function save(ProjectAward $entity, bool $flush = false): void
     {
         $this->getEntityManager()->persist($entity);
 
@@ -32,7 +32,7 @@ class ProjectAuthorRepository extends ServiceEntityRepository
         }
     }
 
-    public function remove(ProjectAuthor $entity, bool $flush = false): void
+    public function remove(ProjectAward $entity, bool $flush = false): void
     {
         $this->getEntityManager()->remove($entity);
 
@@ -42,7 +42,7 @@ class ProjectAuthorRepository extends ServiceEntityRepository
     }
 
     //    /**
-    //     * @return ProjectAuthor[] Returns an array of ProjectAuthor objects
+    //     * @return ProjectAward[] Returns an array of ProjectAward objects
     //     */
     //    public function findByExampleField($value): array
     //    {
@@ -56,7 +56,7 @@ class ProjectAuthorRepository extends ServiceEntityRepository
     //        ;
     //    }
 
-    //    public function findOneBySomeField($value): ?ProjectAuthor
+    //    public function findOneBySomeField($value): ?ProjectAward
     //    {
     //        return $this->createQueryBuilder('p')
     //            ->andWhere('p.exampleField = :val')

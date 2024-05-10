@@ -21,7 +21,7 @@ return static function (ContainerConfigurator $container) {
             '../src/Kernel.php',
         ]);
 
-    $services->set(\App\Service\Mail\ProjectMailerService::class)
+    $services->set(\App\Feature\Project\Service\ProjectMailerService::class)
         ->arg('$mailFrom', 'org@kp.grsu.by');
 
     $services->set(\App\Service\Project\ProjectFilterService::class)
@@ -34,7 +34,7 @@ return static function (ContainerConfigurator $container) {
 
     $services->alias(
         \App\Feature\Project\Interface\ProjectRepositoryInterface::class,
-        \App\Repository\ProjectRepository::class
+        \App\Feature\Project\Repository\ProjectRepository::class
     );
 
     $services->alias(
