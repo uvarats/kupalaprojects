@@ -7,7 +7,7 @@ namespace App\Controller\Project\Participant;
 use App\Entity\Project;
 use App\Entity\ProjectParticipant;
 use App\Feature\Project\Security\ProjectVoter;
-use App\Service\Project\ParticipantService;
+use App\Feature\Project\Service\ParticipantService;
 use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;

@@ -1085,7 +1085,7 @@
 "@symfony/ux-live-component@file:vendor/symfony/ux-live-component/assets":
   version "1.0.0"
   dependencies:
-    idiomorph "https://github.com/bigskysoftware/idiomorph.git"
+    idiomorph "^0.3.0"
 
 "@symfony/ux-turbo@file:vendor/symfony/ux-turbo/assets":
   version "0.1.0"
@@ -3024,9 +3024,10 @@ icss-utils@^5.0.0, icss-utils@^5.1.0:
   resolved "https://registry.npmjs.org/icss-utils/-/icss-utils-5.1.0.tgz"
   integrity sha512-soFhflCVWLfRNOPU3iv5Z9VUdT44xFRbzjLsEzSr5AQmgqPMTHdU3PMT1Cf1ssx8fLNJDA1juftYl+PUcv3MqA==
 
-"idiomorph@https://github.com/bigskysoftware/idiomorph.git":
+idiomorph@^0.3.0:
   version "0.3.0"
-  resolved "https://github.com/bigskysoftware/idiomorph.git#8e40c42cc573609eb6863e72fa3403574974dd7d"
+  resolved "https://registry.yarnpkg.com/idiomorph/-/idiomorph-0.3.0.tgz#f6675bc5bef1a72c94021e43141a3f605d2d6288"
+  integrity sha512-UhV1Ey5xCxIwR9B+OgIjQa+1Jx99XQ1vQHUsKBU1RpQzCx1u+b+N6SOXgf5mEJDqemUI/ffccu6+71l2mJUsRA==
 
 import-local@^3.0.2:
   version "3.1.0"

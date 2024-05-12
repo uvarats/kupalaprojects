@@ -2,12 +2,13 @@
 
 declare(strict_types=1);
 
-namespace App\Service\Project;
+namespace App\Feature\Project\Service;
 
 use App\Entity\Participant;
 use App\Entity\Project;
 use App\Entity\ProjectParticipant;
 use App\Enum\AcceptanceEnum;
+use App\Feature\Project\Enum\ParticipantSubmitResultEnum;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\Mailer\MailerInterface;
@@ -21,13 +22,18 @@ final readonly class ParticipantService
         private TranslatorInterface $translator,
     ) {}
 
-    public function submitParticipant(Project $project, Participant $participant): void
+    public function submitParticipant(Project $project, Participant $participant): ParticipantSubmitResultEnum
     {
-        $project->submitParticipant($participant);
+        if ($project->hasIndividualParticipant($participant)) {
+            return ParticipantSubmitResultEnum::PARTICIPANT_ALREADY_SUBMITTED;
+        }
 
+        $projectParticipant = $project->submitParticipant($participant);
         $this->entityManager->flush();
 
-        $this->sendMail($participant);
+        $this->sendMail($projectParticipant);
+
+        return ParticipantSubmitResultEnum::SUCCESS;
     }
 
     public function makeParticipantDecision(ProjectParticipant $participant, string $decision): void
@@ -43,14 +49,16 @@ final readonly class ParticipantService
         $this->entityManager->flush();
     }
 
-    private function sendMail(Participant $participant): void
+    private function sendMail(ProjectParticipant $projectParticipant): void
     {
+        $participant = $projectParticipant->getParticipant();
+
         $mail = new TemplatedEmail();
         $mail->to($participant->getEmail())
             ->subject($this->translator->trans('participant.email.subject'))
             ->htmlTemplate('mail/participant_registration.html.twig')
             ->context([
-                'participant' => $participant,
+                'participant' => $projectParticipant,
             ]);
 
         $this->mailer->send($mail);

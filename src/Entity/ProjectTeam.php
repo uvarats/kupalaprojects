@@ -27,7 +27,7 @@ class ProjectTeam
         #[ORM\ManyToOne]
         #[ORM\JoinColumn(nullable: false)]
         private readonly Team $team,
-        #[ORM\ManyToOne(inversedBy: 'projectTeams')]
+        #[ORM\ManyToOne(inversedBy: 'teams')]
         #[ORM\JoinColumn(nullable: false)]
         private readonly Project $project,
     ) {}

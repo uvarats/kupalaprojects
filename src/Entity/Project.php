@@ -348,11 +348,64 @@ class Project implements DateRangeInterface
         return $projectParticipant;
     }
 
-    public function hasParticipant(Participant $participant): bool
+    public function hasApprovedParticipant(Participant $participant): bool
     {
-        return !$this->participants->filter(function (ProjectParticipant $projectParticipant) use ($participant) {
-            return $projectParticipant->getParticipant() === $participant;
-        })->isEmpty();
+        $projectParticipant = $this->findIndividualParticipant($participant);
+
+        return $projectParticipant !== null && $projectParticipant->isApproved();
+    }
+
+    public function hasRejectedParticipant(Participant $participant): bool
+    {
+        $projectParticipant = $this->findIndividualParticipant($participant);
+
+        return $projectParticipant !== null && $projectParticipant->isRejected();
+    }
+
+    public function hasPendingParticipant(Participant $participant): bool
+    {
+        $projectParticipant = $this->findIndividualParticipant($participant);
+
+        return $projectParticipant !== null && $projectParticipant->isPending();
+    }
+
+    private function findIndividualParticipant(Participant $participant): ?ProjectParticipant
+    {
+        foreach ($this->participants as $projectParticipant) {
+            $comparableParticipant = $projectParticipant->getParticipant();
+
+            if ($comparableParticipant === $participant) {
+                return $projectParticipant;
+            }
+        }
+
+        return null;
+    }
+
+    public function canAcceptParticipant(Participant $participant): bool
+    {
+        return !$this->hasIndividualParticipant($participant) && !$this->hasTeamParticipant($participant);
+    }
+
+    public function hasIndividualParticipant(Participant $participant): bool
+    {
+        return $this->findIndividualParticipant($participant) !== null;
+    }
+
+    public function hasTeamParticipant(Participant $participant): bool
+    {
+        return $this->findTeamByParticipant($participant) !== null;
+    }
+
+    private function findTeamByParticipant(Participant $participant): ?ProjectTeam
+    {
+        foreach ($this->teams as $team) {
+            if ($team->getTeam()->hasParticipant($participant)) {
+                return $team;
+            }
+        }
+
+        return null;
     }
 
     /**

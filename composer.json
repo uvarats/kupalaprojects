@@ -98,7 +98,8 @@
         ]
     },
     "conflict": {
-        "symfony/symfony": "*"
+        "symfony/symfony": "*",
+        "twig/twig": "3.10.0"
     },
     "extra": {
         "symfony": {

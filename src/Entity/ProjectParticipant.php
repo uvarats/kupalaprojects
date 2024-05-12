@@ -77,4 +77,19 @@ class ProjectParticipant
 
         return $this;
     }
+
+    public function isApproved(): bool
+    {
+        return $this->acceptance === AcceptanceEnum::APPROVED;
+    }
+
+    public function isRejected(): bool
+    {
+        return $this->acceptance === AcceptanceEnum::REJECTED;
+    }
+
+    public function isPending(): bool
+    {
+        return $this->acceptance === AcceptanceEnum::NO_DECISION;
+    }
 }
