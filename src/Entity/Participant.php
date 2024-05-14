@@ -129,4 +129,17 @@ class Participant
 
         return $this;
     }
+
+    public function getDisplayString(): string
+    {
+        $email = $this->getEmail();
+        $fullName = $this->getName()->format(NameFormatEnum::LAST_FIRST_MIDDLE);
+
+        return $fullName . " ({$email})";
+    }
+
+    public function __toString(): string
+    {
+        return $this->getName()->format(NameFormatEnum::LAST_FIRST_MIDDLE);
+    }
 }

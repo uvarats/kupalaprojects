@@ -5,6 +5,6 @@
 {% block body %}
     <div class="container mt-5">
         <h1>Регистрация команды для участия в проекте "{{ project.name }}"</h1>
-        {{ component('ProjectTeamRegistration') }}
+        {{ component('ProjectTeamRegistration', {'project': project}) }}
     </div>
 {% endblock %}

@@ -1,0 +1,21 @@
+<div {{ attributes }}>
+    <div class="card mb-3">
+        <div class="card-body">
+            <h5 class="card-title">{{ participant.participant.fullName }}</h5>
+            <span class="card-text">Учреждение образования: {{ participant.participant.educationEstablishment }}</span>
+            <br>
+            <span class="card-text">Email: {{ participant.participant.email }}</span>
+            <br>
+            <p class="card-text">Статус: {{ participant.acceptance|acceptanceHtml }}</p>
+            <!-- Action Buttons -->
+            <div class="">
+                {% if participant.pending %}
+                    <button type="button" data-action="live#action" data-live-action-param="approve" class="btn btn-success me-2">Одобрить</button>
+                    <button type="button" data-action="live#action" data-live-action-param="reject" class="btn btn-danger">Отказать</button>
+                {% else %}
+                    <button class="btn btn-warning" data-action="live#action" data-live-action-param="retractDecision">Отозвать решение</button>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>

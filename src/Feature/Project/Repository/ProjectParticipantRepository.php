@@ -35,7 +35,7 @@ class ProjectParticipantRepository extends ServiceEntityRepository
             //->select('participant')
             ->where('project_participant.acceptance = :acceptance')
             ->andWhere('project_participant.project = :project')
-            //->leftJoin('project_participants.participant', 'participant')
+            //->leftJoin('project_participant.participant', 'participant')
             ->setParameter('acceptance', AcceptanceEnum::NO_DECISION->value)
             ->setParameter('project', $project)
             ->getQuery()

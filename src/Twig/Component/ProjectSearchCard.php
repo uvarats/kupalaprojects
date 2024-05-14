@@ -39,9 +39,13 @@ final class ProjectSearchCard extends AbstractController
     }
 
     #[LiveAction]
-    public function retractParticipantApplication(): void
+    public function retractParticipantApplication(#[CurrentParticipant] Participant $participant): void
     {
-        dd('retracting');
+        if (!$this->isGranted(ProjectParticipantVoter::IS_PENDING_PARTICIPANT, $this->project)) {
+            return;
+        }
+
+        $this->participantService->retractParticipantApplication($this->project, $participant);
     }
 
     #[LiveAction]

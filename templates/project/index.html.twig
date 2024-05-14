@@ -3,7 +3,7 @@
 {% block title %}Проекты{% endblock %}
 
 {% block body %}
-    <div class="container my-4">
+    <div class="container my-4" {{ stimulus_controller('projects') }}>
         <div class="d-flex flex-column">
             {{ form_start(search, {'attr': {'class': 'mb-3'}}) }}
             {{ form_row(search.query) }}
@@ -32,14 +32,6 @@
         {{ pagerfanta(projects, 'twitter_bootstrap5', {'omitFirstPage': true}) }}
     </div>
     <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            const tooltips = document.querySelectorAll('[data-toggle="tooltip"]');
-            tooltips.forEach(function(tooltip) {
-                // Initialize tooltip
 
-                // do not work, todo: stimulus controller which will do this
-                new Tooltip(tooltip);
-            });
-        });
     </script>
 {% endblock %}

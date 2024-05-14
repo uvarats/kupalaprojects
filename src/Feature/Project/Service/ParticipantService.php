@@ -7,7 +7,6 @@ namespace App\Feature\Project\Service;
 use App\Entity\Participant;
 use App\Entity\Project;
 use App\Entity\ProjectParticipant;
-use App\Enum\AcceptanceEnum;
 use App\Feature\Project\Enum\ParticipantSubmitResultEnum;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
@@ -36,15 +35,30 @@ final readonly class ParticipantService
         return ParticipantSubmitResultEnum::SUCCESS;
     }
 
-    public function makeParticipantDecision(ProjectParticipant $participant, string $decision): void
+    public function retractParticipantApplication(Project $project, Participant $participant): void
     {
-        $currentAcceptance = $participant->getAcceptance();
-        if ($currentAcceptance !== AcceptanceEnum::NO_DECISION) {
-            return;
-        }
+        $project->retractParticipant($participant);
 
-        $newAcceptance = AcceptanceEnum::fromString($decision);
-        $participant->setAcceptance($newAcceptance);
+        $this->entityManager->flush();
+    }
+
+    public function approve(ProjectParticipant $participant): void
+    {
+        $participant->approve();
+
+        $this->entityManager->flush();
+    }
+
+    public function reject(ProjectParticipant $participant): void
+    {
+        $participant->reject();
+
+        $this->entityManager->flush();
+    }
+
+    public function retractDecision(ProjectParticipant $participant): void
+    {
+        $participant->retractDecision();
 
         $this->entityManager->flush();
     }
@@ -58,7 +72,7 @@ final readonly class ParticipantService
             ->subject($this->translator->trans('participant.email.subject'))
             ->htmlTemplate('mail/participant_registration.html.twig')
             ->context([
-                'participant' => $projectParticipant,
+                'projectParticipant' => $projectParticipant,
             ]);
 
         $this->mailer->send($mail);

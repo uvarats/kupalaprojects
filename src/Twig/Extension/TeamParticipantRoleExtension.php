@@ -14,7 +14,7 @@ final class TeamParticipantRoleExtension extends AbstractExtension
     public function getFilters(): array
     {
         return [
-            new TwigFilter('html', [TeamParticipantRoleExtensionRuntime::class, 'toHtml'], ['is_safe' => ['html']]),
+            new TwigFilter('participantRoleEnum', [TeamParticipantRoleExtensionRuntime::class, 'toHtml'], ['is_safe' => ['html']]),
         ];
     }
 }

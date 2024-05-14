@@ -88,16 +88,10 @@ class TeamRepository extends ServiceEntityRepository
                     $qb->expr()->eq('tp.role', ':role'),
                 ),
             )
+            // todo: check for already submitted team to project
+            //->where($qb->expr()->notIn('t', $this->getEntityManager()->createQueryBuilder()))
             ->setParameter('participant', $participant)
             ->setParameter('role', $role)
             ->setParameter('archived', false);
-    }
-
-    public function createQueryBuilderForTeamOnProjectRegistration(Participant $owner): QueryBuilder
-    {
-        return $this->createQueryBuilder('t')
-            ->innerJoin('t.teamParticipants', 'tp', Join::WITH, 'tp.participant = :participant AND tp.role = :role')
-            ->setParameter('participant', $owner)
-            ->setParameter('role', TeamParticipantRoleEnum::CREATOR);
     }
 }

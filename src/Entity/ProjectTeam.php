@@ -32,6 +32,11 @@ class ProjectTeam
         private readonly Project $project,
     ) {}
 
+    public static function create(Team $team, Project $project): self
+    {
+        return new self($team, $project);
+    }
+
     public function getId(): ?Uuid
     {
         return $this->id;
@@ -70,5 +75,8 @@ class ProjectTeam
         return $this->project;
     }
 
-
+    public function isRejected(): bool
+    {
+        return $this->acceptance === AcceptanceEnum::REJECTED;
+    }
 }

@@ -11,19 +11,42 @@
             <p class="mb-0">Участники: {{ project|orientedOn }}</p>
             <p class="mb-0">Предметные области: {{ project|subjects }}</p>
         </a>
-        {% if is_granted('HAS_PARTICIPANT_DATA') and not is_granted('IS_SUBMITTED_FOR_PROJECT_THROUGH_TEAM') %}
+        {% if is_granted('HAS_PARTICIPANT_DATA') %}
             <div class="d-flex flex-row">
-                <div class="me-2">
-                    {% if is_granted('CAN_SUBMIT_FOR_PROJECT', project) %}
-                        <button class="btn btn-primary" data-action="live#action"
-                                data-live-action-param="submitParticipant">Зарегистрироваться на проект
-                        </button>
-                    {% elseif is_granted('IS_PENDING_PARTICIPANT', project) %}
-                        <button class="btn btn-warning" data-action="live#action"
-                                data-live-action-param="retractParticipantApplication">Отозвать заявку на проект
-                        </button>
-                    {% endif %}
-                </div>
+                {% if not is_granted('IS_SUBMITTED_FOR_PROJECT_THROUGH_TEAM', project) %}
+                    <div class="me-2">
+                        {% if is_granted('CAN_SUBMIT_FOR_PROJECT', project) %}
+                            <button class="btn btn-primary" data-action="live#action"
+                                    data-live-action-param="submitParticipant">Зарегистрироваться на проект
+                            </button>
+                        {% elseif is_granted('IS_PENDING_PARTICIPANT', project) %}
+                            <button class="btn btn-warning" data-action="live#action"
+                                    data-live-action-param="retractParticipantApplication">Отозвать заявку на проект
+                            </button>
+                        {% elseif is_granted('IS_APPROVED_PARTICIPANT', project) %}
+                            <div>
+                            <span tabindex="0" data-bs-toggle="tooltip"
+                                  data-bs-title="Вы не можете отозвать заявку, так как она уже одобрена. Свяжитесь с организатором проекта или фестиваля.">
+                                <button type="button" class="btn btn-success" disabled>Заявка одобрена</button>
+                            </span>
+                            </div>
+                        {% elseif is_granted('IS_REJECTED_PARTICIPANT', project) %}
+                            <div>
+                            <span tabindex="0" data-bs-toggle="tooltip"
+                                  data-bs-title="Вы не можете отозвать заявку, так как она уже отклонена. Если вы считаете, что это ошибка, свяжитесь с организатором проекта или фестиваля.">
+                                <button type="button" class="btn btn-danger" disabled>Заявка отклонена</button>
+                            </span>
+                            </div>
+                        {% endif %}
+                    </div>
+                {% else %}
+                    <div class="me-2">
+                            <span tabindex="0" data-bs-toggle="tooltip"
+                                  data-bs-title="Вы не можете подать заявку для участия в проекте, так как находитесь в составе команды, которая подала заявку, либо одобрена для участия в проекте.">
+                                <button type="button" class="btn btn-primary" disabled>Зарегистрироваться на проект</button>
+                            </span>
+                    </div>
+                {% endif %}
                 {% if project.teamsAllowed and not is_granted('IS_INDIVIDUAL_PARTICIPANT', project) %}
                     <div>
                         <button class="btn btn-secondary" data-action="live#action" data-live-action-param="submitTeam">
@@ -32,9 +55,10 @@
                     </div>
                 {% elseif is_granted('IS_INDIVIDUAL_PARTICIPANT', project) %}
                     <div>
-                        <button type="button" class="btn btn-secondary" disabled data-toggle="tooltip" data-html="true" title="<em>Tooltip</em> <u>with</u> <b>HTML</b>">
-                            Регистрация команды
-                        </button>
+                        <span tabindex="0" data-bs-toggle="tooltip"
+                              data-bs-title="Вы не можете заявить команду, так как уже подали заявку для индивидуального участия">
+                            <button type="button" class="btn btn-secondary" disabled>Регистрация команды</button>
+                        </span>
                     </div>
                 {% endif %}
             </div>

@@ -12,16 +12,7 @@
         }) }}
 
         <!-- List of Invites -->
-        <h2>Приглашения</h2>
-        <div class="list-group">
-            <!-- Example Invite Item -->
-            {# @var invite \App\Entity\TeamInvite #}
-            {% for invite in invites %}
-                {{ component('TeamInviteCard', {
-                    'invite': invite,
-                }) }}
-            {% endfor %}
-        </div>
+        {{ component('TeamInvites', {'team': team}) }}
 
     </div>
 {% endblock %}

@@ -4,15 +4,18 @@ declare(strict_types=1);
 
 namespace App\Feature\Team\Dto;
 
+use App\Feature\Team\Collection\TeamInviteCollection;
+
 final class InviteIssueResult
 {
     private function __construct(
-        private array $errors = [],
+        private readonly TeamInviteCollection $issuedInvites,
+        private readonly array $errors = [],
     ) {}
 
-    public static function create(): self
+    public static function create(TeamInviteCollection $issuedInvites, array $errors = []): self
     {
-        return new self();
+        return new self($issuedInvites, $errors);
     }
 
     public function isSuccess(): bool
@@ -25,8 +28,13 @@ final class InviteIssueResult
         return $this->errors;
     }
 
-    public function addError(string $message): void
+    public function getIssuedInvites(): TeamInviteCollection
     {
-        $this->errors[] = $message;
+        return $this->issuedInvites;
+    }
+
+    public function isInvitesIssued(): bool
+    {
+        return !$this->issuedInvites->isEmpty();
     }
 }

@@ -7,9 +7,12 @@ namespace App\Controller\Admin;
 use App\Entity\EducationGroup;
 use App\Entity\EducationSubGroup;
 use App\Entity\Festival;
+use App\Entity\Participant;
 use App\Entity\Project;
 use App\Entity\ProjectAuthor;
 use App\Entity\ProjectSubject;
+use App\Entity\Team;
+use App\Entity\TeamInvite;
 use App\Entity\User;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
@@ -62,6 +65,9 @@ class DashboardController extends AbstractDashboardController
             MenuItem::section('Пользователи'),
             MenuItem::linkToCrud('Пользователи', 'fas fa-users', User::class),
             MenuItem::linkToCrud('Авторы проектов', 'fas fa-user-graduate', ProjectAuthor::class),
+            MenuItem::linkToCrud('Участники', 'fas fa-user-astronaut', Participant::class),
+            MenuItem::linkToCrud('Команды', 'fas fa-people-group', Team::class),
+            MenuItem::linkToCrud('Приглашения в команды', 'fas fa-calendar-check', TeamInvite::class),
 
             MenuItem::section('Фестивали и проекты'),
             MenuItem::linkToCrud('Фестивали', 'fas fa-calendar', Festival::class),

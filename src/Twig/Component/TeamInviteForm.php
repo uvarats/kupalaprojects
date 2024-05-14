@@ -22,6 +22,7 @@ use Symfony\Component\Form\FormInterface;
 use Symfony\UX\LiveComponent\Attribute\AsLiveComponent;
 use Symfony\UX\LiveComponent\Attribute\LiveAction;
 use Symfony\UX\LiveComponent\Attribute\LiveProp;
+use Symfony\UX\LiveComponent\ComponentToolsTrait;
 use Symfony\UX\LiveComponent\ComponentWithFormTrait;
 use Symfony\UX\LiveComponent\DefaultActionTrait;
 
@@ -30,6 +31,7 @@ final class TeamInviteForm extends AbstractController
 {
     use DefaultActionTrait;
     use ComponentWithFormTrait;
+    use ComponentToolsTrait;
 
     #[LiveProp]
     public ?InviteData $data = null;
@@ -59,17 +61,19 @@ final class TeamInviteForm extends AbstractController
             $this->getForm()->addError(new FormError($error));
         }
 
-        //$this->resetForm();
-
         if ($issueResult->isSuccess()) {
-            return $this->redirectToRoute('app_account_team_invites', ['id' => $this->team->getId()]);
+            $this->resetForm();
+        }
+
+        if ($issueResult->isInvitesIssued()) {
+            $this->emit('invitesIssued');
         }
     }
 
     private function makeIssueRequest(Team $team, Participant $participant, InviteData $data): IssueInvitesRequest
     {
         $emails = new EmailCollection();
-        $rawEmails = explode(',', $data->getEmails());
+        $rawEmails = $data->getEmails();
 
         foreach ($rawEmails as $rawEmail) {
             $emails[] = Email::fromString($rawEmail);

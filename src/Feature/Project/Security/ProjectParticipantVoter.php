@@ -23,6 +23,7 @@ final class ProjectParticipantVoter extends Voter
     public const string IS_REJECTED_PARTICIPANT = 'IS_REJECTED_PARTICIPANT';
     public const string CAN_SUBMIT_FOR_PROJECT = 'CAN_SUBMIT_FOR_PROJECT';
     public const string IS_SUBMITTED_FOR_PROJECT_THROUGH_TEAM = 'IS_SUBMITTED_FOR_PROJECT_THROUGH_TEAM';
+    public const string NOT_SUBMITTED_FOR_PROJECT = 'NOT_SUBMITTED_FOR_PROJECT';
 
     public function __construct(
         private readonly Security $security,
@@ -37,6 +38,7 @@ final class ProjectParticipantVoter extends Voter
             self::CAN_SUBMIT_FOR_PROJECT,
             self::IS_INDIVIDUAL_PARTICIPANT,
             self::IS_SUBMITTED_FOR_PROJECT_THROUGH_TEAM,
+            self::NOT_SUBMITTED_FOR_PROJECT,
         ]) && $subject instanceof Project;
     }
 
@@ -61,6 +63,7 @@ final class ProjectParticipantVoter extends Voter
             self::IS_PENDING_PARTICIPANT => $subject->hasPendingParticipant($participant),
             self::CAN_SUBMIT_FOR_PROJECT => $subject->canAcceptParticipant($participant),
             self::IS_SUBMITTED_FOR_PROJECT_THROUGH_TEAM => $subject->hasTeamParticipant($participant),
+            self::NOT_SUBMITTED_FOR_PROJECT => !$subject->hasParticipant($participant)
         };
     }
 

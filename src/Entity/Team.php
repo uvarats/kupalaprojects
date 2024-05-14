@@ -168,4 +168,9 @@ class Team
     {
         $this->archived = true;
     }
+
+    public function __toString(): string
+    {
+        return $this->getName();
+    }
 }

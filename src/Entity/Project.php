@@ -387,6 +387,11 @@ class Project implements DateRangeInterface
         return !$this->hasIndividualParticipant($participant) && !$this->hasTeamParticipant($participant);
     }
 
+    public function hasParticipant(Participant $participant): bool
+    {
+        return $this->hasIndividualParticipant($participant) || $this->hasTeamParticipant($participant);
+    }
+
     public function hasIndividualParticipant(Participant $participant): bool
     {
         return $this->findIndividualParticipant($participant) !== null;
@@ -394,18 +399,36 @@ class Project implements DateRangeInterface
 
     public function hasTeamParticipant(Participant $participant): bool
     {
-        return $this->findTeamByParticipant($participant) !== null;
+        $projectTeam = $this->findTeamByParticipant($participant);
+
+        return $projectTeam !== null && !$projectTeam->isRejected();
     }
 
     private function findTeamByParticipant(Participant $participant): ?ProjectTeam
     {
         foreach ($this->teams as $team) {
+            // if team rejected, then it is possible to apply through another team (?)
             if ($team->getTeam()->hasParticipant($participant)) {
                 return $team;
             }
         }
 
         return null;
+    }
+
+    public function retractParticipant(Participant $participant): void
+    {
+        $projectParticipant = $this->findIndividualParticipant($participant);
+
+        if ($projectParticipant === null) {
+            return;
+        }
+
+        if (!$projectParticipant->isPending()) {
+            return;
+        }
+
+        $this->participants->removeElement($projectParticipant);
     }
 
     /**
@@ -416,19 +439,24 @@ class Project implements DateRangeInterface
         return $this->teams;
     }
 
-    public function addProjectTeam(ProjectTeam $projectTeam): static
+    public function submitTeam(Team $team): void
     {
-        if (!$this->teams->contains($projectTeam)) {
-            $this->teams->add($projectTeam);
+        if ($this->hasTeam($team)) {
+            return;
         }
 
-        return $this;
+        $projectTeam = ProjectTeam::create($team, $this);
+        $this->teams->add($projectTeam);
     }
 
-    public function removeProjectTeam(ProjectTeam $projectTeam): static
+    public function hasTeam(Team $team): bool
     {
-        $this->teams->removeElement($projectTeam);
+        foreach ($this->teams as $projectTeam) {
+            if ($projectTeam->getTeam() === $team) {
+                return true;
+            }
+        }
 
-        return $this;
+        return false;
     }
 }

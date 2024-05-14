@@ -13,7 +13,7 @@ final class InviteStatusExtension extends AbstractExtension
     public function getFilters(): array
     {
         return [
-            new TwigFilter('html', [InviteStatusExtensionRuntime::class, 'toHtml'])
+            new TwigFilter('statusHtml', [InviteStatusExtensionRuntime::class, 'toHtml'])
         ];
     }
 }

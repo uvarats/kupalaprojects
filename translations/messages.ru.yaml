@@ -77,3 +77,8 @@ search:
   query: 'Запрос'
   placeholder: 'Введите Ваш запрос'
   empty_festival: 'Все фестивали'
+general:
+  acceptance:
+    no_decision: 'Ожидает решения'
+    approved: 'Одобрено'
+    rejected: 'Отклонено'

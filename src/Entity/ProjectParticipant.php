@@ -71,11 +71,35 @@ class ProjectParticipant
         return $this->acceptance;
     }
 
+    /** @deprecated Will be removed */
     public function setAcceptance(AcceptanceEnum $acceptance): static
     {
         $this->acceptance = $acceptance;
 
         return $this;
+    }
+
+    public function approve(): void
+    {
+        if ($this->acceptance !== AcceptanceEnum::NO_DECISION) {
+            return;
+        }
+
+        $this->acceptance = AcceptanceEnum::APPROVED;
+    }
+
+    public function reject(): void
+    {
+        if ($this->acceptance !== AcceptanceEnum::NO_DECISION) {
+            return;
+        }
+
+        $this->acceptance = AcceptanceEnum::REJECTED;
+    }
+
+    public function retractDecision(): void
+    {
+        $this->acceptance = AcceptanceEnum::NO_DECISION;
     }
 
     public function isApproved(): bool
