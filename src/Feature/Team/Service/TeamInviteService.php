@@ -13,6 +13,7 @@ use App\Feature\Team\Collection\TeamInviteCollection;
 use App\Feature\Team\Dto\InviteIssueResult;
 use App\Feature\Team\Dto\IssueInvitesRequest;
 use App\Feature\Team\Enum\InviteStateChangeResultEnum;
+use App\Feature\Team\Repository\TeamInviteRepository;
 use App\Feature\Team\Repository\TeamRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -24,6 +25,7 @@ final readonly class TeamInviteService
         private TeamRepository $teamRepository,
         private ParticipantRepository $participantRepository,
         private TranslatorInterface $translator,
+        private TeamInviteRepository $inviteRepository,
     ) {}
 
     public function issue(IssueInvitesRequest $request): InviteIssueResult
@@ -32,20 +34,18 @@ final readonly class TeamInviteService
         $issuer = $this->getIssuer($request);
         $recipients = $this->getRecipients($request);
 
-        $issueResult = InviteIssueResult::create();
         $invites = new TeamInviteCollection();
+        $errorMessages = [];
         foreach ($recipients as $recipient) {
             // todo: come up with better approach. maybe it is possible to pre-catch this errors on validation stage?
             if ($issuer === $recipient) {
-                $message = $this->translator->trans('team.invite.selfInviteError');
-                $issueResult->addError($message);
+                $errorMessages[] = $this->translator->trans('team.invite.selfInviteError');
 
                 continue;
             }
 
             if ($team->hasParticipant($recipient)) {
-                $errorMessage = $this->buildAlreadyExistingParticipantMessage($recipient);
-                $issueResult->addError($errorMessage);
+                $errorMessages[] = $this->buildAlreadyExistingParticipantMessage($recipient);
 
                 continue;
             }
@@ -58,7 +58,7 @@ final readonly class TeamInviteService
 
         $this->entityManager->flush();
 
-        return $issueResult;
+        return InviteIssueResult::create($invites, $errorMessages);
     }
 
     private function getTeamFromIssueRequest(IssueInvitesRequest $request): Team

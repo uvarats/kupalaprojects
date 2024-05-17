@@ -19,6 +19,11 @@ body {
   border-color: #5085A5 !important;
 }
 
+.btn-primary:disabled {
+  background-color: #31708E !important;
+  border-color: #31708E !important;
+}
+
 .btn-secondary {
   background-color: #687864;
   border-color: #687864;

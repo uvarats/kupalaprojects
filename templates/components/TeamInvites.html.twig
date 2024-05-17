@@ -3,7 +3,7 @@
     <div class="list-group">
         <!-- Example Invite Item -->
         {# @var invite \App\Entity\TeamInvite #}
-        {% for invite in invites %}
+        {% for invite in this.invites %}
             {{ component('TeamInviteCard', {
                 'invite': invite,
             }) }}

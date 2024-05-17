@@ -4,7 +4,7 @@
             <h5 class="mb-1">{{ participant.participant.lastAndFirstName }}</h5>
             <small>{{ participant.participant.email }}</small>
         </div>
-        <p class="mb-1">Роль: {{ participant.role|html }}</p>
+        <p class="mb-1">Роль: {{ participant.role|participantRoleEnum }}</p>
         <!-- Add kick button only for participants (not creator) -->
         {% if not participant.creator %}
             <button type="button" class="btn btn-danger float-right">Исключить</button>

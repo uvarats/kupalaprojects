@@ -17,20 +17,28 @@ use Symfony\Component\Security\Core\Authorization\Voter\Voter;
  */
 final class ProjectParticipantVoter extends Voter
 {
-    public const string IS_ACCEPTED_PARTICIPANT = 'IS_ACCEPTED_PARTICIPANT';
+    public const string IS_INDIVIDUAL_PARTICIPANT = 'IS_INDIVIDUAL_PARTICIPANT';
+    public const string IS_APPROVED_PARTICIPANT = 'IS_APPROVED_PARTICIPANT';
     public const string IS_PENDING_PARTICIPANT = 'IS_PENDING_PARTICIPANT';
     public const string IS_REJECTED_PARTICIPANT = 'IS_REJECTED_PARTICIPANT';
+    public const string CAN_SUBMIT_FOR_PROJECT = 'CAN_SUBMIT_FOR_PROJECT';
+    public const string IS_SUBMITTED_FOR_PROJECT_THROUGH_TEAM = 'IS_SUBMITTED_FOR_PROJECT_THROUGH_TEAM';
+    public const string NOT_SUBMITTED_FOR_PROJECT = 'NOT_SUBMITTED_FOR_PROJECT';
 
     public function __construct(
-        private Security $security,
+        private readonly Security $security,
     ) {}
 
     protected function supports(string $attribute, mixed $subject): bool
     {
         return in_array($attribute, [
-            self::IS_ACCEPTED_PARTICIPANT,
+            self::IS_APPROVED_PARTICIPANT,
             self::IS_PENDING_PARTICIPANT,
             self::IS_REJECTED_PARTICIPANT,
+            self::CAN_SUBMIT_FOR_PROJECT,
+            self::IS_INDIVIDUAL_PARTICIPANT,
+            self::IS_SUBMITTED_FOR_PROJECT_THROUGH_TEAM,
+            self::NOT_SUBMITTED_FOR_PROJECT,
         ]) && $subject instanceof Project;
     }
 
@@ -48,19 +56,15 @@ final class ProjectParticipantVoter extends Voter
         $participant = $user->getParticipant();
         assert($participant instanceof Participant);
 
-        if (!$subject->hasParticipant($participant)) {
-            return false;
-        }
-
         return match ($attribute) {
-            self::IS_ACCEPTED_PARTICIPANT => throw new \LogicException(),
-            self::IS_REJECTED_PARTICIPANT => throw new \LogicException(),
-            self::IS_PENDING_PARTICIPANT => throw new \LogicException(),
+            self::IS_INDIVIDUAL_PARTICIPANT => $subject->hasIndividualParticipant($participant),
+            self::IS_APPROVED_PARTICIPANT => $subject->hasApprovedParticipant($participant),
+            self::IS_REJECTED_PARTICIPANT => $subject->hasRejectedParticipant($participant),
+            self::IS_PENDING_PARTICIPANT => $subject->hasPendingParticipant($participant),
+            self::CAN_SUBMIT_FOR_PROJECT => $subject->canAcceptParticipant($participant),
+            self::IS_SUBMITTED_FOR_PROJECT_THROUGH_TEAM => $subject->hasTeamParticipant($participant),
+            self::NOT_SUBMITTED_FOR_PROJECT => !$subject->hasParticipant($participant)
         };
     }
 
-    private function isPendingParticipant(Project $project): bool
-    {
-        // todo
-    }
 }

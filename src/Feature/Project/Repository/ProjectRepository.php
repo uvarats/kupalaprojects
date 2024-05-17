@@ -133,20 +133,61 @@ class ProjectRepository extends ServiceEntityRepository implements EagerLoadInte
     private function eagerLoadBuilder(): QueryBuilder
     {
         return $this->createQueryBuilder('project')
+            ->select(
+                'project',
+                'author',
+                'user',
+                'subjects',
+                'orientedOn',
+                'festival',
+                'participants',
+                'participant',
+                'teams',
+                'team',
+                'teamParticipants',
+                'teamParticipant',
+            )
             ->leftJoin('project.author', 'author')
-            ->addSelect('author')
             ->leftJoin('author.userEntity', 'user')
-            ->addSelect('user')
             ->leftJoin('project.subjects', 'subjects')
-            ->addSelect('subjects')
             ->leftJoin('project.orientedOn', 'orientedOn')
-            ->addSelect('orientedOn')
             ->leftJoin('project.festival', 'festival')
-            ->addSelect('festival')
             ->leftJoin('project.participants', 'participants')
-            ->addSelect('participants')
+            ->leftJoin('participants.participant', 'participant')
             ->leftJoin('project.teams', 'teams')
-            ->addSelect('teams');
+            ->leftJoin('teams.team', 'team')
+            ->leftJoin('team.teamParticipants', 'teamParticipants')
+            ->leftJoin('teamParticipants.participant', 'teamParticipant');
+    }
+
+    public function createSearchQueryBuilder(string $alias): QueryBuilder
+    {
+        return $this->createQueryBuilder($alias)
+            ->select(
+                $alias,
+                'author',
+                'user',
+                'subjects',
+                'orientedOn',
+                'festival',
+                'participants',
+                'participant',
+                'teams',
+                'team',
+                'teamParticipants',
+                'teamParticipant',
+            )
+            ->leftJoin($alias . '.author', 'author')
+            ->leftJoin('author.userEntity', 'user')
+            ->leftJoin($alias . '.subjects', 'subjects')
+            ->leftJoin($alias . '.orientedOn', 'orientedOn')
+            ->leftJoin($alias . '.festival', 'festival')
+            ->leftJoin($alias . '.participants', 'participants')
+            ->leftJoin('participants.participant', 'participant')
+            ->leftJoin($alias . '.teams', 'teams')
+            ->leftJoin('teams.team', 'team')
+            ->leftJoin('team.teamParticipants', 'teamParticipants')
+            ->leftJoin('teamParticipants.participant', 'teamParticipant');
     }
 
     //    /**

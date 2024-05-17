@@ -94,4 +94,11 @@ class TeamParticipant
 
         return $this;
     }
+
+    public function __toString(): string
+    {
+        $participant = $this->getParticipant();
+
+        return $participant->getFullName();
+    }
 }

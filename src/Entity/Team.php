@@ -125,13 +125,14 @@ class Team
         return $this;
     }
 
-    public function isCreator(Participant $participant): bool{
+    public function isTeamCreator(Participant $participant): bool
+    {
         $creator = $this->getCreator();
 
         return $creator->getParticipant() === $participant;
     }
 
-    private function getCreator(): TeamParticipant
+    public function getCreator(): TeamParticipant
     {
         foreach ($this->teamParticipants as $teamParticipant) {
             if ($teamParticipant->getRole() === TeamParticipantRoleEnum::CREATOR) {
@@ -167,5 +168,10 @@ class Team
     public function archive(): void
     {
         $this->archived = true;
+    }
+
+    public function __toString(): string
+    {
+        return $this->getName();
     }
 }

@@ -1,0 +1,67 @@
+<div {{ attributes }}>
+    <div class="list-group mb-3">
+        <a href="{{ path('app_project_details', { 'id': project.id }) }}"
+           class="list-group-item list-group-item-action mb-2">
+            <div class="d-flex w-100 justify-content-between align-items-center">
+                <h5 class="mb-1">{{ project.name }}</h5>
+            </div>
+            <p class="mb-0">Цель: {{ project.goal }}</p>
+            <p class="mb-0">Даты проведения: {{ project.startsAt|date('d.m.Y') }}
+                - {{ project.endsAt|date('d.m.Y') }}</p>
+            <p class="mb-0">Участники: {{ project|orientedOn }}</p>
+            <p class="mb-0">Предметные области: {{ project|subjects }}</p>
+        </a>
+        {% if is_granted('HAS_PARTICIPANT_DATA') %}
+            <div class="d-flex flex-row">
+                {% if not is_granted('IS_SUBMITTED_FOR_PROJECT_THROUGH_TEAM', project) %}
+                    <div class="me-2">
+                        {% if is_granted('CAN_SUBMIT_FOR_PROJECT', project) %}
+                            <button class="btn btn-primary" data-action="live#action"
+                                    data-live-action-param="submitParticipant">Зарегистрироваться на проект
+                            </button>
+                        {% elseif is_granted('IS_PENDING_PARTICIPANT', project) %}
+                            <button class="btn btn-warning" data-action="live#action"
+                                    data-live-action-param="retractParticipantApplication">Отозвать заявку на проект
+                            </button>
+                        {% elseif is_granted('IS_APPROVED_PARTICIPANT', project) %}
+                            <div>
+                            <span tabindex="0" data-bs-toggle="tooltip"
+                                  data-bs-title="Вы не можете отозвать заявку, так как она уже одобрена. Свяжитесь с организатором проекта или фестиваля.">
+                                <button type="button" class="btn btn-success" disabled>Заявка одобрена</button>
+                            </span>
+                            </div>
+                        {% elseif is_granted('IS_REJECTED_PARTICIPANT', project) %}
+                            <div>
+                            <span tabindex="0" data-bs-toggle="tooltip"
+                                  data-bs-title="Вы не можете отозвать заявку, так как она уже отклонена. Если вы считаете, что это ошибка, свяжитесь с организатором проекта или фестиваля.">
+                                <button type="button" class="btn btn-danger" disabled>Заявка отклонена</button>
+                            </span>
+                            </div>
+                        {% endif %}
+                    </div>
+                {% else %}
+                    <div class="me-2">
+                            <span tabindex="0" data-bs-toggle="tooltip"
+                                  data-bs-title="Вы не можете подать заявку для участия в проекте, так как находитесь в составе команды, которая подала заявку, либо одобрена для участия в проекте.">
+                                <button type="button" class="btn btn-primary" disabled>Зарегистрироваться на проект</button>
+                            </span>
+                    </div>
+                {% endif %}
+                {% if project.teamsAllowed and not is_granted('IS_INDIVIDUAL_PARTICIPANT', project) %}
+                    <div>
+                        <button class="btn btn-secondary" data-action="live#action" data-live-action-param="submitTeam">
+                            Регистрация команды
+                        </button>
+                    </div>
+                {% elseif is_granted('IS_INDIVIDUAL_PARTICIPANT', project) %}
+                    <div>
+                        <span tabindex="0" data-bs-toggle="tooltip"
+                              data-bs-title="Вы не можете заявить команду, так как уже подали заявку для индивидуального участия">
+                            <button type="button" class="btn btn-secondary" disabled>Регистрация команды</button>
+                        </span>
+                    </div>
+                {% endif %}
+            </div>
+        {% endif %}
+    </div>
+</div>

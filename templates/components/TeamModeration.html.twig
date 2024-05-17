@@ -1,0 +1,15 @@
+<div {{ attributes }}>
+    <div class="mt-3">
+        <div class="d-flex justify-content-center">
+            <h1>Модерация команд</h1>
+        </div>
+        <div class="row row-cols-md-3">
+            {# @var team \App\Entity\ProjectTeam #}
+            {% for team in this.teams %}
+                <div class="col me-3">
+                    {{ component('TeamModerationCard', {'projectTeam': team}) }}
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>

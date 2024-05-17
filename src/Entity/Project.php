@@ -348,11 +348,87 @@ class Project implements DateRangeInterface
         return $projectParticipant;
     }
 
+    public function hasApprovedParticipant(Participant $participant): bool
+    {
+        $projectParticipant = $this->findIndividualParticipant($participant);
+
+        return $projectParticipant !== null && $projectParticipant->isApproved();
+    }
+
+    public function hasRejectedParticipant(Participant $participant): bool
+    {
+        $projectParticipant = $this->findIndividualParticipant($participant);
+
+        return $projectParticipant !== null && $projectParticipant->isRejected();
+    }
+
+    public function hasPendingParticipant(Participant $participant): bool
+    {
+        $projectParticipant = $this->findIndividualParticipant($participant);
+
+        return $projectParticipant !== null && $projectParticipant->isPending();
+    }
+
+    private function findIndividualParticipant(Participant $participant): ?ProjectParticipant
+    {
+        foreach ($this->participants as $projectParticipant) {
+            $comparableParticipant = $projectParticipant->getParticipant();
+
+            if ($comparableParticipant === $participant) {
+                return $projectParticipant;
+            }
+        }
+
+        return null;
+    }
+
+    public function canAcceptParticipant(Participant $participant): bool
+    {
+        return !$this->hasIndividualParticipant($participant) && !$this->hasTeamParticipant($participant);
+    }
+
     public function hasParticipant(Participant $participant): bool
     {
-        return !$this->participants->filter(function (ProjectParticipant $projectParticipant) use ($participant) {
-            return $projectParticipant->getParticipant() === $participant;
-        })->isEmpty();
+        return $this->hasIndividualParticipant($participant) || $this->hasTeamParticipant($participant);
+    }
+
+    public function hasIndividualParticipant(Participant $participant): bool
+    {
+        return $this->findIndividualParticipant($participant) !== null;
+    }
+
+    public function hasTeamParticipant(Participant $participant): bool
+    {
+        $projectTeam = $this->findTeamByParticipant($participant);
+
+        return $projectTeam !== null && !$projectTeam->isRejected();
+    }
+
+    private function findTeamByParticipant(Participant $participant): ?ProjectTeam
+    {
+        foreach ($this->teams as $team) {
+            // if team rejected, then it is possible to apply through another team (?)
+            if ($team->getTeam()->hasParticipant($participant)) {
+                return $team;
+            }
+        }
+
+        return null;
+    }
+
+    public function retractParticipant(Participant $participant): void
+    {
+        $projectParticipant = $this->findIndividualParticipant($participant);
+
+        if ($projectParticipant === null) {
+            return;
+        }
+
+        if (!$projectParticipant->isPending()) {
+            return;
+        }
+
+        $this->participants->removeElement($projectParticipant);
     }
 
     /**
@@ -363,19 +439,36 @@ class Project implements DateRangeInterface
         return $this->teams;
     }
 
-    public function addProjectTeam(ProjectTeam $projectTeam): static
+    public function submitTeam(Team $team): void
     {
-        if (!$this->teams->contains($projectTeam)) {
-            $this->teams->add($projectTeam);
+        if ($this->hasTeam($team)) {
+            return;
         }
 
-        return $this;
+        $projectTeam = ProjectTeam::create($team, $this);
+        $this->teams->add($projectTeam);
     }
 
-    public function removeProjectTeam(ProjectTeam $projectTeam): static
+    public function hasTeam(Team $team): bool
     {
-        $this->teams->removeElement($projectTeam);
+        return $this->findTeam($team) !== null;
+    }
 
-        return $this;
+    private function findTeam(Team $team): ?ProjectTeam
+    {
+        foreach ($this->teams as $projectTeam) {
+            if ($projectTeam->getTeam() === $team) {
+                return $projectTeam;
+            }
+        }
+
+        return null;
+    }
+
+    public function hasRejectedTeam(Team $team): bool
+    {
+        $projectTeam = $this->findTeam($team);
+
+        return $projectTeam?->isRejected() ?? false;
     }
 }

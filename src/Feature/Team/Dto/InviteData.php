@@ -4,21 +4,26 @@ declare(strict_types=1);
 
 namespace App\Feature\Team\Dto;
 
-use App\Feature\Core\Validator as CustomAssert;
+use App\Feature\Team\Validator\NoPendingInvites;
 use Symfony\Component\Validator\Constraints as Assert;
 
 final class InviteData
 {
-    #[Assert\NotBlank]
-    #[CustomAssert\StringWithEmails]
-    private string $emails = '';
+    #[Assert\Sequentially([
+        new Assert\All(constraints: [
+            new Assert\NotBlank(),
+            new Assert\Email(),
+        ]),
+        new NoPendingInvites(),
+    ])]
+    private array $emails = [];
 
-    public function getEmails(): string
+    public function getEmails(): array
     {
         return $this->emails;
     }
 
-    public function setEmails(string $emails): void
+    public function setEmails(array $emails): void
     {
         $this->emails = $emails;
     }

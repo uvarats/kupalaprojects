@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Entity\Interface\AcceptableInterface;
 use App\Enum\AcceptanceEnum;
 use App\Feature\Project\Repository\ProjectParticipantRepository;
 use Doctrine\ORM\Mapping as ORM;
@@ -12,7 +13,7 @@ use Symfony\Component\Uid\Uuid;
 
 #[ORM\Entity(repositoryClass: ProjectParticipantRepository::class)]
 #[ORM\UniqueConstraint(fields: ['project', 'participant'])]
-class ProjectParticipant
+class ProjectParticipant implements AcceptableInterface
 {
     #[ORM\Id]
     #[ORM\Column(type: UuidType::NAME, unique: true)]
@@ -71,10 +72,41 @@ class ProjectParticipant
         return $this->acceptance;
     }
 
-    public function setAcceptance(AcceptanceEnum $acceptance): static
+    public function approve(): void
     {
-        $this->acceptance = $acceptance;
+        if ($this->acceptance !== AcceptanceEnum::NO_DECISION) {
+            return;
+        }
 
-        return $this;
+        $this->acceptance = AcceptanceEnum::APPROVED;
+    }
+
+    public function reject(): void
+    {
+        if ($this->acceptance !== AcceptanceEnum::NO_DECISION) {
+            return;
+        }
+
+        $this->acceptance = AcceptanceEnum::REJECTED;
+    }
+
+    public function retractDecision(): void
+    {
+        $this->acceptance = AcceptanceEnum::NO_DECISION;
+    }
+
+    public function isApproved(): bool
+    {
+        return $this->acceptance === AcceptanceEnum::APPROVED;
+    }
+
+    public function isRejected(): bool
+    {
+        return $this->acceptance === AcceptanceEnum::REJECTED;
+    }
+
+    public function isPending(): bool
+    {
+        return $this->acceptance === AcceptanceEnum::NO_DECISION;
     }
 }
