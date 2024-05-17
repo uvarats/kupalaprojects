@@ -7,7 +7,7 @@ namespace App\Twig\Component;
 use App\Entity\Project;
 use App\Feature\Project\Dto\ProjectTeamData;
 use App\Feature\Project\Form\ProjectTeamType;
-use App\Feature\Project\Service\TeamService;
+use App\Feature\Project\Service\ProjectTeamService;
 use App\Feature\Team\Security\TeamVoter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormInterface;
@@ -31,12 +31,12 @@ final class ProjectTeamRegistration extends AbstractController
     public Project $project;
 
     public function __construct(
-        private readonly TeamService $teamService,
+        private readonly ProjectTeamService $teamService,
     ) {}
 
     protected function instantiateForm(): FormInterface
     {
-        return $this->createForm(ProjectTeamType::class, $this->data);
+        return $this->createForm(ProjectTeamType::class, $this->data, ['project' => $this->project]);
     }
 
     #[LiveAction]

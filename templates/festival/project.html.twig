@@ -10,7 +10,7 @@
             {# @var project \App\Entity\Project #}
             {% for project in projects %}
                 {% if project.isActive or is_granted('IS_ORGANIZATION_COMMITTEE_MEMBER', festival) %}
-                    <div class="col">
+                    <div class="col mb-3">
                         <turbo-frame id="project_frame_{{ project.id }}">
                             {{ include('festival/_project_card.html.twig', {'project': project}) }}
                         </turbo-frame>

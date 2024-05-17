@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Entity\Interface\AcceptableInterface;
+use App\Entity\Trait\AcceptableTrait;
 use App\Enum\AcceptanceEnum;
 use App\Feature\Project\Repository\ProjectTeamRepository;
 use Doctrine\ORM\Mapping as ORM;
@@ -12,16 +14,15 @@ use Symfony\Component\Uid\Uuid;
 
 #[ORM\Entity(repositoryClass: ProjectTeamRepository::class)]
 #[ORM\UniqueConstraint(fields: ['team', 'project'])]
-class ProjectTeam
+class ProjectTeam implements AcceptableInterface
 {
+    use AcceptableTrait;
+
     #[ORM\Id]
     #[ORM\Column(type: UuidType::NAME, unique: true)]
     #[ORM\GeneratedValue(strategy: 'CUSTOM')]
     #[ORM\CustomIdGenerator(class: 'doctrine.uuid_generator')]
     private ?Uuid $id = null;
-
-    #[ORM\Column(length: 255, enumType: AcceptanceEnum::class)]
-    private AcceptanceEnum $acceptance = AcceptanceEnum::NO_DECISION;
 
     public function __construct(
         #[ORM\ManyToOne]
@@ -42,29 +43,6 @@ class ProjectTeam
         return $this->id;
     }
 
-    public function getAcceptance(): AcceptanceEnum
-    {
-        return $this->acceptance;
-    }
-
-    public function approve(): void
-    {
-        if ($this->acceptance !== AcceptanceEnum::NO_DECISION) {
-            throw new \LogicException('Cannot approve team whose decision has already been made');
-        }
-
-        $this->acceptance = AcceptanceEnum::APPROVED;
-    }
-
-    public function reject(): void
-    {
-        if ($this->acceptance !== AcceptanceEnum::NO_DECISION) {
-            throw new \LogicException('Cannot reject team whose decision has already been made');
-        }
-
-        $this->acceptance = AcceptanceEnum::REJECTED;
-    }
-
     public function getTeam(): Team
     {
         return $this->team;
@@ -75,8 +53,8 @@ class ProjectTeam
         return $this->project;
     }
 
-    public function isRejected(): bool
+    public function getAcceptance(): AcceptanceEnum
     {
-        return $this->acceptance === AcceptanceEnum::REJECTED;
+        return $this->acceptance;
     }
 }

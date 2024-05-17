@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Entity\Interface\AcceptableInterface;
 use App\Enum\AcceptanceEnum;
 use App\Feature\Project\Repository\ProjectParticipantRepository;
 use Doctrine\ORM\Mapping as ORM;
@@ -12,7 +13,7 @@ use Symfony\Component\Uid\Uuid;
 
 #[ORM\Entity(repositoryClass: ProjectParticipantRepository::class)]
 #[ORM\UniqueConstraint(fields: ['project', 'participant'])]
-class ProjectParticipant
+class ProjectParticipant implements AcceptableInterface
 {
     #[ORM\Id]
     #[ORM\Column(type: UuidType::NAME, unique: true)]
@@ -69,14 +70,6 @@ class ProjectParticipant
     public function getAcceptance(): AcceptanceEnum
     {
         return $this->acceptance;
-    }
-
-    /** @deprecated Will be removed */
-    public function setAcceptance(AcceptanceEnum $acceptance): static
-    {
-        $this->acceptance = $acceptance;
-
-        return $this;
     }
 
     public function approve(): void

@@ -24,14 +24,14 @@ class ProjectTeamRepository extends ServiceEntityRepository
     public function findByProject(Project $project): ProjectTeamCollection
     {
         $result = $this->createQueryBuilder('pt')
-            ->select('pt', 'project', 'team', 'teamParticipants')
+            ->select('pt', 'project', 'team', 'teamParticipants', 'participant')
             ->innerJoin('pt.project', 'project', Join::WITH, 'pt.project = :project')
             ->leftJoin('pt.team', 'team')
             ->leftJoin('team.teamParticipants', 'teamParticipants')
+            ->leftJoin('teamParticipants.participant', 'participant')
             ->setParameter('project', $project)
             ->getQuery()
             ->getResult();
-        //dd($result);
 
         return new ProjectTeamCollection($result);
     }

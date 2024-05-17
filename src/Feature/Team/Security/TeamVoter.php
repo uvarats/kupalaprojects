@@ -50,7 +50,7 @@ final class TeamVoter extends Voter
         $participant = $user->getParticipant();
 
         return match ($attribute) {
-            self::IS_TEAM_OWNER, self::CAN_SUBMIT_TEAM_FOR_PROJECT => $subject->isCreator($participant),
+            self::IS_TEAM_OWNER, self::CAN_SUBMIT_TEAM_FOR_PROJECT => $subject->isTeamCreator($participant),
             self::IS_TEAM_MEMBER => $subject->hasParticipant($participant),
         };
     }

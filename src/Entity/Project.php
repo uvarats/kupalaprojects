@@ -451,12 +451,24 @@ class Project implements DateRangeInterface
 
     public function hasTeam(Team $team): bool
     {
+        return $this->findTeam($team) !== null;
+    }
+
+    private function findTeam(Team $team): ?ProjectTeam
+    {
         foreach ($this->teams as $projectTeam) {
             if ($projectTeam->getTeam() === $team) {
-                return true;
+                return $projectTeam;
             }
         }
 
-        return false;
+        return null;
+    }
+
+    public function hasRejectedTeam(Team $team): bool
+    {
+        $projectTeam = $this->findTeam($team);
+
+        return $projectTeam?->isRejected() ?? false;
     }
 }
