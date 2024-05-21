@@ -3,6 +3,7 @@
 {% block title %}{{ project.name }}{% endblock %}
 
 {% block body %}
+    {% set isProjectOwner = is_granted('IS_PROJECT_OWNER', project) %}
     <div class="container mt-2">
         <div class="d-flex justify-content-center">
             <h1>Информация о проекте "{{ project.name }}"</h1>
@@ -37,9 +38,68 @@
                 </tbody>
             </table>
         </div>
+        {% set participants = project.approvedParticipants %}
+        {% if not participants.empty %}
+
+        {% endif %}
         <div class="mb-3">
             <h3 class="mb-3">Участники</h3>
+            {% if not participants.empty %}
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">ФИО</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {# @var participant \App\Entity\ProjectParticipant #}
+                    {% for participant in project.approvedParticipants %}
+                        <tr>
+                            <th scope="row">{{ loop.index }}</th>
+                            <td>{{ participant.participant.fullName }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                В данном проекте пока что никто не участвует.
+                {% if isProjectOwner %}
+                    Возможно, вы не рассмотрели <a href="{{ path('app_project_participant_moderation', {'id': project.id}) }}">заявки на участие в проекте</a>?
+                {% endif %}
+            {% endif %}
         </div>
+
+        {% if project.teamsAllowed %}
+            {% set teams = project.approvedTeams %}
+            <div class="mb-3">
+                <h3 class="mb-3">Команды</h3>
+                {% if not teams.empty %}
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Название команды</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {# @var team \App\Entity\ProjectTeam #}
+                        {% for team in project.approvedTeams %}
+                            <tr>
+                                <th scope="row">1</th>
+                                <td>{{ team.team.name }}</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                {% else %}
+                    На данный проект пока не зарегистрировалось ни одной команды.
+                    {% if isProjectOwner %}
+                        Возможно, вы не рассмотрели <a href="{{ path('app_project_participant_moderation', {'id': project.id}) }}">заявки на участие в проекте</a>?
+                    {% endif %}
+                {% endif %}
+            </div>
+        {% endif %}
         <div class="mb-3">
             <h3 class="mb-4">Награды</h3>
             {% if project.awards.count > 0 %}

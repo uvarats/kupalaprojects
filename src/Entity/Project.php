@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Entity;
 
 use App\Enum\ProjectStateEnum;
+use App\Feature\Project\Collection\ProjectParticipantCollection;
+use App\Feature\Project\Collection\ProjectTeamCollection;
 use App\Feature\Project\Repository\ProjectRepository;
 use App\Interface\DateRangeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -74,6 +76,9 @@ class Project implements DateRangeInterface
      */
     #[ORM\OneToMany(targetEntity: ProjectTeam::class, mappedBy: 'project', cascade: ['persist', 'remove'], orphanRemoval: true)]
     private Collection $teams;
+
+    #[ORM\OneToOne(mappedBy: 'project', cascade: ['persist', 'remove'])]
+    private ?ProjectReport $projectReport = null;
 
     public function __construct()
     {
@@ -339,6 +344,30 @@ class Project implements DateRangeInterface
         return $this->participants;
     }
 
+    /**
+     * Used in project details template (details.html.twig)
+     */
+    public function getApprovedParticipants(): ProjectParticipantCollection
+    {
+        $approvedParticipants = $this->participants->filter(function (ProjectParticipant $participant): bool {
+            return $participant->isApproved();
+        })->toArray();
+
+        return new ProjectParticipantCollection($approvedParticipants);
+    }
+
+    /**
+     * Used in project details template (details.html.twig)
+     */
+    public function getApprovedTeams(): ProjectTeamCollection
+    {
+        $approvedTeams = $this->teams->filter(function (ProjectTeam $team): bool {
+            return $team->isApproved();
+        })->toArray();
+
+        return new ProjectTeamCollection($approvedTeams);
+    }
+
     public function submitParticipant(Participant $participant): ProjectParticipant
     {
         $projectParticipant = ProjectParticipant::make($this, $participant);
@@ -470,5 +499,27 @@ class Project implements DateRangeInterface
         $projectTeam = $this->findTeam($team);
 
         return $projectTeam?->isRejected() ?? false;
+    }
+
+    public function getProjectReport(): ?ProjectReport
+    {
+        return $this->projectReport;
+    }
+
+    public function setProjectReport(?ProjectReport $projectReport): static
+    {
+        // unset the owning side of the relation if necessary
+        if ($projectReport === null && $this->projectReport !== null) {
+            $this->projectReport->setProject(null);
+        }
+
+        // set the owning side of the relation if necessary
+        if ($projectReport !== null && $projectReport->getProject() !== $this) {
+            $projectReport->setProject($this);
+        }
+
+        $this->projectReport = $projectReport;
+
+        return $this;
     }
 }
