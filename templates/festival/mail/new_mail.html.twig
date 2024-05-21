@@ -13,6 +13,9 @@
             <div class="mb-3">
                 {{ form_row(form.content) }}
             </div>
+            <div class="mb-3">
+                {{ form_row(form.recipients) }}
+            </div>
             <button type="submit" class="btn btn-primary">Отправить</button>
             {{ form_rest(form) }}
             {{ form_end(form) }}

@@ -33,8 +33,17 @@ class FestivalMail
     #[ORM\JoinColumn(nullable: false)]
     private ?User $mailAuthor = null;
 
-    #[ORM\Column]
+    #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $sentAt = null;
+
+    #[ORM\Column(options: ['default' => '[]'])]
+    private array $recipients = [];
+
+    #[ORM\Column(options: ['default' => '[]'])]
+    private array $bcc = [];
+
+    #[ORM\Column(options: ['default' => '[]'])]
+    private array $cc = [];
 
     public function getId(): ?Uuid
     {
@@ -97,6 +106,42 @@ class FestivalMail
     public function setSentAt(\DateTimeImmutable $sentAt): self
     {
         $this->sentAt = $sentAt;
+
+        return $this;
+    }
+
+    public function getRecipients(): array
+    {
+        return $this->recipients;
+    }
+
+    public function setRecipients(array $recipients): static
+    {
+        $this->recipients = $recipients;
+
+        return $this;
+    }
+
+    public function getBcc(): array
+    {
+        return $this->bcc;
+    }
+
+    public function setBcc(array $bcc): static
+    {
+        $this->bcc = $bcc;
+
+        return $this;
+    }
+
+    public function getCc(): array
+    {
+        return $this->cc;
+    }
+
+    public function setCc(array $cc): static
+    {
+        $this->cc = $cc;
 
         return $this;
     }

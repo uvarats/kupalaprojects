@@ -23,6 +23,7 @@ Name: 'Название'
 'Goal': 'Цель проекта'
 'Education establishment': 'Учреждение образования'
 'Teams allowed': 'Разрешить регистрацию участников в виде команд'
+'Recipients': 'Адресаты'
 app:
   create: 'Создать'
   edit: 'Редактировать'
@@ -82,3 +83,9 @@ general:
     no_decision: 'Ожидает решения'
     approved: 'Одобрено'
     rejected: 'Отклонено'
+mail:
+  recipients:
+    organization_committee: 'Орг. комитет'
+    jury: 'Жюри'
+    project_authors: 'Авторы проектов'
+    participants: 'Участники'

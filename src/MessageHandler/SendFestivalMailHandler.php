@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\MessageHandler;
 
+use App\Feature\Festival\Service\FestivalMailer;
 use App\Message\SendFestivalMail;
 use App\Repository\FestivalMailRepository;
-use App\Service\Festival\FestivalMailer;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 
 #[AsMessageHandler]

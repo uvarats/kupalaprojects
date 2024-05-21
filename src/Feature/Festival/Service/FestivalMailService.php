@@ -2,9 +2,10 @@
 
 declare(strict_types=1);
 
-namespace App\Service\Festival;
+namespace App\Feature\Festival\Service;
 
 use App\Entity\FestivalMail;
+use App\Feature\Festival\Dto\CreateFestivalMail;
 use App\Message\SendFestivalMail;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
@@ -17,6 +18,9 @@ final readonly class FestivalMailService
         private MessageBusInterface $bus,
     ) {}
 
+    /**
+     * @deprecated
+     */
     public function processMail(FestivalMail $mail): void
     {
         $mail->setSentAt(new DateTimeImmutable());
@@ -26,5 +30,10 @@ final readonly class FestivalMailService
 
         $message = SendFestivalMail::fromMail($mail);
         $this->bus->dispatch($message);
+    }
+
+    public function process(CreateFestivalMail $request): void
+    {
+
     }
 }

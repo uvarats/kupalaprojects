@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Service\Festival;
+namespace App\Feature\Festival\Service;
 
 use App\Entity\FestivalMail;
 use App\Entity\Project;
@@ -10,6 +10,7 @@ use App\Enum\FestivalMailPlaceholderEnum;
 use App\Enum\NameFormatEnum;
 use App\Feature\Project\Repository\ProjectRepository;
 use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Address;
 use Symfony\Component\Mime\Email;
 use Symfony\Component\String\UnicodeString;
 
@@ -26,13 +27,21 @@ final readonly class FestivalMailer
         $projects = $this->projectRepository->getFestivalProjects($festival);
 
         foreach ($projects as $project) {
-            $author = $project->getAuthor();
-            $user = $author->getUserEntity();
-
             $content = $this->replaceContentPlaceholders($mail, $project);
 
+            $rawRecipients = $mail->getRecipients();
+            $recipient = Address::createArray($rawRecipients);
+
+            $rawCc = $mail->getCc();
+            $cc = Address::createArray($rawCc);
+
+            $rawBcc = $mail->getBcc();
+            $bcc = Address::createArray($rawBcc);
+
             $email = new Email();
-            $email->to($user->getEmail())
+            $email->to(...$recipient)
+                ->cc(...$cc)
+                ->bcc(...$bcc)
                 ->subject($mail->getSubject())
                 ->html($content);
 

@@ -7,10 +7,13 @@ namespace App\Controller;
 use App\Entity\Festival;
 use App\Entity\FestivalMail;
 use App\Entity\User;
+use App\Feature\Festival\Dto\CreateFestivalMail;
+use App\Feature\Festival\Dto\FestivalMailData;
+use App\Feature\Festival\Service\FestivalMailService;
 use App\Form\FestivalMailType;
+use App\Message\SendFestivalMail;
 use App\Repository\FestivalMailRepository;
 use App\Security\Voter\FestivalVoter;
-use App\Service\Festival\FestivalMailService;
 use Pagerfanta\Doctrine\ORM\QueryAdapter;
 use Pagerfanta\Pagerfanta;
 use Symfony\Bridge\Doctrine\Attribute\MapEntity;
@@ -71,15 +74,14 @@ final class FestivalMailController extends AbstractController
     ): Response {
         $this->denyAccessUnlessGranted(FestivalVoter::IS_ORGANIZATION_COMMITTEE_MEMBER, $festival);
 
-        $mail = new FestivalMail();
-        $mail->setFestival($festival)
-            ->setMailAuthor($user);
+        $mail = new FestivalMailData();
 
-        $form = $this->createForm(FestivalMailType::class, $mail);
+        $form = $this->createForm(FestivalMailType::class, $mail, ['festival' => $festival]);
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->mailService->processMail($mail);
+            $createRequest = $this->composeRequest($mail, $festival, $user);
+            $this->mailService->process($createRequest);
 
             if ($request->getPreferredFormat() === TurboBundle::STREAM_FORMAT) {
                 $request->setRequestFormat(TurboBundle::STREAM_FORMAT);
@@ -98,6 +100,17 @@ final class FestivalMailController extends AbstractController
         return $this->render('festival/mail/new_mail.html.twig', [
             'form' => $form->createView(),
         ]);
+    }
+
+    private function composeRequest(FestivalMailData $mailData, Festival $festival, User $user): CreateFestivalMail
+    {
+        return new CreateFestivalMail(
+            festival: $festival,
+            author: $user,
+            subject: $mailData->getSubject(),
+            content: $mailData->getContent(),
+            recipients: $mailData->getRecipients(),
+        );
     }
 
 }

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Feature\Team\Form;
 
+use App\Feature\Core\Form\CommaSeparatedTransformer;
 use App\Feature\Team\Dto\InviteData;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\CallbackTransformer;
@@ -13,6 +14,10 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 final class TeamInvitesType extends AbstractType
 {
+    public function __construct(
+        private readonly CommaSeparatedTransformer $commaSeparatedTransformer,
+    ) {}
+
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder->add('emails', TextType::class, [
@@ -27,23 +32,7 @@ final class TeamInvitesType extends AbstractType
         ]);
 
         $builder->get('emails')->addModelTransformer(
-            new CallbackTransformer(
-                function (?array $data): string {
-                    //return $data;
-                    if ($data === null) {
-                        return '';
-                    }
-
-                    return implode(',', $data);
-                },
-                function (?string $reverseData): array {
-                    if ($reverseData === null) {
-                        return [];
-                    }
-
-                    return explode(',', $reverseData);
-                },
-            ),
+            $this->commaSeparatedTransformer,
         );
     }
 
