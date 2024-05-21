@@ -48,6 +48,9 @@ class Festival implements DateRangeInterface
     #[ORM\Column]
     private bool $isActive = true;
 
+    #[ORM\Column(options: ['default' => false])]
+    private bool $reportsAllowed = false;
+
     public function __construct()
     {
         $this->organizationCommittee = new ArrayCollection();
@@ -205,5 +208,17 @@ class Festival implements DateRangeInterface
     public function __toString(): string
     {
         return $this->getLabel();
+    }
+
+    public function isReportsAllowed(): bool
+    {
+        return $this->reportsAllowed;
+    }
+
+    public function setReportsAllowed(bool $reportsAllowed): static
+    {
+        $this->reportsAllowed = $reportsAllowed;
+
+        return $this;
     }
 }
