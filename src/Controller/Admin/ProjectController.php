@@ -40,9 +40,7 @@ class ProjectController extends AbstractCrudController
             UrlField::new('siteUrl'),
             DateField::new('startsAt'),
             DateField::new('endsAt'),
-            NumberField::new('creationYear')->formatValue(
-                static fn($value) => str_replace(chr(0xC2) . chr(0xA0), '', $value)
-            ),
+            NumberField::new('creationYear'),
             AssociationField::new('festival'),
             CollectionField::new('awards')
                 ->setEntryType(ProjectAwardType::class),
