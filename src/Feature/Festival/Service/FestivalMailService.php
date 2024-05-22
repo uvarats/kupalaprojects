@@ -17,7 +17,7 @@ final readonly class FestivalMailService
         private MessageBusInterface $bus,
     ) {}
 
-    public function process(CreateFestivalMail $request): void
+    public function process(CreateFestivalMail $request): FestivalMail
     {
         $festivalMail = FestivalMail::create(
             festival: $request->getFestival(),
@@ -34,5 +34,7 @@ final readonly class FestivalMailService
 
         $message = SendFestivalMail::fromMail($festivalMail);
         $this->bus->dispatch($message);
+
+        return $festivalMail;
     }
 }

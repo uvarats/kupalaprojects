@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Twig\Component;
 
 use App\Entity\Festival;
+use App\Entity\FestivalMail;
 use App\Entity\User;
 use App\Feature\Festival\Dto\CreateFestivalMail;
 use App\Feature\Festival\Dto\FestivalMailData;
@@ -31,6 +32,8 @@ final class FestivalMailForm extends AbstractController
 
     #[LiveProp]
     public Festival $festival;
+    public bool $isSent = false;
+    public ?FestivalMail $mail = null;
 
     protected function instantiateForm(): FormInterface
     {
@@ -38,16 +41,15 @@ final class FestivalMailForm extends AbstractController
     }
 
     #[LiveAction]
-    public function submit(#[CurrentUser] User $user, FestivalMailService $mailService): Response
+    public function submit(#[CurrentUser] User $user, FestivalMailService $mailService): void
     {
         $this->submitForm();
 
         $data = $this->getForm()->getData();
         $mailRequest = $this->composeRequest($data, $user);
 
-        $mailService->process($mailRequest);
-
-        return $this->redirectToRoute('app_festival_mail', ['id' => $this->festival->getId(), 'page' => 1]);
+        $this->mail = $mailService->process($mailRequest);
+        $this->isSent = true;
     }
 
     private function composeRequest(FestivalMailData $mailData, User $user): CreateFestivalMail

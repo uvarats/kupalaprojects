@@ -42,6 +42,8 @@ fos_elastica:
           search_analyzer: project_search_analyzer
         goal:
           type: text
+          analyzer: project_analyzer
+          search_analyzer: project_search_analyzer
         startsAt:
           type: date
         endsAt:

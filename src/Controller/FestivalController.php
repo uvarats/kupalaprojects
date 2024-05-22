@@ -7,6 +7,7 @@ namespace App\Controller;
 use App\Entity\Festival;
 use App\Feature\Project\Repository\ProjectRepository;
 use App\Repository\FestivalRepository;
+use App\Security\Voter\FestivalVoter;
 use Pagerfanta\Doctrine\ORM\QueryAdapter;
 use Pagerfanta\Pagerfanta;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -41,6 +42,8 @@ final class FestivalController extends AbstractController
         Festival $festival,
         int $page = 1
     ): Response {
+        $this->denyAccessUnlessGranted(FestivalVoter::IS_FESTIVAL_STAFF, $festival);
+
         $projectRepository = $this->projectRepository;
         $projectsQuery = $projectRepository->getFestivalProjectsQuery($festival);
 
