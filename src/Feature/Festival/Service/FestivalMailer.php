@@ -2,14 +2,13 @@
 
 declare(strict_types=1);
 
-namespace App\Service\Festival;
+namespace App\Feature\Festival\Service;
 
 use App\Entity\FestivalMail;
-use App\Entity\Project;
 use App\Enum\FestivalMailPlaceholderEnum;
-use App\Enum\NameFormatEnum;
-use App\Feature\Project\Repository\ProjectRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Address;
 use Symfony\Component\Mime\Email;
 use Symfony\Component\String\UnicodeString;
 
@@ -17,30 +16,36 @@ final readonly class FestivalMailer
 {
     public function __construct(
         private MailerInterface $mailer,
-        private ProjectRepository $projectRepository,
+        private EntityManagerInterface $entityManager,
     ) {}
 
     public function send(FestivalMail $mail): void
     {
-        $festival = $mail->getFestival();
-        $projects = $this->projectRepository->getFestivalProjects($festival);
+        $content = $this->replaceContentPlaceholders($mail);
 
-        foreach ($projects as $project) {
-            $author = $project->getAuthor();
-            $user = $author->getUserEntity();
+        $rawRecipients = $mail->getRecipients();
+        $recipient = Address::createArray($rawRecipients);
 
-            $content = $this->replaceContentPlaceholders($mail, $project);
+        $rawCc = $mail->getCc();
+        $cc = Address::createArray($rawCc);
 
-            $email = new Email();
-            $email->to($user->getEmail())
-                ->subject($mail->getSubject())
-                ->html($content);
+        $rawBcc = $mail->getBcc();
+        $bcc = Address::createArray($rawBcc);
 
-            $this->mailer->send($email);
-        }
+        $email = new Email();
+        $email->to(...$recipient)
+            ->cc(...$cc)
+            ->bcc(...$bcc)
+            ->subject($mail->getSubject())
+            ->html($content);
+
+        $this->mailer->send($email);
+
+        $mail->setSentAt(new \DateTimeImmutable());
+        $this->entityManager->flush();
     }
 
-    private function replaceContentPlaceholders(FestivalMail $mail, Project $project): string
+    private function replaceContentPlaceholders(FestivalMail $mail): string
     {
         $content = new UnicodeString(
             string: $mail->getContent()
@@ -50,7 +55,7 @@ final readonly class FestivalMailer
             $placeholder = '{{' . $placeholderEnum->value . '}}';
 
             if ($content->containsAny($placeholder)) {
-                $value = $this->getPlaceholderValue($placeholderEnum, $mail, $project);
+                $value = $this->getPlaceholderValue($placeholderEnum, $mail);
 
                 $content = $content->replace($placeholder, $value);
             }
@@ -62,15 +67,11 @@ final readonly class FestivalMailer
     private function getPlaceholderValue(
         FestivalMailPlaceholderEnum $placeholderEnum,
         FestivalMail $mail,
-        Project $project,
     ): string {
         $festival = $mail->getFestival();
-        $author = $project->getAuthor();
-        $user = $author->getUserEntity();
 
         return match ($placeholderEnum) {
             FestivalMailPlaceholderEnum::FESTIVAL_NAME => $festival->getName(),
-            FestivalMailPlaceholderEnum::USER_NAME => $user->getPersonName()->format(NameFormatEnum::FIRST_MIDDLE),
         };
     }
 

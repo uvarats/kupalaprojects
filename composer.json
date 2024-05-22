@@ -15,6 +15,7 @@
         "doctrine/orm": "^3.0",
         "easycorp/easyadmin-bundle": "^4.6",
         "fakerphp/faker": "^1.21",
+        "friendsofsymfony/ckeditor-bundle": "^2.5",
         "friendsofsymfony/elastica-bundle": "^6.4",
         "nette/utils": "^4.0",
         "phpdocumentor/reflection-docblock": "^5.4",
@@ -54,7 +55,6 @@
         "symfony/webpack-encore-bundle": "^2.1",
         "symfony/workflow": "7.0.*",
         "symfony/yaml": "7.0.*",
-        "trsteel/ckeditor-bundle": "^1.19",
         "twig/cssinliner-extra": "^3.5",
         "twig/extra-bundle": "^3.0",
         "twig/twig": "^3.0"
@@ -89,7 +89,8 @@
     "scripts": {
         "auto-scripts": {
             "cache:clear": "symfony-cmd",
-            "assets:install %PUBLIC_DIR%": "symfony-cmd"
+            "assets:install %PUBLIC_DIR%": "symfony-cmd",
+            "ckeditor:install": "symfony-cmd"
         },
         "post-install-cmd": [
             "@auto-scripts"
