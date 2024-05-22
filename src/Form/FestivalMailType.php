@@ -5,24 +5,25 @@ declare(strict_types=1);
 namespace App\Form;
 
 use App\Entity\Festival;
-use App\Entity\FestivalMail;
-use App\Entity\User;
 use App\Feature\Festival\Dto\FestivalMailData;
-use Doctrine\Common\Collections\Collection;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Contracts\Translation\TranslatorInterface;
-use Trsteel\CkeditorBundle\Form\Type\CkeditorType;
 
 class FestivalMailType extends AbstractType
 {
     public function __construct(
-        private TranslatorInterface $translator,
+        private readonly TranslatorInterface $translator,
     ) {}
 
+    /**
+     * Todo: maybe store recipients as relation and also store type to determine
+     * It will require changing plain email to some kind of Dto.
+     */
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $festival = $options['festival'];
@@ -34,24 +35,24 @@ class FestivalMailType extends AbstractType
         $recipients = [
             $this->translator->trans('mail.recipients.organization_committee') => $this->getOrganizationCommitteeMailOptions($festival),
             $this->translator->trans('mail.recipients.jury') => $this->getJuryMailOptions($festival),
-            $this->translator->trans('mail.recipients.project_authors') => [
-                'test2@mail.com' => 'Some user 2'
-            ],
-            $this->translator->trans('mail.recipients.participants') => [
-                'test3@mail.com' => 'Some user 1'
-            ], // including team owners (and maybe members),
+            $this->translator->trans('mail.recipients.project_authors') => $this->getProjectAuthorsMailOptions($festival),
+            $this->translator->trans('mail.recipients.participants') => $this->getParticipantsMailOptions($festival), // including team owners (and maybe members),
         ];
 
         $builder
             ->add('subject', TextType::class, [
-                'label' => 'festival.mail.subject'
+                'label' => 'festival.mail.subject',
+                'empty_data' => '',
             ])
-            ->add('content', CkeditorType::class, [
-                'label' => 'festival.mail.content'
+            ->add('content', TextareaType::class, [
+                'label' => 'festival.mail.content',
+                'empty_data' => '',
             ])
             ->add('recipients', ChoiceType::class, [
                 'multiple' => true,
+                //'expanded' => true,
                 'choices' => $recipients,
+                'help' => 'festival.mail.recipients_help',
             ])
         ;
     }
@@ -81,6 +82,55 @@ class FestivalMailType extends AbstractType
             $label = $user->getDisplayString();
 
             $options[$label] = $email;
+        }
+
+        return $options;
+    }
+
+    private function getProjectAuthorsMailOptions(Festival $festival): array
+    {
+        $projects = $festival->getProjects();
+
+        $options = [];
+        foreach ($projects as $project) {
+            $projectAuthor = $project->getAuthor()->getUserEntity();
+            $email = $projectAuthor->getEmail();
+            $label = $projectAuthor->getDisplayString();
+
+            $options[$label] = $email;
+        }
+
+        return $options;
+    }
+
+    private function getParticipantsMailOptions(Festival $festival): array
+    {
+        $projects = $festival->getProjects();
+
+        $options = [];
+        foreach ($projects as $project) {
+            $participants = $project->getParticipants();
+            foreach ($participants as $projectParticipant) {
+                $participant = $projectParticipant->getParticipant();
+                $email = $participant->getEmail();
+                $label = $participant->getDisplayString();
+
+                $options[$label] = $email;
+            }
+
+            if (!$project->isTeamsAllowed()) {
+                return $options;
+            }
+
+            $teams = $project->getTeams();
+            foreach ($teams as $projectTeam) {
+                // todo: demeter law
+                $teamCreator = $projectTeam->getTeam()->getCreator()->getParticipant();
+                $email = $teamCreator->getEmail();
+                $label = $teamCreator->getDisplayString();
+
+                $options[$label] = $email;
+            }
         }
 
         return $options;

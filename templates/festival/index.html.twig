@@ -13,10 +13,11 @@
                         <h5 class="card-title">{{ festival.name }}</h5>
                         <p class="card-text">Дата начала: {{ festival.startsAt|date('d.m.Y') }}</p>
                         <p class="card-text">Дата завершения: {{ festival.endsAt|date('d.m.Y') }}</p>
-                        <a href="{{ path('app_festival_projects', {
-                            'id': festival.id
-                        }) }}" class="btn btn-primary">Проекты</a>
-                        {% if is_granted('IS_ORGANIZATION_COMMITTEE_MEMBER', festival) %}
+                        <a class="btn btn-primary mb-2">Поиск проектов</a>
+                        {% if is_granted('IS_ORGANIZATION_COMMITTEE_MEMBER', festival) or is_granted('IS_JURY_MEMBER', festival) %}
+                            <a href="{{ path('app_festival_projects', {
+                                'id': festival.id
+                            }) }}" class="btn btn-primary mb-2">Управление проектами</a>
                             <a href="{{ path('app_festival_mail', {'id': festival.id}) }}"
                                class="btn btn-primary">Рассылки</a>
                         {% endif %}

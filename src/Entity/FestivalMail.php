@@ -45,6 +45,28 @@ class FestivalMail
     #[ORM\Column(options: ['default' => '[]'])]
     private array $cc = [];
 
+    public static function create(
+        Festival $festival,
+        User $author,
+        string $subject,
+        string $content,
+        array $recipients,
+        array $cc,
+        array $bcc,
+    ): FestivalMail {
+        $mail = new self();
+
+        $mail->festival = $festival;
+        $mail->mailAuthor = $author;
+        $mail->subject = $subject;
+        $mail->content = $content;
+        $mail->recipients = $recipients;
+        $mail->cc = $cc;
+        $mail->bcc = $bcc;
+
+        return $mail;
+    }
+
     public function getId(): ?Uuid
     {
         return $this->id;

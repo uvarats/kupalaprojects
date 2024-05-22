@@ -6,24 +6,16 @@ namespace App\Controller;
 
 use App\Entity\Festival;
 use App\Entity\FestivalMail;
-use App\Entity\User;
-use App\Feature\Festival\Dto\CreateFestivalMail;
-use App\Feature\Festival\Dto\FestivalMailData;
 use App\Feature\Festival\Service\FestivalMailService;
-use App\Form\FestivalMailType;
-use App\Message\SendFestivalMail;
 use App\Repository\FestivalMailRepository;
 use App\Security\Voter\FestivalVoter;
 use Pagerfanta\Doctrine\ORM\QueryAdapter;
 use Pagerfanta\Pagerfanta;
 use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Component\Security\Http\Attribute\CurrentUser;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
-use Symfony\UX\Turbo\TurboBundle;
 
 #[IsGranted('IS_AUTHENTICATED_FULLY')]
 final class FestivalMailController extends AbstractController
@@ -68,49 +60,11 @@ final class FestivalMailController extends AbstractController
     #[Route('/festival/{id}/new-mail', name: 'app_festival_mail_new')]
     public function newMail(
         Festival $festival,
-        #[CurrentUser]
-        User $user,
-        Request $request,
     ): Response {
         $this->denyAccessUnlessGranted(FestivalVoter::IS_ORGANIZATION_COMMITTEE_MEMBER, $festival);
 
-        $mail = new FestivalMailData();
-
-        $form = $this->createForm(FestivalMailType::class, $mail, ['festival' => $festival]);
-
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            $createRequest = $this->composeRequest($mail, $festival, $user);
-            $this->mailService->process($createRequest);
-
-            if ($request->getPreferredFormat() === TurboBundle::STREAM_FORMAT) {
-                $request->setRequestFormat(TurboBundle::STREAM_FORMAT);
-
-                return $this->render('festival/mail/mail_sent_stream.html.twig', [
-                    'festival' => $festival,
-                    'mail' => $mail,
-                ]);
-            }
-
-            return $this->redirectToRoute('app_festival_mail', [
-                'id' => $festival->getId(),
-            ]);
-        }
-
         return $this->render('festival/mail/new_mail.html.twig', [
-            'form' => $form->createView(),
+            'festival' => $festival,
         ]);
     }
-
-    private function composeRequest(FestivalMailData $mailData, Festival $festival, User $user): CreateFestivalMail
-    {
-        return new CreateFestivalMail(
-            festival: $festival,
-            author: $user,
-            subject: $mailData->getSubject(),
-            content: $mailData->getContent(),
-            recipients: $mailData->getRecipients(),
-        );
-    }
-
 }

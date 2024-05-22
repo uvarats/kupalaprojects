@@ -18,6 +18,10 @@
                     <small>Время отправки:</small>
                     <span class="fw-bold">{{ mail.sentAt|date('d.m.Y H:i:s') }}</span>
                 </div>
+                <div class="mb-2">
+                    <small>Адресаты</small>
+                    {{ mail.recipients|join(', ') }}
+                </div>
                 <div class="mt-4">
                     <small>Содержимое:</small>
                     <div>

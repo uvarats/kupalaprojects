@@ -7,7 +7,6 @@ namespace App\Feature\Festival\Service;
 use App\Entity\FestivalMail;
 use App\Feature\Festival\Dto\CreateFestivalMail;
 use App\Message\SendFestivalMail;
-use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Messenger\MessageBusInterface;
 
@@ -18,22 +17,22 @@ final readonly class FestivalMailService
         private MessageBusInterface $bus,
     ) {}
 
-    /**
-     * @deprecated
-     */
-    public function processMail(FestivalMail $mail): void
-    {
-        $mail->setSentAt(new DateTimeImmutable());
-
-        $this->entityManager->persist($mail);
-        $this->entityManager->flush();
-
-        $message = SendFestivalMail::fromMail($mail);
-        $this->bus->dispatch($message);
-    }
-
     public function process(CreateFestivalMail $request): void
     {
+        $festivalMail = FestivalMail::create(
+            festival: $request->getFestival(),
+            author: $request->getAuthor(),
+            subject: $request->getSubject(),
+            content: $request->getContent(),
+            recipients: $request->getRecipients(),
+            cc: $request->getCc(),
+            bcc: $request->getBcc(),
+        );
 
+        $this->entityManager->persist($festivalMail);
+        $this->entityManager->flush();
+
+        $message = SendFestivalMail::fromMail($festivalMail);
+        $this->bus->dispatch($message);
     }
 }
