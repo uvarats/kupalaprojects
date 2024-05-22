@@ -7,6 +7,14 @@
         <div class="d-flex flex-column">
             {{ form_start(search, {'attr': {'class': 'mb-3'}}) }}
             {{ form_row(search.query) }}
+            <div class="d-flex flex-row flex-wrap">
+                <div class="col me-sm-3">
+                    {{ form_row(search.dateFrom) }}
+                </div>
+                <div class="col">
+                    {{ form_row(search.dateTo) }}
+                </div>
+            </div>
             {{ form_row(search.festival) }}
             <button type="submit" class="btn btn-primary">Поиск</button>
             <a href="{{ path('app_projects') }}" class="btn btn-danger">Очистить фильтр</a>
@@ -14,7 +22,11 @@
             <div id="projects" class="mb-3">
                 {% if not is_granted('HAS_PARTICIPANT_DATA') %}
                     <div class="text-danger mb-3">
-                        <span>Для регистрации на проекты необходимо создать аккаунт и заполнить карточку участника. После этого кнопки станут активными.</span>
+                        {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+                            <span>Для регистрации на проекты необходимо <a href="{{ path('app_account_participant_create') }}">заполнить карточку участника</a>. Без карточки участника можно только просматривать проекты.</span>
+                        {% else %}
+                            <span>Для регистрации на проекты необходимо <a href="{{ path('app_signup') }}">создать аккаунт</a> и заполнить карточку участника. Без карточки участника можно только просматривать проекты.</span>
+                        {% endif %}
                     </div>
                 {% endif %}
                 {% if projects.count > 0 %}

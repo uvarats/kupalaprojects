@@ -7,8 +7,10 @@ namespace App\Form\Project;
 use App\Dto\ProjectQuery;
 use App\Entity\Festival;
 use App\Repository\FestivalRepository;
+use EasyCorp\Bundle\EasyAdminBundle\Form\Filter\Type\DateTimeFilterType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -35,7 +37,16 @@ final class ProjectQueryType extends AbstractType
             'attr' => [
                 'placeholder' => 'search.placeholder'
             ],
+            'help' => 'project.query.help'
         ])
+            ->add('dateFrom', DateType::class, [
+                'label' => 'search.dateFrom',
+                'required' => false,
+            ])
+            ->add('dateTo', DateType::class, [
+                'label' => 'search.dateTo',
+                'required' => false,
+            ])
             ->add('festival', EntityType::class, [
                 'class' => Festival::class,
                 'choices' => $festivals,

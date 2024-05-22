@@ -99,12 +99,22 @@ class Festival implements DateRangeInterface
         return $this;
     }
 
+    public function isFestivalStaff(User $user): bool
+    {
+        return $this->isJuryMember($user) || $this->isOrganizingCommitteeMember($user);
+    }
+
     /**
      * @return Collection<int, User>
      */
     public function getOrganizationCommittee(): Collection
     {
         return $this->organizationCommittee;
+    }
+
+    public function isOrganizingCommitteeMember(User $user): bool
+    {
+        return $this->organizationCommittee->contains($user);
     }
 
     public function addOrganizationCommittee(User $organizationCommittee): self

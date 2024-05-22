@@ -11,6 +11,8 @@ final class ProjectQuery
     public function __construct(
         private ?string $query,
         private ?Festival $festival = null,
+        private ?\DateTimeImmutable $dateFrom = null,
+        private ?\DateTimeImmutable $dateTo = null,
     ) {}
 
     public static function empty(): ProjectQuery
@@ -42,6 +44,26 @@ final class ProjectQuery
 
     public function isEmptyQuery(): bool
     {
-        return $this->query === null && $this->festival === null;
+        return $this->query === null && $this->festival === null && $this->dateFrom === null && $this->dateTo === null;
+    }
+
+    public function getDateFrom(): ?\DateTimeImmutable
+    {
+        return $this->dateFrom;
+    }
+
+    public function setDateFrom(?\DateTimeImmutable $dateFrom): void
+    {
+        $this->dateFrom = $dateFrom;
+    }
+
+    public function getDateTo(): ?\DateTimeImmutable
+    {
+        return $this->dateTo;
+    }
+
+    public function setDateTo(?\DateTimeImmutable $dateTo): void
+    {
+        $this->dateTo = $dateTo;
     }
 }

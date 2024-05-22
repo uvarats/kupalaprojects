@@ -65,6 +65,24 @@ final readonly class ProjectFilterService
             $searchQuery->addMust($nested);
         }
 
+        $dateFrom = $query->getDateFrom();
+        if ($dateFrom !== null) {
+            $fromFilter = new Query\Range('startsAt', [
+                'gte' => $dateFrom->format('Y-m-d'),
+            ]);
+
+            $searchQuery->addMust($fromFilter);
+        }
+
+        $dateTo = $query->getDateTo();
+        if ($dateTo !== null) {
+            $toFilter = new Query\Range('endsAt', [
+                'lte' => $dateTo->format('Y-m-d'),
+            ]);
+
+            $searchQuery->addMust($toFilter);
+        }
+
         return $searchQuery;
     }
 }
