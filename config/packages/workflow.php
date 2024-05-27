@@ -36,13 +36,8 @@ return static function (FrameworkConfig $framework): void {
         ->to([ProjectStateEnum::REJECTED->value]);
 
     $projectWorkflow->transition()
-        ->name(ProjectTransitionEnum::CANCEL_REJECTION->value)
-        ->from([ProjectStateEnum::REJECTED->value])
-        ->to([ProjectStateEnum::UNDER_MODERATION->value]);
-
-    $projectWorkflow->transition()
-        ->name(ProjectTransitionEnum::CANCEL_APPROVAL->value)
-        ->from([ProjectStateEnum::APPROVED->value])
+        ->name(ProjectTransitionEnum::TO_MODERATION->value)
+        ->from([ProjectStateEnum::APPROVED->value, ProjectStateEnum::REJECTED->value])
         ->to([ProjectStateEnum::UNDER_MODERATION->value]);
 
     $projectWorkflow->transition()

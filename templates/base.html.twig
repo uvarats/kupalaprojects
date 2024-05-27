@@ -42,14 +42,19 @@
                             Аккаунт
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownMenuLink">
-                            <li><a class="dropdown-item" href="{{ path('app_projects_personal') }}">Мои проекты</a></li>
+                            <li><a class="dropdown-item" href="{{ path('app_settings') }}">Личные данные</a></li>
+                            {% if is_granted('IS_PROJECT_AUTHOR_USER') %}
+                                <li><h6 class="dropdown-header">Проекты</h6></li>
+                                <li><a class="dropdown-item" href="{{ path('app_projects_personal') }}">Мои проекты</a></li>
+                            {% endif %}
                             {% if is_granted('HAS_PARTICIPANT_DATA') %}
+                                <li><a class="dropdown-item" href="{{ path('app_account_participant_projects') }}">Участие в проектах</a></li>
+                                <li><h6 class="dropdown-header">Команды</h6></li>
                                 <li><a class="dropdown-item" href="{{ path('app_account_teams') }}">Мои команды</a></li>
                                 <li><a class="dropdown-item" href="{{ path('app_account_my_team_invites') }}">Мои приглашения</a></li>
-                                <li><a class="dropdown-item" href="{{ path('app_account_participant_projects') }}">Участие в проектах</a></li>
                             {% endif %}
-                            <li><a class="dropdown-item" href="{{ path('app_settings') }}">Настройки</a></li>
                             {% if is_granted('ROLE_ADMIN') %}
+                                <li><h6 class="dropdown-header">Администрирование</h6></li>
                                 <li><a class="dropdown-item" href="{{ path('app_admin') }}">Панель управления</a></li>
                             {% endif %}
                             <li>

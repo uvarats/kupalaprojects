@@ -9,7 +9,7 @@ use Elastica\Query;
 use FOS\ElasticaBundle\Finder\PaginatedFinderInterface;
 use Pagerfanta\Pagerfanta;
 
-final readonly class ProjectFilterService
+final readonly class ProjectSearchService
 {
     public function __construct(
         private PaginatedFinderInterface $finder,
@@ -57,7 +57,7 @@ final readonly class ProjectFilterService
             $nested->setPath('festival');
 
             $festivalIdQuery = new Query\BoolQuery();
-            $matchId = new Query\MatchQuery('festival._id', $festival->getId()->toRfc4122());
+            $matchId = new Query\MatchQuery('festival.id', $festival->getId()->toRfc4122());
             $festivalIdQuery->addMust($matchId);
 
             $nested->setQuery($festivalIdQuery);

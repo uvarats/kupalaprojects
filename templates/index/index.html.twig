@@ -10,8 +10,26 @@
         </div>
     </div>
     <div class="container">
-        <div class="main-cards">
-            <div class="me-3">
+        <div class="main-cards mb-3">
+            <div class="col">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Актуальные проекты</h3>
+                    </div>
+                    <div class="card-body d-flex flex-row">
+                        {% for project in projects %}
+                            <div class="me-3">
+                                {{ component('ProjectSearchCard', {
+                                    'project': project,
+                                }) }}
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="main-cards row row-cols-2">
+            <div class="col">
                 <div class="card">
                     <div class="card-header">
                         <h3>Проекты</h3>
@@ -21,7 +39,7 @@
                     </div>
                 </div>
             </div>
-            <div>
+            <div class="col">
                 <div class="card">
                     <div class="card-header">
                         <h3>О марафоне</h3>

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\ValueObject\Entity;
+namespace App\Feature\Project\ValueObject;
 
 use Symfony\Component\Uid\Uuid;
 

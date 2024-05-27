@@ -53,11 +53,13 @@ fos_elastica:
         festival:
           type: 'nested'
           properties:
-            _id:
+            id:
               type: keyword
         subjects:
           type: 'nested'
           properties:
+            id:
+              type: keyword
             name:
               type: text
               analyzer: project_analyzer
@@ -65,6 +67,8 @@ fos_elastica:
         orientedOn:
           type: 'nested'
           properties:
+            id:
+              type: keyword
             name:
               type: text
               analyzer: project_analyzer
