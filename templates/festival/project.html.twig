@@ -7,23 +7,13 @@
         <h1>{{ festival.name }}: управление проектами</h1>
 
         <article class="mb-3">
-            Это техническая страница для управления проектами.
+            Cтраница управления проектами фестиваля.
         </article>
 
-        <div class="row row-cols-2 row-cols-md-3" id="">
-            {# @var project \App\Entity\Project #}
-            {% for project in projects %}
-                {% if project.isActive or is_granted('IS_ORGANIZATION_COMMITTEE_MEMBER', festival) %}
-                    <div class="col mb-3">
-                        <turbo-frame id="project_frame_{{ project.id }}">
-                            {{ include('festival/_project_card.html.twig', {'project': project}) }}
-                        </turbo-frame>
-                    </div>
-                {% endif %}
-            {% endfor %}
-        </div>
-        {% if projects.count > 50 %}
-            {{ pagerfanta(projects, 'twitter_bootstrap5', {'omitFirstPage': true}) }}
-        {% endif %}
+        {{ component('FestivalProjects', {
+            'festival': festival,
+            'page': page,
+            'maxPerPage': maxPerPage,
+        }) }}
     </div>
 {% endblock %}

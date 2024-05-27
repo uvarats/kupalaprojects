@@ -24,7 +24,7 @@ return static function (ContainerConfigurator $container) {
     $services->set(\App\Feature\Project\Service\ProjectMailerService::class)
         ->arg('$mailFrom', 'org@kp.grsu.by');
 
-    $services->set(\App\Service\Project\ProjectFilterService::class)
+    $services->set(\App\Service\Project\ProjectSearchService::class)
         ->arg('$finder', service('fos_elastica.finder.project'));
 
     $services->alias(

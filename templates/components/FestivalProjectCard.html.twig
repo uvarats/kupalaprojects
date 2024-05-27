@@ -1,0 +1,49 @@
+<div {{ attributes }}>
+    <div class="card">
+        <div class="card-body">
+            <div class="d-flex flex-row justify-content-between">
+                <h5 class="card-title">{{ project.name }}</h5>
+                <div>
+                    <input type="checkbox" data-model="selected" class="form-check-input" aria-label="...">
+                </div>
+            </div>
+            <span class="card-text">Автор: {{ project.author.userEntity.fullName }}</span><br>
+            <span class="card-text">Сайт: <a href="#">{{ project.siteUrl }}</a></span><br>
+            <span class="card-text">Год создания: {{ project.creationYear }}</span><br>
+            <span class="card-text">Состояние: {{ project.state|fancy }}</span><br>
+            <span class="card-text">Дата начала: {{ project.startsAt|date('d.m.Y') }}</span><br>
+            <span class="card-text">Дата завершения: {{ project.endsAt|date('d.m.Y') }}</span><br>
+        </div>
+        <div class="d-flex justify-content-between align-items-center card-footer">
+            <div class="d-flex flex-wrap">
+                {% if is_granted('IS_ORGANIZATION_COMMITTEE_MEMBER', project.festival) %}
+                    {% if workflow_can(project, 'approve') %}
+                        <button class="btn btn-success me-2" data-action="live#action" data-live-action-param="transition" data-live-transition-param="approve">Одобрить</button>
+                    {% endif %}
+                {% endif %}
+                {% if workflow_can(project, 'reject') %}
+                    <button class="btn btn-danger me-2" data-action="live#action" data-live-action-param="transition" data-live-transition-param="reject">Отклонить</button>
+                {% endif %}
+                <a href="{{ path('app_project_details', { 'id': project.id }) }}" data-turbo="false" class="btn btn-primary me-2">Детали</a>
+                {% if false %}
+                    <a href="#" class="btn btn-secondary me-2">Отчёт</a>
+                {% endif %}
+                {% if is_granted('IS_ORGANIZATION_COMMITTEE_MEMBER', project.festival) and not workflow_has_marked_place(project, 'under_moderation') %}
+                    <div class="dropdown me-2">
+                        <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown"
+                                aria-expanded="false">
+                            Действия
+                        </button>
+                        <ul class="dropdown-menu">
+                            {% if workflow_can(project, 'to_moderation') %}
+                                <li>
+                                    <button class="dropdown-item" data-action="live#action" data-live-action-param="transition" data-live-transition-param="to_moderation">Вернуть на модерацию</button>
+                                </li>
+                            {% endif %}
+                        </ul>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,38 @@
+<div {{ attributes }}>
+    {% set projects = this.projectsPaginator %}
+    {% if this.selectedProjects|length is not same as(0) %}
+        <div class="mb-2 d-flex flex-row">
+            <span class="me-2">Выбрано проектов: {{ this.selectedProjects|length }}. Действия: </span>
+            <div class="d-flex flex-row">
+                <button class="btn btn-sm btn-success me-2" data-action="live#action" data-live-action-param="massTransition" data-live-transition-param="approve">Одобрить</button>
+                <button class="btn btn-sm btn-danger me-2" data-action="live#action" data-live-action-param="massTransition" data-live-transition-param="reject">Отклонить</button>
+                <button class="btn btn-sm btn-warning me-2" data-action="live#action" data-live-action-param="massTransition" data-live-transition-param="to_moderation">На модерацию</button>
+                <button class="btn btn-sm btn-outline-primary me-2" data-action="live#action" data-live-action-param="unselectAll">Снять выделение</button>
+            </div>
+        </div>
+    {% endif %}
+    <div class="row row-cols-2 row-cols-md-3" id="">
+        {# @var project \App\Entity\Project #}
+        {% for project in projects %}
+            {% if project.isActive or is_granted('IS_ORGANIZATION_COMMITTEE_MEMBER', festival) %}
+                <div class="col mb-3">
+                    {% if this.selected(project) %}
+                        <input type="checkbox" hidden="hidden" data-model="selectedProjects[]" value="{{ project.id.toRfc4122 }}">
+                        {% set selectionKey = 'selected' %}
+                    {% else %}
+                        {% set selectionKey = 'unselected' %}
+                    {% endif %}
+                    {{ component('FestivalProjectCard', {
+                        key: 'project_' ~ project.id.toRfc4122 ~ '_' ~ project.state ~ '_' ~ selectionKey,
+                        project: project,
+                        selected: this.selected(project)
+                    }) }}
+                </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+
+    {% if projects.count > 50 %}
+        {{ pagerfanta(projects, 'twitter_bootstrap5', {'omitFirstPage': true}) }}
+    {% endif %}
+</div>

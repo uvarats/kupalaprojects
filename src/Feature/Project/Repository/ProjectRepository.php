@@ -4,15 +4,16 @@ declare(strict_types=1);
 
 namespace App\Feature\Project\Repository;
 
-use App\Collection\ProjectCollection;
 use App\Entity\Festival;
 use App\Entity\Project;
 use App\Entity\User;
 use App\Enum\AcceptanceEnum;
 use App\Enum\ProjectStateEnum;
+use App\Feature\Project\Collection\ProjectCollection;
+use App\Feature\Project\Collection\ProjectIdCollection;
 use App\Feature\Project\Interface\ProjectRepositoryInterface;
+use App\Feature\Project\ValueObject\ProjectId;
 use App\Repository\Interface\EagerLoadInterface;
-use App\ValueObject\Entity\ProjectId;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
@@ -62,38 +63,33 @@ class ProjectRepository extends ServiceEntityRepository implements EagerLoadInte
             ->getQuery();
     }
 
-    public function getProjectWithAwards(string $id): ?Project
+    public function findActualProjects(): ProjectCollection
     {
-        return $this->createQueryBuilder('project')
-            ->leftJoin('project.awards', 'awards')
-            ->addSelect('awards')
-            ->where('project.id = :id')
-            ->setParameter('id', $id)
-            ->getQuery()
-            ->getSingleResult();
-    }
+        $qb = $this->createQueryBuilder('p');
 
-    public function getProjectWithParticipants(string $id): ?Project
-    {
-        return $this->createQueryBuilder('project')
-            ->leftJoin(
-                'project.participants',
-                'participants',
-            )
-            ->addSelect('participants')
-            ->leftJoin(
-                'project.teams',
-                'teams',
-            )
-            ->addSelect('teams')
-            ->setParameter('acceptance', AcceptanceEnum::NO_DECISION->value)
+        $states = [
+            ProjectStateEnum::UNDER_MODERATION->value,
+            ProjectStateEnum::REJECTED->value,
+        ];
+
+        $result = $qb
+            ->innerJoin('p.festival', 'festival')
+            ->where($qb->expr()->eq('festival.isActive', ':active'))
+            ->andWhere($qb->expr()->notIn('p.state', ':states'))
+            ->orderBy('p.dates.startsAt', 'ASC')
+            ->addOrderBy('p.dates.endsAt', 'DESC')
+            ->setParameter('active', true)
+            ->setParameter('states', $states)
+            ->setMaxResults(3)
             ->getQuery()
-            ->getSingleResult();
+            ->getResult();
+
+        return new ProjectCollection($result);
     }
 
     public function eagerLoad(int|string $id): ?Project
     {
-        return $this->eagerLoadBuilder()
+        return $this->eagerLoadBuilder('project')
             ->where('project.id = :id')
             ->setParameter('id', $id)
             ->getQuery()
@@ -107,7 +103,7 @@ class ProjectRepository extends ServiceEntityRepository implements EagerLoadInte
             ProjectStateEnum::REJECTED->value,
         ];
 
-        return $this->eagerLoadBuilder()
+        return $this->eagerLoadBuilder('project')
             ->where('project.state not in (:states)')
             ->setParameter('states', $states)
             ->getQuery();
@@ -124,15 +120,15 @@ class ProjectRepository extends ServiceEntityRepository implements EagerLoadInte
 
     public function getFestivalProjectsQuery(Festival $festival): Query
     {
-        return $this->eagerLoadBuilder()
+        return $this->eagerLoadBuilder('project')
             ->where('festival = :festival')
             ->setParameter('festival', $festival)
             ->getQuery();
     }
 
-    private function eagerLoadBuilder(): QueryBuilder
+    private function eagerLoadBuilder(string $alias): QueryBuilder
     {
-        return $this->createQueryBuilder('project')
+        return $this->createQueryBuilder($alias)
             ->select(
                 'project',
                 'author',
@@ -188,6 +184,18 @@ class ProjectRepository extends ServiceEntityRepository implements EagerLoadInte
             ->leftJoin('teams.team', 'team')
             ->leftJoin('team.teamParticipants', 'teamParticipants')
             ->leftJoin('teamParticipants.participant', 'teamParticipant');
+    }
+
+    public function findAllById(ProjectIdCollection $identifiers): ProjectCollection
+    {
+        $qb = $this->createQueryBuilder('p');
+
+        $result = $qb->where($qb->expr()->in('p.id', ':identifiers'))
+            ->setParameter('identifiers', $identifiers->toArray())
+            ->getQuery()
+            ->getResult();
+
+        return new ProjectCollection($result);
     }
 
     //    /**

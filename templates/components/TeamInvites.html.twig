@@ -5,7 +5,8 @@
         {# @var invite \App\Entity\TeamInvite #}
         {% for invite in this.invites %}
             {{ component('TeamInviteCard', {
-                'invite': invite,
+                invite: invite,
+                key: invite.id,
             }) }}
         {% endfor %}
     </div>

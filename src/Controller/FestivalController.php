@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Entity\Festival;
-use App\Feature\Project\Repository\ProjectRepository;
 use App\Repository\FestivalRepository;
 use App\Security\Voter\FestivalVoter;
 use Pagerfanta\Doctrine\ORM\QueryAdapter;
@@ -16,9 +15,7 @@ use Symfony\Component\Routing\Attribute\Route;
 
 final class FestivalController extends AbstractController
 {
-    public function __construct(
-        private readonly ProjectRepository $projectRepository
-    ) {}
+    public function __construct() {}
 
     #[Route('/festivals/{page}', name: 'app_festivals')]
     public function index(FestivalRepository $festivalRepository, int $page = 1): Response
@@ -44,18 +41,10 @@ final class FestivalController extends AbstractController
     ): Response {
         $this->denyAccessUnlessGranted(FestivalVoter::IS_FESTIVAL_STAFF, $festival);
 
-        $projectRepository = $this->projectRepository;
-        $projectsQuery = $projectRepository->getFestivalProjectsQuery($festival);
-
-        $pager = new Pagerfanta(
-            new QueryAdapter($projectsQuery)
-        );
-        $pager->setMaxPerPage(50)
-            ->setCurrentPage($page);
-
         return $this->render('festival/project.html.twig', [
             'festival' => $festival,
-            'projects' => $pager,
+            'page' => $page,
+            'maxPerPage' => 50,
         ]);
     }
 

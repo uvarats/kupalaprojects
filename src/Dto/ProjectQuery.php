@@ -5,12 +5,15 @@ declare(strict_types=1);
 namespace App\Dto;
 
 use App\Entity\Festival;
+use App\Entity\ProjectSubject;
 
 final class ProjectQuery
 {
     public function __construct(
         private ?string $query,
         private ?Festival $festival = null,
+        /** @var ProjectSubject[] $subjects */
+        private array $subjects = [],
         private ?\DateTimeImmutable $dateFrom = null,
         private ?\DateTimeImmutable $dateTo = null,
     ) {}
@@ -65,5 +68,15 @@ final class ProjectQuery
     public function setDateTo(?\DateTimeImmutable $dateTo): void
     {
         $this->dateTo = $dateTo;
+    }
+
+    public function getSubjects(): array
+    {
+        return $this->subjects;
+    }
+
+    public function setSubjects(array $subjects): void
+    {
+        $this->subjects = $subjects;
     }
 }
