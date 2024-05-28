@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Dto;
 
+use App\Entity\EducationSubGroup;
 use App\Entity\Festival;
 use App\Entity\ProjectSubject;
 
@@ -14,6 +15,8 @@ final class ProjectQuery
         private ?Festival $festival = null,
         /** @var ProjectSubject[] $subjects */
         private array $subjects = [],
+        /** @var EducationSubGroup[] $orientedOn */
+        private array $orientedOn = [],
         private ?\DateTimeImmutable $dateFrom = null,
         private ?\DateTimeImmutable $dateTo = null,
     ) {}
@@ -47,7 +50,10 @@ final class ProjectQuery
 
     public function isEmptyQuery(): bool
     {
-        return $this->query === null && $this->festival === null && $this->dateFrom === null && $this->dateTo === null;
+        $objectVars = get_object_vars($this);
+        $filteredVars = array_filter($objectVars);
+
+        return empty($filteredVars);
     }
 
     public function getDateFrom(): ?\DateTimeImmutable
@@ -78,5 +84,15 @@ final class ProjectQuery
     public function setSubjects(array $subjects): void
     {
         $this->subjects = $subjects;
+    }
+
+    public function getOrientedOn(): array
+    {
+        return $this->orientedOn;
+    }
+
+    public function setOrientedOn(array $orientedOn): void
+    {
+        $this->orientedOn = $orientedOn;
     }
 }

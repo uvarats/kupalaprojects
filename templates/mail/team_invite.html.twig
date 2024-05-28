@@ -1,0 +1,16 @@
+{% extends 'mail/default_template.html.twig' %}
+{# @var recipient \App\Entity\Participant #}
+{# @var team \App\Entity\Team #}
+{# @var issuer \App\Entity\Participant #}
+
+{% block subject %}Приглашение в команду{% endblock %}
+
+{% block content %}
+    <p>Уважаемый {{ recipient.firstAndMiddleName }},</p>
+    <p>{{ issuer.fullName }} отправил Вам приглашение вступить в команду "{{ team.name }}"</p>
+    <p>Вы можете принять либо отклонить данное приглашение.</p>
+    <p>Для этого перейдите в раздел "Мои приглашения" на сайте.</p>
+    <p></p>
+    <p>С уважением,<br>
+        команда Купаловских проектов.</p>
+{% endblock %}

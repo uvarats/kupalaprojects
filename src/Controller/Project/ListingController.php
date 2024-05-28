@@ -7,6 +7,7 @@ namespace App\Controller\Project;
 use App\Dto\ProjectQuery;
 use App\Form\Project\ProjectQueryType;
 use App\Service\Project\ProjectSearchService;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -16,6 +17,7 @@ final class ListingController extends AbstractController
 {
     public function __construct(
         private readonly ProjectSearchService $projectFilter,
+        private readonly EntityManagerInterface $entityManager,
     ) {}
 
     #[Route('/projects/{page}', name: 'app_projects')]

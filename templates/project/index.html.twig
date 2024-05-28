@@ -4,44 +4,53 @@
 
 {% block body %}
     <div class="container my-4" {{ stimulus_controller('projects') }}>
-        <div class="d-flex flex-column">
-            {{ form_start(search, {'attr': {'class': 'mb-3'}}) }}
-            {{ form_row(search.query) }}
-            <div class="d-flex flex-row flex-wrap">
-                <div class="col me-sm-3">
-                    {{ form_row(search.dateFrom) }}
-                </div>
-                <div class="col">
-                    {{ form_row(search.dateTo) }}
-                </div>
-            </div>
-            {{ form_row(search.festival) }}
-            <button type="submit" class="btn btn-primary">Поиск</button>
-            <a href="{{ path('app_projects') }}" class="btn btn-danger">Очистить фильтр</a>
-            {{ form_end(search) }}
-            <div id="projects" class="mb-3">
-                {% if not is_granted('HAS_PARTICIPANT_DATA') %}
-                    <div class="text-danger mb-3">
-                        {% if is_granted('IS_AUTHENTICATED_FULLY') %}
-                            <span>Для регистрации на проекты необходимо <a href="{{ path('app_account_participant_create') }}">заполнить карточку участника</a>. Без карточки участника можно только просматривать проекты.</span>
-                        {% else %}
-                            <span>Для регистрации на проекты необходимо <a href="{{ path('app_signup') }}">создать аккаунт</a> и заполнить карточку участника. Без карточки участника можно только просматривать проекты.</span>
-                        {% endif %}
+        <div class="d-flex flex-md-row flex-column">
+            <div class="me-3">
+                {{ form_start(search, {'attr': {'class': 'mb-3'}}) }}
+                {{ form_row(search.query) }}
+                <div class="d-flex flex-row flex-wrap">
+                    <div class="col me-sm-3">
+                        {{ form_row(search.dateFrom) }}
                     </div>
-                {% endif %}
-                {% if projects.count > 0 %}
-                    {# @var project \App\Entity\Project #}
-                    {% for project in projects %}
-                        {{ component('ProjectSearchCard', {
-                            'project': project,
-                        }) }}
-                    {% endfor %}
-                {% else %}
-                    Активных проектов не обнаружено...
-                {% endif %}
+                    <div class="col">
+                        {{ form_row(search.dateTo) }}
+                    </div>
+                </div>
+                {{ form_row(search.subjects) }}
+                {{ form_row(search.orientedOn) }}
+                {{ form_row(search.festival) }}
+                {{ form_rest(search) }}
+                <button type="submit" class="btn btn-primary">Поиск</button>
+                <a href="{{ path('app_projects') }}" class="btn btn-danger">Очистить фильтр</a>
+                {{ form_end(search) }}
+            </div>
+            <div class="vr me-3"></div>
+            <div class="flex-grow-1 flex-column">
+                <div class="mb-2 d-flex justify-content-center"><h6>Проекты</h6></div>
+                <div id="projects" class="mb-3">
+                    {% if not is_granted('HAS_PARTICIPANT_DATA') %}
+                        <div class="text-danger mb-3">
+                            {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+                                <span>Для регистрации на проекты необходимо <a href="{{ path('app_account_participant_create') }}">заполнить карточку участника</a>. Без карточки участника можно только просматривать проекты.</span>
+                            {% else %}
+                                <span>Для регистрации на проекты необходимо <a href="{{ path('app_signup') }}">создать аккаунт</a> и заполнить карточку участника. Без карточки участника можно только просматривать проекты.</span>
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                    {% if projects.count > 0 %}
+                        {# @var project \App\Entity\Project #}
+                        {% for project in projects %}
+                            {{ component('ProjectSearchCard', {
+                                'project': project,
+                            }) }}
+                        {% endfor %}
+                    {% else %}
+                        Активных проектов не обнаружено...
+                    {% endif %}
+                </div>
+                {{ pagerfanta(projects, 'twitter_bootstrap5', {'omitFirstPage': true, 'prev_message': 'Назад', 'next_message': 'Следующая'}) }}
             </div>
         </div>
-        {{ pagerfanta(projects, 'twitter_bootstrap5', {'omitFirstPage': true}) }}
     </div>
     <script>
 

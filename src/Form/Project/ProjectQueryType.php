@@ -6,6 +6,8 @@ namespace App\Form\Project;
 
 use App\Dto\ProjectQuery;
 use App\Entity\Festival;
+use App\Form\EducationSubGroupAutocompleteField;
+use App\Form\ProjectSubjectAutocompleteField;
 use App\Repository\FestivalRepository;
 use EasyCorp\Bundle\EasyAdminBundle\Form\Filter\Type\DateTimeFilterType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -46,6 +48,14 @@ final class ProjectQueryType extends AbstractType
             ->add('dateTo', DateType::class, [
                 'label' => 'search.dateTo',
                 'required' => false,
+            ])
+            ->add('subjects', ProjectSubjectAutocompleteField::class, [
+                'required' => false,
+                'empty_data' => [],
+            ])
+            ->add('orientedOn', EducationSubGroupAutocompleteField::class, [
+                'required' => false,
+                'empty_data' => [],
             ])
             ->add('festival', EntityType::class, [
                 'class' => Festival::class,
