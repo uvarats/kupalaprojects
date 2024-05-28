@@ -68,6 +68,8 @@ team:
     existingParticipantError: 'Участник %email% уже является участником команды. Больше выслать приглашение нельзя.'
     selfInviteError: 'Вы не можете выслать приглашение самому себе.'
     emails: 'E-Mail участников'
+    email:
+      subject: 'Приглашение в команду'
     status:
       pending: 'Отправлено'
       accepted: 'Принято'

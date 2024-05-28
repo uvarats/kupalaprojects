@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace App\Twig\Component;
 
 use App\Entity\TeamInvite;
+use App\Feature\Team\Interface\TeamInviteServiceInterface;
 use App\Feature\Team\Security\TeamVoter;
-use App\Feature\Team\Service\TeamInviteService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\UX\LiveComponent\Attribute\AsLiveComponent;
 use Symfony\UX\LiveComponent\Attribute\LiveAction;
@@ -22,7 +22,7 @@ final class TeamInviteCard extends AbstractController
     public TeamInvite $invite;
 
     #[LiveAction]
-    public function revoke(TeamInviteService $inviteService): void
+    public function revoke(TeamInviteServiceInterface $inviteService): void
     {
         $team = $this->invite->getTeam();
         $this->denyAccessUnlessGranted(TeamVoter::IS_TEAM_OWNER, $team);

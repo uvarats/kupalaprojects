@@ -6,8 +6,8 @@ namespace App\Twig\Component;
 
 use App\Entity\TeamInvite;
 use App\Feature\Team\Enum\InviteStateChangeResultEnum;
+use App\Feature\Team\Interface\TeamInviteServiceInterface;
 use App\Feature\Team\Security\TeamInviteVoter;
-use App\Feature\Team\Service\TeamInviteService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\UX\LiveComponent\Attribute\AsLiveComponent;
 use Symfony\UX\LiveComponent\Attribute\LiveAction;
@@ -25,7 +25,7 @@ final class ParticipantTeamInvite extends AbstractController
     public InviteStateChangeResultEnum $result = InviteStateChangeResultEnum::NO_RESULT;
 
     public function __construct(
-        private readonly TeamInviteService $inviteService,
+        private readonly TeamInviteServiceInterface $inviteService,
     ) {}
 
     #[LiveAction]

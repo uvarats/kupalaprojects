@@ -13,21 +13,21 @@ use App\Feature\Team\Collection\TeamInviteCollection;
 use App\Feature\Team\Dto\InviteIssueResult;
 use App\Feature\Team\Dto\IssueInvitesRequest;
 use App\Feature\Team\Enum\InviteStateChangeResultEnum;
-use App\Feature\Team\Repository\TeamInviteRepository;
 use App\Feature\Team\Repository\TeamRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
+use App\Feature\Team\Interface\TeamInviteServiceInterface;
 
-final readonly class TeamInviteService
+final readonly class TeamInviteService implements TeamInviteServiceInterface
 {
     public function __construct(
         private EntityManagerInterface $entityManager,
         private TeamRepository $teamRepository,
         private ParticipantRepository $participantRepository,
         private TranslatorInterface $translator,
-        private TeamInviteRepository $inviteRepository,
     ) {}
 
+    #[\Override]
     public function issue(IssueInvitesRequest $request): InviteIssueResult
     {
         $team = $this->getTeamFromIssueRequest($request);
@@ -95,6 +95,7 @@ final readonly class TeamInviteService
         );
     }
 
+    #[\Override]
     public function revoke(TeamInvite $invite): void
     {
         $invite->revoke();
@@ -102,6 +103,7 @@ final readonly class TeamInviteService
         $this->entityManager->flush();
     }
 
+    #[\Override]
     public function handleAccept(TeamInvite $invite): InviteStateChangeResultEnum
     {
         if (!$invite->isPending()) {
@@ -115,6 +117,7 @@ final readonly class TeamInviteService
         return InviteStateChangeResultEnum::SUCCESS;
     }
 
+    #[\Override]
     public function handleReject(TeamInvite $invite): InviteStateChangeResultEnum
     {
         if (!$invite->isPending()) {

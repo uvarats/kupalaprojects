@@ -30,7 +30,6 @@ final readonly class ProjectSearchService
         return $pager;
     }
 
-    // todo: separated interfaced factory
     private function make(ProjectQuery $query): Query\BoolQuery
     {
         $searchQuery = new Query\BoolQuery();
@@ -41,6 +40,17 @@ final readonly class ProjectSearchService
             return $searchQuery;
         }
 
+        $this->applyQueryPrompt($searchQuery, $query);
+        $this->addFestivalFilter($searchQuery, $query);
+        $this->addDatesFilter($searchQuery, $query);
+        $this->addSubjectFilter($searchQuery, $query);
+        $this->addOrientedOnFilter($searchQuery, $query);
+
+        return $searchQuery;
+    }
+
+    private function applyQueryPrompt(Query\BoolQuery $searchQuery, ProjectQuery $query): void
+    {
         $queryString = $query->getQuery();
         if ($queryString !== null) {
             $multiMatch = new Query\MultiMatch();
@@ -49,7 +59,10 @@ final readonly class ProjectSearchService
 
             $searchQuery->addMust($multiMatch);
         }
+    }
 
+    private function addFestivalFilter(Query\BoolQuery $searchQuery, ProjectQuery $query): void
+    {
         $festival = $query->getFestival();
 
         if ($festival !== null) {
@@ -64,7 +77,10 @@ final readonly class ProjectSearchService
 
             $searchQuery->addMust($nested);
         }
+    }
 
+    private function addDatesFilter(Query\BoolQuery $searchQuery, ProjectQuery $query): void
+    {
         $dateFrom = $query->getDateFrom();
         if ($dateFrom !== null) {
             $fromFilter = new Query\Range('startsAt', [
@@ -82,7 +98,49 @@ final readonly class ProjectSearchService
 
             $searchQuery->addMust($toFilter);
         }
+    }
 
-        return $searchQuery;
+    private function addSubjectFilter(Query\BoolQuery $searchQuery, ProjectQuery $query): void
+    {
+        $subjects = $query->getSubjects();
+
+        if (empty($subjects)) {
+            return;
+        }
+
+        $subjectsQuery = new Query\Nested();
+        $subjectsQuery->setPath('subjects');
+
+        $subjectsIdClause = new Query\BoolQuery();
+
+        foreach ($subjects as $subject) {
+            $matchQuery = new Query\MatchQuery('subjects.id', $subject->getId()->toRfc4122());
+            $subjectsIdClause->addShould($matchQuery);
+        }
+
+        $subjectsQuery->setQuery($subjectsIdClause);
+        $searchQuery->addMust($subjectsQuery);
+    }
+
+    public function addOrientedOnFilter(Query\BoolQuery $searchQuery, ProjectQuery $query): void
+    {
+        $orientedOn = $query->getOrientedOn();
+
+        if (empty($orientedOn)) {
+            return;
+        }
+
+        $nestedQuery = new Query\Nested();
+        $nestedQuery->setPath('orientedOn');
+
+        $orientedOnClause = new Query\BoolQuery();
+
+        foreach ($orientedOn as $educationSubGroup) {
+            $match = new Query\MatchQuery('orientedOn.id', $educationSubGroup->getId()->toRfc4122());
+            $orientedOnClause->addShould($match);
+        }
+
+        $nestedQuery->setQuery($orientedOnClause);
+        $searchQuery->addMust($nestedQuery);
     }
 }

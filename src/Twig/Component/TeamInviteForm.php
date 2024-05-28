@@ -13,8 +13,10 @@ use App\Feature\Participant\ValueObject\ParticipantId;
 use App\Feature\Team\Dto\InviteData;
 use App\Feature\Team\Dto\IssueInvitesRequest;
 use App\Feature\Team\Form\TeamInvitesType;
+use App\Feature\Team\Interface\InviteMailerInterface;
+use App\Feature\Team\Interface\TeamInviteServiceInterface;
 use App\Feature\Team\Security\TeamVoter;
-use App\Feature\Team\Service\TeamInviteService;
+use App\Feature\Team\Service\InviteMailerService;
 use App\Feature\Team\ValueObject\TeamId;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormError;
@@ -39,13 +41,18 @@ final class TeamInviteForm extends AbstractController
     #[LiveProp]
     public Team $team;
 
+    public function __construct(
+        private readonly TeamInviteServiceInterface $inviteService,
+        private readonly InviteMailerInterface $mailer,
+    ) {}
+
     protected function instantiateForm(): FormInterface
     {
         return $this->createForm(TeamInvitesType::class, $this->data);
     }
 
     #[LiveAction]
-    public function save(TeamInviteService $inviteService, #[CurrentParticipant] Participant $participant)
+    public function save(#[CurrentParticipant] Participant $participant): void
     {
         $this->denyAccessUnlessGranted(TeamVoter::IS_TEAM_OWNER, $this->team);
 
@@ -54,7 +61,7 @@ final class TeamInviteForm extends AbstractController
         /** @var InviteData $data */
         $data = $this->getForm()->getData();
         $issueRequest = $this->makeIssueRequest($this->team, $participant, $data);
-        $issueResult = $inviteService->issue($issueRequest);
+        $issueResult = $this->inviteService->issue($issueRequest);
 
         $this->formView = null;
         foreach ($issueResult->getErrors() as $error) {
@@ -62,6 +69,8 @@ final class TeamInviteForm extends AbstractController
         }
 
         if ($issueResult->isSuccess()) {
+            $invites = $issueResult->getIssuedInvites();
+            $this->mailer->massSend($invites);
             $this->resetForm();
         }
 

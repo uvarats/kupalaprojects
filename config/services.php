@@ -46,4 +46,10 @@ return static function (ContainerConfigurator $container) {
         ->tag('doctrine.event_listener', [
             'event' => \Doctrine\ORM\Events::onFlush,
         ]);
+
+    $services->set('invite.service', \App\Feature\Team\Service\TeamInviteService::class);
+    $services->alias(\App\Feature\Team\Interface\TeamInviteServiceInterface::class, 'invite.service');
+
+    $services->set('invites.mailer', \App\Feature\Team\Service\InviteMailerService::class);
+    $services->alias(\App\Feature\Team\Service\InviteMailerService::class, 'invites.mailer');
 };
