@@ -48,8 +48,6 @@ fos_elastica:
           type: date
         endsAt:
           type: date
-        creationYear:
-          type: integer
         festival:
           type: 'nested'
           properties:

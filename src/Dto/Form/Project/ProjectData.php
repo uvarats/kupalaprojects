@@ -7,10 +7,9 @@ namespace App\Dto\Form\Project;
 use App\Dto\EventDatesData;
 use App\Entity\EducationSubGroup;
 use App\Entity\Festival;
+use App\Entity\Project;
 use App\Entity\ProjectAward;
 use App\Entity\ProjectSubject;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Symfony\Component\Validator\Constraints as Assert;
 
 class ProjectData
@@ -23,20 +22,18 @@ class ProjectData
     #[Assert\Url]
     private ?string $siteUrl = null;
 
+    #[Assert\Valid]
     private ?EventDatesData $dates = null;
 
-    #[Assert\NotBlank]
-    private ?int $creationYear = null;
+    /**
+     * @var EducationSubGroup[] $orientedOn
+     */
+    private array $orientedOn = [];
 
     /**
-     * @var Collection<array-key, EducationSubGroup> $orientedOn
+     * @var ProjectSubject[] $subjects
      */
-    private Collection $orientedOn;
-
-    /**
-     * @var Collection<array-key, ProjectSubject> $subjects
-     */
-    private Collection $subjects;
+    private array $subjects = [];
 
     // todo: FestivalData (?)
     private ?Festival $festival = null;
@@ -47,11 +44,26 @@ class ProjectData
     private array $awards = [];
     private bool $teamsAllowed = false;
 
-    public function __construct()
+    public static function fromProject(Project $project): ProjectData
     {
-        $this->orientedOn = new ArrayCollection();
-        $this->subjects = new ArrayCollection();
+        $instance = new self();
+
+        $instance->name = $project->getName();
+        $instance->goal = $project->getGoal();
+        $instance->siteUrl = $project->getSiteUrl();
+
+        $dates = $project->getDates();
+        $instance->dates = EventDatesData::fromDates($dates);
+        $instance->orientedOn = $project->getOrientedOn()->toArray();
+        $instance->subjects = $project->getSubjects()->toArray();
+        $instance->festival = $project->getFestival();
+        $instance->awards = $project->getAwards()->toArray();
+        $instance->teamsAllowed = $project->isTeamsAllowed();
+
+        return $instance;
     }
+
+    public function __construct() {}
 
     public function getName(): string
     {
@@ -82,17 +94,6 @@ class ProjectData
     {
         $this->siteUrl = $siteUrl;
     }
-
-    public function getCreationYear(): ?int
-    {
-        return $this->creationYear;
-    }
-
-    public function setCreationYear(?int $creationYear): void
-    {
-        $this->creationYear = $creationYear;
-    }
-
 
     public function getFestival(): ?Festival
     {
@@ -138,27 +139,27 @@ class ProjectData
     }
 
     /**
-     * @return Collection<array-key, EducationSubGroup>
+     * @return EducationSubGroup[]
      */
-    public function getOrientedOn(): Collection
+    public function getOrientedOn(): array
     {
         return $this->orientedOn;
     }
 
-    public function setOrientedOn(Collection $orientedOn): void
+    public function setOrientedOn(array $orientedOn): void
     {
         $this->orientedOn = $orientedOn;
     }
 
     /**
-     * @return Collection<array-key, ProjectSubject>
+     * @return ProjectSubject[]
      */
-    public function getSubjects(): Collection
+    public function getSubjects(): array
     {
         return $this->subjects;
     }
 
-    public function setSubjects(Collection $subjects): void
+    public function setSubjects(array $subjects): void
     {
         $this->subjects = $subjects;
     }

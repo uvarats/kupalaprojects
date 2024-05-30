@@ -8,7 +8,7 @@ use App\Enum\ProjectStateEnum;
 use App\Feature\Project\Collection\ProjectParticipantCollection;
 use App\Feature\Project\Collection\ProjectTeamCollection;
 use App\Feature\Project\Repository\ProjectRepository;
-use App\Interface\DateRangeInterface;
+use App\Interface\HasDateRangeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
@@ -18,7 +18,7 @@ use Symfony\Component\Uid\Uuid;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: ProjectRepository::class)]
-class Project implements DateRangeInterface
+class Project implements HasDateRangeInterface
 {
     #[ORM\Id]
     #[ORM\Column(type: UuidType::NAME, unique: true)]
@@ -32,9 +32,6 @@ class Project implements DateRangeInterface
     #[ORM\Column(length: 255)]
     private string $siteUrl;
 
-    #[ORM\Column]
-    private int $creationYear;
-
     #[ORM\ManyToMany(targetEntity: ProjectSubject::class, inversedBy: 'projects')]
     private Collection $subjects;
 
@@ -46,7 +43,10 @@ class Project implements DateRangeInterface
     #[ORM\JoinColumn(nullable: false)]
     private ProjectAuthor $author;
 
-    #[ORM\OneToMany(mappedBy: 'project', targetEntity: ProjectAward::class, orphanRemoval: true)]
+    /**
+     * @var Collection<ProjectAward>
+     */
+    #[ORM\OneToMany(targetEntity: ProjectAward::class, mappedBy: 'project', cascade: ['persist', 'remove'], orphanRemoval: true)]
     private Collection $awards;
 
     #[ORM\Column(length: 50)]
@@ -92,7 +92,6 @@ class Project implements DateRangeInterface
     public static function create(
         string $name,
         string $siteUrl,
-        int $creationYear,
         EventDates $dates,
         Festival $festival,
         ProjectAuthor $author,
@@ -104,7 +103,6 @@ class Project implements DateRangeInterface
 
         $project->name = $name;
         $project->siteUrl = $siteUrl;
-        $project->creationYear = $creationYear;
         $project->dates = $dates;
         $project->festival = $festival;
         $project->author = $author;
@@ -144,18 +142,6 @@ class Project implements DateRangeInterface
         return $this;
     }
 
-    public function getCreationYear(): ?int
-    {
-        return $this->creationYear;
-    }
-
-    public function setCreationYear(int $creationYear): self
-    {
-        $this->creationYear = $creationYear;
-
-        return $this;
-    }
-
     /**
      * @return Collection<int, ProjectSubject>
      */
@@ -178,6 +164,11 @@ class Project implements DateRangeInterface
         $this->subjects->removeElement($subject);
 
         return $this;
+    }
+
+    public function clearSubjects(): void
+    {
+        $this->subjects = new ArrayCollection();
     }
 
     public function getFestival(): ?Festival
@@ -232,6 +223,11 @@ class Project implements DateRangeInterface
         }
 
         return $this;
+    }
+
+    public function clearAwards(): void
+    {
+        $this->awards = new ArrayCollection();
     }
 
     public function getState(): ?string
@@ -303,6 +299,11 @@ class Project implements DateRangeInterface
         $this->orientedOn->removeElement($orientedOn);
 
         return $this;
+    }
+
+    public function clearOrientedOn(): void
+    {
+        $this->orientedOn = new ArrayCollection();
     }
 
     public function getGoal(): ?string

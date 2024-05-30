@@ -6,7 +6,7 @@ namespace App\Interface;
 
 use DateTimeImmutable;
 
-interface DateRangeInterface
+interface HasDateRangeInterface
 {
     public function getStartsAt(): ?DateTimeImmutable;
     public function getEndsAt(): ?DateTimeImmutable;

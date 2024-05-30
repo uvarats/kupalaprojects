@@ -4,15 +4,14 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
-use App\Interface\DateRangeInterface;
-use App\Validator\DateRangeValidator;
+use App\Interface\HasDateRangeInterface;
+use App\Validator\FestivalDatesValidator;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Embeddable]
-#[Assert\Callback([DateRangeValidator::class, 'validate'])]
-final class EventDates implements DateRangeInterface
+final class EventDates
 {
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     private \DateTimeImmutable $startsAt;
@@ -21,9 +20,9 @@ final class EventDates implements DateRangeInterface
 
     public static function make(\DateTimeImmutable $startsAt, \DateTimeImmutable $endsAt): self
     {
-        //        if ($startsAt > $endsAt) {
-        //            throw new \LogicException('Event start date can not be after end date.');
-        //        }
+        if ($startsAt > $endsAt) {
+            throw new \LogicException('Event start date can not be after end date.');
+        }
 
         $self = new self();
 

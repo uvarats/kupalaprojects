@@ -4,10 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller\Project;
 
-use App\Dto\Form\Project\ProjectData;
-use App\Feature\Project\Form\ProjectType;
-use App\Security\Voter\ProjectAuthorVoter;
-use App\Service\Project\ProjectService;
+use App\Feature\Project\Security\ProjectAuthorVoter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -18,31 +15,13 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[IsGranted('IS_AUTHENTICATED_FULLY')]
 final class CreateController extends AbstractController
 {
-    public function __construct(
-        private readonly ProjectService $projectService,
-    ) {}
-
-
     public function __invoke(
         Request $request,
     ): Response {
-        if (!$this->isGranted(ProjectAuthorVoter::IS_PROJECT_AUTHOR)) {
+        if (!$this->isGranted(ProjectAuthorVoter::HAS_PROJECT_AUTHOR_DATA)) {
             return $this->redirectToRoute('app_project_author_create');
         }
 
-        $project = new ProjectData();
-        $form = $this->createForm(ProjectType::class, $project);
-
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            $this->projectService->handleSubmittedProject($project);
-
-            return $this->redirectToRoute('app_projects_personal');
-        }
-
-        return $this->render('project/create.html.twig', [
-            'form' => $form->createView(),
-            'project' => $project,
-        ]);
+        return $this->render('project/create.html.twig');
     }
 }

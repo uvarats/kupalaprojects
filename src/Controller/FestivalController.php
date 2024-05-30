@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Entity\Festival;
-use App\Repository\FestivalRepository;
+use App\Feature\Festival\Repository\FestivalRepository;
 use App\Security\Voter\FestivalVoter;
 use Pagerfanta\Doctrine\ORM\QueryAdapter;
 use Pagerfanta\Pagerfanta;

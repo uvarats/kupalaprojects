@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
-use App\Interface\DateRangeInterface;
-use App\Repository\FestivalRepository;
-use App\Validator\DateRangeValidator;
+use App\Feature\Festival\Repository\FestivalRepository;
+use App\Interface\HasDateRangeInterface;
+use App\Validator\FestivalDatesValidator;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -15,8 +15,8 @@ use Symfony\Component\Uid\Uuid;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: FestivalRepository::class)]
-#[Assert\Callback([DateRangeValidator::class, 'validate'])]
-class Festival implements DateRangeInterface
+#[Assert\Callback([FestivalDatesValidator::class, 'validate'])]
+class Festival implements HasDateRangeInterface
 {
     #[ORM\Id]
     #[ORM\Column(type: UuidType::NAME, unique: true)]

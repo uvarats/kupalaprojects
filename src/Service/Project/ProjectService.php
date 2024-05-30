@@ -38,7 +38,6 @@ final readonly class ProjectService
         $project = Project::create(
             name: $projectData->getName(),
             siteUrl: $projectData->getSiteUrl(),
-            creationYear: $projectData->getCreationYear(),
             dates: EventDates::make(
                 startsAt: $dates->getStartsAt(),
                 endsAt: $dates->getEndsAt(),
@@ -65,21 +64,10 @@ final readonly class ProjectService
             $project->addAward($award);
         }
 
-        $this->saveAwards($projectData);
+        //$this->saveAwards($projectData);
 
         $this->entityManager->persist($project);
         $this->entityManager->flush();
-    }
-
-    private function saveAwards(ProjectData $projectData): void
-    {
-        $awards = $projectData->getAwards();
-
-        foreach ($awards as $award) {
-            $this->entityManager->persist($award);
-        }
-
-        //$this->entityManager->flush();
     }
 
     public function makeTransition(Project $project, ProjectTransitionEnum $transition): bool
@@ -99,5 +87,55 @@ final readonly class ProjectService
         $this->entityManager->flush();
 
         return true;
+    }
+
+    public function update(Project $project, ProjectData $projectData): void
+    {
+        $name = $projectData->getName();
+        $project->setName($name);
+
+        $goal = $projectData->getGoal();
+        $project->setGoal($goal);
+
+        $siteUrl = $projectData->getSiteUrl();
+        $project->setSiteUrl($siteUrl);
+
+        $dates = EventDates::make(
+            startsAt: $projectData->getDates()->getStartsAt(),
+            endsAt: $projectData->getDates()->getEndsAt(),
+        );
+        $project->setDates($dates);
+
+        $orientedOn = $projectData->getOrientedOn();
+        $project->clearOrientedOn();
+        foreach ($orientedOn as $educationSubGroup) {
+            $project->addOrientedOn($educationSubGroup);
+        }
+
+        $subjects = $projectData->getSubjects();
+        $project->clearSubjects();
+        foreach ($subjects as $subject) {
+            $project->addSubject($subject);
+        }
+
+        $awards = $projectData->getAwards();
+        //$this->persistAwards($projectData);
+        //$project->clearAwards();
+        foreach ($awards as $award) {
+            $project->addAward($award);
+        }
+
+        $this->entityManager->flush();
+    }
+
+    private function persistAwards(ProjectData $projectData): void
+    {
+        $awards = $projectData->getAwards();
+
+        foreach ($awards as $award) {
+            $this->entityManager->persist($award);
+        }
+
+        //$this->entityManager->flush();
     }
 }

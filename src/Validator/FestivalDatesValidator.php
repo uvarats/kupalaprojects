@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace App\Validator;
 
-use App\Interface\DateRangeInterface;
+use App\Interface\HasDateRangeInterface;
 use Cake\Chronos\Chronos;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
-final class DateRangeValidator
+final class FestivalDatesValidator
 {
-    public static function validate(DateRangeInterface $range, ExecutionContextInterface $context, $payload): void
+    public static function validate(HasDateRangeInterface $range, ExecutionContextInterface $context, $payload): void
     {
         $startsAt = new Chronos($range->getStartsAt());
         $endsAt = new Chronos($range->getEndsAt());

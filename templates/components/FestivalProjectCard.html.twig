@@ -9,7 +9,6 @@
             </div>
             <span class="card-text">Автор: {{ project.author.userEntity.fullName }}</span><br>
             <span class="card-text">Сайт: <a href="#">{{ project.siteUrl }}</a></span><br>
-            <span class="card-text">Год создания: {{ project.creationYear }}</span><br>
             <span class="card-text">Состояние: {{ project.state|fancy }}</span><br>
             <span class="card-text">Дата начала: {{ project.startsAt|date('d.m.Y') }}</span><br>
             <span class="card-text">Дата завершения: {{ project.endsAt|date('d.m.Y') }}</span><br>
