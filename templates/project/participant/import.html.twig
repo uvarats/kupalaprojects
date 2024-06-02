@@ -1,0 +1,17 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Импорт участников в проект "{{ project.name }}"{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <div class="mb=3">
+            <h1>Импорт участников в проект "{{ project.name }}"</h1>
+        </div>
+        <div class="alert alert-primary" role="alert">
+            Скачать файл с примером импорта
+        </div>
+        <div class="mb-3">
+            {{ component('ProjectParticipantsImport', {project: project}) }}
+        </div>
+    </div>
+{% endblock %}

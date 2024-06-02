@@ -5,10 +5,13 @@ declare(strict_types=1);
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
 use function Symfony\Component\DependencyInjection\Loader\Configurator\service;
-use function Symfony\Component\DependencyInjection\Loader\Configurator\tagged_locator;
 
 return static function (ContainerConfigurator $container) {
     $parameters = $container->parameters();
+
+    $parameters->set('storage.dir', '%kernel.project_dir%/var/storage');
+    $parameters->set('storage.public', '%kernel.project_dir%/var/storage/public');
+    $parameters->set('storage.projects', '%kernel.project_dir%/var/storage/projects');
 
     $services = $container->services()
         ->defaults()
@@ -54,10 +57,12 @@ return static function (ContainerConfigurator $container) {
     $services->set('invites.mailer', \App\Feature\Team\Service\InviteMailerService::class);
     $services->alias(\App\Feature\Team\Service\InviteMailerService::class, 'invites.mailer');
 
-    $services->set(\App\Feature\Import\Service\ParticipantImporter::class)
-        ->tag('import.handler', ['key' => \App\Feature\Import\Enum\ImportTypeEnum::PARTICIPANT->value]);
+    $services->set('project.storage.service', \App\Feature\Import\Service\ProjectStorage::class)
+        ->arg('$targetDirectory', '%storage.projects%');
+    $services->alias(\App\Feature\Import\Interface\ProjectStorageInterface::class, 'project.storage.service');
 
-    $services->set('import.service', \App\Feature\Import\Service\Importer::class)
-        ->args([tagged_locator('import.handler', indexAttribute: 'key')]);
-    $services->alias(\App\Feature\Import\Interface\ImportServiceInterface::class, 'import.service');
+    $services->set('project-import.factory', \App\Feature\Import\Factory\ProjectImportFactory::class);
+    $services->alias(\App\Feature\Import\Interface\ProjectImportFactoryInterface::class, 'project-import.factory');
+
+    $services->set(\App\Feature\Import\Service\SyncParticipantsImporter::class);
 };

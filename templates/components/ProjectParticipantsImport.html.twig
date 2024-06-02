@@ -1,0 +1,21 @@
+<div {{ attributes }}>
+    <div>
+        <form>
+            <div class="mb-3">
+                <label class="form-label">{{ 'participant.import.file.label'|trans }}</label>
+                <input type="file" name="import_file" class="form-control" aria-describedby="fileHelp">
+                <div id="fileHelp" class="form-text">
+                    {{ 'participant.import.help'|trans({'%size%': "5 мб", '%formats%': ".csv"}) }}
+                </div>
+            </div>
+            <div class="mb-3">
+                {% for error in this.uploadErrors %}
+                    <div class="alert alert-danger">
+                        {{ error }}
+                    </div>
+                {% endfor %}
+            </div>
+            <button type="button" class="btn btn-primary" data-action="live#action" data-live-action-param="files(import_file)|import">Импортировать</button>
+        </form>
+    </div>
+</div>

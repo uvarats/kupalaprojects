@@ -8,6 +8,7 @@ use App\Entity\User;
 use App\Feature\Account\Dto\NewUserMailData;
 use App\Feature\Account\Dto\UserSignUpRequest;
 use App\Feature\Account\ValueObject\Password;
+use App\Feature\Participant\Repository\ParticipantRepository;
 use App\Service\Mail\UserMailerService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Security\Http\LoginLink\LoginLinkHandlerInterface;
@@ -19,6 +20,7 @@ final readonly class AuthService
         private PasswordGenerator $generator,
         private EntityManagerInterface $entityManager,
         private UserMailerService $mailer,
+        private ParticipantRepository $participantRepository,
     ) {}
 
     public function getLoginLink(User $user): string
@@ -38,6 +40,14 @@ final readonly class AuthService
         $user = User::create($name, $email, $password);
         $this->entityManager->persist($user);
         $this->entityManager->flush();
+
+        // linking anonymous participant by email if exists
+        $participant = $this->participantRepository->findOneBy(['email' => $email]);
+        if ($participant !== null) {
+            $participant->setAccount($user);
+
+            $this->entityManager->flush();
+        }
 
         $this->sendMail($user, $password);
 

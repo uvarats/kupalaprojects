@@ -9,6 +9,7 @@ use App\Entity\Project;
 use App\Entity\ProjectParticipant;
 use App\Entity\User;
 use App\Enum\AcceptanceEnum;
+use App\Feature\Participant\Collection\ParticipantCollection;
 use App\Feature\Project\Collection\ProjectParticipantCollection;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -57,4 +58,19 @@ class ProjectParticipantRepository extends ServiceEntityRepository
 
         return new ProjectParticipantCollection($result);
     }
+
+    public function findAlreadyParticipating(Project $project, ParticipantCollection $participants): ProjectParticipantCollection
+    {
+        $qb = $this->createQueryBuilder('pp');
+
+        $result = $qb->where($qb->expr()->eq('pp.project', ':project'))
+            ->andWhere($qb->expr()->in('pp.participant', ':participants'))
+            ->setParameter('project', $project)
+            ->setParameter('participants', $participants)
+            ->getQuery()
+            ->getResult();
+
+        return new ProjectParticipantCollection($result);
+    }
+
 }
