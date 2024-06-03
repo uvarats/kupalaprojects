@@ -81,11 +81,7 @@ class ProjectImport
 
     public function getFilePath(): string
     {
-        $projectId = $this->project->getId();
-
-        $hash = md5($projectId->toString());
-
-        return $hash . DIRECTORY_SEPARATOR . $this->fileName;
+        return $this->project->filePath($this->fileName);
     }
 
     public function getCreatedAt(): \DateTimeImmutable

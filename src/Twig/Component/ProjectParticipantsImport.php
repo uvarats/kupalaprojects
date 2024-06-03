@@ -5,10 +5,8 @@ declare(strict_types=1);
 namespace App\Twig\Component;
 
 use App\Entity\Project;
-use App\Feature\Import\Interface\ProjectImportFactoryInterface;
-use App\Feature\Import\Interface\ProjectStorageInterface;
-use App\Feature\Import\Service\SyncParticipantsImporter;
-use Doctrine\ORM\EntityManagerInterface;
+use App\Feature\Import\Service\ParticipantImportService;
+use App\Feature\Import\ValueObject\ParticipantsProcessingResult;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
@@ -29,14 +27,14 @@ final class ProjectParticipantsImport extends AbstractController
     public Project $project;
 
     #[LiveProp]
+    public ?string $report = null;
+
+    #[LiveProp]
     public array $uploadErrors = [];
 
     public function __construct(
         private readonly ValidatorInterface $validator,
-        private readonly ProjectStorageInterface $projectStorage,
-        private readonly ProjectImportFactoryInterface $importFactory,
-        private readonly SyncParticipantsImporter $participantsImporter,
-        private readonly EntityManagerInterface $entityManager,
+        private readonly ParticipantImportService $importService,
     ) {}
 
     #[LiveAction]
@@ -51,16 +49,15 @@ final class ProjectParticipantsImport extends AbstractController
             return;
         }
 
-        $fileInfo = $this->projectStorage->upload($this->project, $file);
-        $import = $this->importFactory->makeParticipantsImport(
-            $this->project,
-            $fileInfo->getFileName(),
-        );
+        $result = $this->importService->import($this->project, $file);
 
-        $this->entityManager->persist($import);
-        $this->entityManager->flush();
+        $report = $this->buildReport($result);
 
-        $this->participantsImporter->import($import);
+        if (empty($report)) {
+            $report = 'Успешно!';
+        }
+
+        $this->report = $report;
     }
 
     private function validateFile(?UploadedFile $file): array
@@ -84,5 +81,17 @@ final class ProjectParticipantsImport extends AbstractController
         }
 
         return $errorMessages;
+    }
+
+    private function buildReport(ParticipantsProcessingResult $processingResult): string
+    {
+        $report = '';
+
+        $rejected = $processingResult->getRejectedParticipants();
+        foreach ($rejected as $rejectedParticipant) {
+            $report .= "<p>Участник {$rejectedParticipant->getDisplayString()} не был импортирован, так как был отклонён в процессе модерации</p>";
+        }
+
+        return $report;
     }
 }

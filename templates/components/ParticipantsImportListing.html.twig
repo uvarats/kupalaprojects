@@ -1,0 +1,30 @@
+<div {{ attributes }}>
+    <div>
+        <table class="table table-striped table-bordered">
+            <thead class="thead-light">
+            <tr>
+                <th scope="col">Дата создания</th>
+                <th scope="col">Дата обработки</th>
+                <th scope="col">Статус</th>
+                <th scope="col">Файл</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for import in this.imports %}
+                <tr>
+                    <td>{{ import.createdAt|date('d.m.Y H:i:s') }}</td>
+                    <td>
+                        {% if import.processedAt is not null %}
+                            {{ import.processedAt|date('d.m.Y H:i:s') }}
+                        {% else %}
+                            -
+                        {% endif %}
+                    </td>
+                    <td>{{ import.status|translate_import_status }}</td>
+                    <td><a href="{{ path('app_project_storage_download', {id: project.id, filePath: import.fileName}) }}">Файл</a></td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>

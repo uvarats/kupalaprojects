@@ -4,9 +4,14 @@ declare(strict_types=1);
 
 namespace App\Feature\Import\Repository;
 
+use App\Entity\Project;
 use App\Entity\ProjectImport;
+use App\Feature\Import\Collection\ProjectImportCollection;
+use App\Feature\Import\Enum\ImportTypeEnum;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+
+use function Doctrine\ORM\QueryBuilder;
 
 /**
  * @extends ServiceEntityRepository<ProjectImport>
@@ -18,28 +23,18 @@ class ProjectImportRepository extends ServiceEntityRepository
         parent::__construct($registry, ProjectImport::class);
     }
 
-    //    /**
-    //     * @return ProjectImport[] Returns an array of ProjectImport objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('p')
-    //            ->andWhere('p.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('p.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+    public function findParticipantImportsForProject(Project $project): ProjectImportCollection
+    {
+        $qb = $this->createQueryBuilder('pi');
 
-    //    public function findOneBySomeField($value): ?ProjectImport
-    //    {
-    //        return $this->createQueryBuilder('p')
-    //            ->andWhere('p.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+        $result = $qb->where($qb->expr()->eq('pi.type', ':type'))
+            ->andWhere($qb->expr()->eq('pi.project', ':project'))
+            ->orderBy('pi.createdAt', 'DESC')
+            ->setParameter('type', ImportTypeEnum::PARTICIPANT)
+            ->setParameter('project', $project)
+            ->getQuery()
+            ->getResult();
+
+        return new ProjectImportCollection($result);
+    }
 }

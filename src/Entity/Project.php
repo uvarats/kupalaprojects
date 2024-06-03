@@ -345,6 +345,17 @@ class Project implements HasDateRangeInterface
         return $this->participants;
     }
 
+    public function findParticipant(Participant $participant): ?ProjectParticipant
+    {
+        foreach ($this->participants as $projectParticipant) {
+            if ($projectParticipant->getParticipant() === $participant) {
+                return $projectParticipant;
+            }
+        }
+
+        return null;
+    }
+
     /**
      * Used in project details template (details.html.twig)
      */
@@ -374,6 +385,14 @@ class Project implements HasDateRangeInterface
         $projectParticipant = ProjectParticipant::make($this, $participant);
 
         $this->participants->add($projectParticipant);
+
+        return $projectParticipant;
+    }
+
+    public function submitApprovedParticipant(Participant $participant): ProjectParticipant
+    {
+        $projectParticipant = $this->submitParticipant($participant);
+        $projectParticipant->approve();
 
         return $projectParticipant;
     }
@@ -522,5 +541,12 @@ class Project implements HasDateRangeInterface
         $this->projectReport = $projectReport;
 
         return $this;
+    }
+
+    public function filePath(string $basePath): string
+    {
+        $projectStorageFolder = md5($this->id->toString());
+
+        return $projectStorageFolder . DIRECTORY_SEPARATOR . trim($basePath, '/');
     }
 }

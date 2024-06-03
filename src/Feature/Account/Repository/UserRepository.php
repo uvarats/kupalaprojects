@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Feature\Account\Repository;
 
+use App\Collection\UserCollection;
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -61,6 +62,19 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
     public function findWithRelatedEntities(): ?User
     {
         // todo
+    }
+
+    public function findAllUsingEmailArray(array $emails): UserCollection
+    {
+        $qb = $this->createQueryBuilder('u');
+
+        $result = $qb
+            ->where($qb->expr()->in('u.email', ':emails'))
+            ->setParameter('emails', $emails)
+            ->getQuery()
+            ->getResult();
+
+        return new UserCollection($result);
     }
 
     //    /**

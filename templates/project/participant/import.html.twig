@@ -8,10 +8,16 @@
             <h1>Импорт участников в проект "{{ project.name }}"</h1>
         </div>
         <div class="alert alert-primary" role="alert">
+            <p>
+                Внимание! Если во время импорта будет обнаружено, что по импортируемому емейлу не существует карточки участника и аккаунта, то будет создана анонимная карточка участника, которая, в случае регистрации пользователя на платформе, будет связана с аккаунтом по полю емейла.
+            </p>
             Скачать файл с примером импорта
         </div>
         <div class="mb-3">
             {{ component('ProjectParticipantsImport', {project: project}) }}
+        </div>
+        <div>
+            {{ component('ParticipantsImportListing', {project: project}) }}
         </div>
     </div>
 {% endblock %}

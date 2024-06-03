@@ -1,5 +1,10 @@
 <div {{ attributes }}>
     <div>
+        {% if this.report is not null %}
+            <div class="alert alert-info" role="alert">
+                 {{ this.report|raw }}
+            </div>
+        {% endif %}
         <form>
             <div class="mb-3">
                 <label class="form-label">{{ 'participant.import.file.label'|trans }}</label>

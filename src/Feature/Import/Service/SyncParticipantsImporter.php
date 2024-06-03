@@ -13,9 +13,9 @@ use App\Feature\Import\Collection\ParticipantRowCollection;
 use App\Feature\Import\Dto\ParticipantRow;
 use App\Feature\Import\Enum\ImportErrorReasonEnum;
 use App\Feature\Import\ValueObject\ParticipantImportError;
+use App\Feature\Import\ValueObject\ParticipantsProcessingResult;
 use App\Feature\Participant\Collection\ParticipantCollection;
 use App\Feature\Participant\Repository\ParticipantRepository;
-use App\Feature\Project\Repository\ProjectParticipantRepository;
 use App\ValueObject\PersonName;
 use Doctrine\ORM\EntityManagerInterface;
 use League\Flysystem\FilesystemOperator;
@@ -24,7 +24,7 @@ use Symfony\Component\Validator\ConstraintViolationListInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-class SyncParticipantsImporter
+readonly class SyncParticipantsImporter
 {
     public function __construct(
         private FilesystemOperator $projectStorage,
@@ -32,10 +32,10 @@ class SyncParticipantsImporter
         private ValidatorInterface $validator,
         private TranslatorInterface $translator,
         private ParticipantRepository $participantRepository,
-        private ProjectParticipantRepository $projectParticipantRepository,
     ) {}
 
-    public function import(ProjectImport $import) {
+    public function import(ProjectImport $import): ParticipantsProcessingResult
+    {
         $filePath = $import->getFilePath();
 
         if (!$this->projectStorage->fileExists($filePath)) {
@@ -72,7 +72,7 @@ class SyncParticipantsImporter
             $rows[$email] = $rowData;
         }
 
-        $this->processChunk($rows, $import->getProject());
+        return $this->processChunk($rows, $import->getProject());
     }
 
     private function validateRow(int $rowNumber, array $data): ?ParticipantImportError
@@ -122,13 +122,11 @@ class SyncParticipantsImporter
         return $this->validator->validate($data, $constraint);
     }
 
-    private function processChunk(ParticipantRowCollection $rows, Project $project) {
+    private function processChunk(ParticipantRowCollection $rows, Project $project): ParticipantsProcessingResult
+    {
         $emails = array_keys($rows->toArray());
 
         $existingParticipants = $this->makeExistingParticipantsMap($emails);
-        $alreadyParticipating = $this->makeAlreadyParticipatingMap($project, $existingParticipants);
-        $existingNotParticipating = $existingParticipants->diff($alreadyParticipating);
-
         $newParticipants = new ParticipantCollection();
 
         foreach ($rows as $email => $row) {
@@ -144,14 +142,38 @@ class SyncParticipantsImporter
             $this->entityManager->persist($participant);
         }
 
-        dd([
-            'existing' => $existingParticipants,
-            'participating' => $alreadyParticipating,
-            'existing_but_not_participating' => $existingNotParticipating,
-            'new' => $newParticipants,
-        ]);
+        $this->entityManager->flush();
 
-        //$this->entityManager->flush();
+        $alreadyRejectedParticipants = new ParticipantCollection();
+        foreach ($existingParticipants as $participant) {
+            $projectParticipant = $project->findParticipant($participant);
+
+            if ($projectParticipant === null) {
+                $project->submitApprovedParticipant($participant);
+
+                continue;
+            }
+
+            if ($projectParticipant->isPending()) {
+                $projectParticipant->approve();
+                continue;
+            }
+
+            if ($projectParticipant->isRejected()) {
+                $alreadyRejectedParticipants[] = $projectParticipant->getParticipant();
+            }
+        }
+
+        foreach ($newParticipants as $participant) {
+            $project->submitApprovedParticipant($participant);
+        }
+
+        $this->entityManager->flush();
+
+        return new ParticipantsProcessingResult(
+            newParticipants: $newParticipants,
+            rejectedParticipants: $alreadyRejectedParticipants,
+        );
     }
 
     private function makeExistingParticipantsMap(array $emails): ParticipantCollection
@@ -165,21 +187,6 @@ class SyncParticipantsImporter
         }
 
         return new ParticipantCollection($participantsMap);
-    }
-
-    private function makeAlreadyParticipatingMap(Project $project, ParticipantCollection $participants): ParticipantCollection
-    {
-        $alreadyParticipating = $this->projectParticipantRepository->findAlreadyParticipating($project, $participants);
-
-        $map = [];
-        foreach ($alreadyParticipating as $projectParticipant) {
-            $participant = $projectParticipant->getParticipant();
-            $email = $participant->getEmail();
-
-            $map[$email] = $participant;
-        }
-
-        return new ParticipantCollection($map);
     }
 
     private function createParticipant(ParticipantRow $row): Participant
@@ -196,5 +203,9 @@ class SyncParticipantsImporter
             educationEstablishment: $row->getEducationEstablishment(),
             email: $row->getEmail(),
         );
+    }
+
+    private function processExistingParticipants(Project $project, ParticipantCollection $participants) {
+
     }
 }

@@ -65,4 +65,11 @@ return static function (ContainerConfigurator $container) {
     $services->alias(\App\Feature\Import\Interface\ProjectImportFactoryInterface::class, 'project-import.factory');
 
     $services->set(\App\Feature\Import\Service\SyncParticipantsImporter::class);
+
+    $services->set(\App\Doctrine\Listener\ParticipantListener::class)
+        ->tag('doctrine.event_listener', [
+            'event' => \Doctrine\ORM\Events::onFlush,
+            'lazy' => true,
+            'method' => 'onFlush',
+        ]);
 };
