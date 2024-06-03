@@ -38,7 +38,7 @@ class ProjectAward
         return $this->name;
     }
 
-    public function setName(string $name): self
+    public function setName(?string $name): self
     {
         $this->name = $name;
 
@@ -50,7 +50,7 @@ class ProjectAward
         return $this->diplomaLink;
     }
 
-    public function setDiplomaLink(string $diplomaLink): self
+    public function setDiplomaLink(?string $diplomaLink): self
     {
         $this->diplomaLink = $diplomaLink;
 
@@ -71,6 +71,6 @@ class ProjectAward
 
     public function __toString(): string
     {
-        return $this->getName();
+        return $this->getName() ?? '';
     }
 }

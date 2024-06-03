@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Repository;
+namespace App\Feature\Festival\Repository;
 
 use App\Collection\FestivalCollection;
 use App\Entity\Festival;

@@ -62,11 +62,15 @@ class ParticipantRepository extends ServiceEntityRepository
             ->getOneOrNullResult();
     }
 
-    public function findByEmails(EmailCollection $emails): ParticipantCollection
+    public function findByEmails(EmailCollection|array $emails): ParticipantCollection
     {
+        if ($emails instanceof EmailCollection) {
+            $emails = $emails->toArray();
+        }
+
         $participants = $this->createQueryBuilder('p')
             ->where('p.email in (:emails)')
-            ->setParameter('emails', $emails->toArray())
+            ->setParameter('emails', $emails)
             ->getQuery()
             ->getResult();
 

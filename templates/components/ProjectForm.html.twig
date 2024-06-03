@@ -51,22 +51,25 @@
         {{ form_row(form.siteUrl) }}
     </div>
     <div class="mb-3">
-        {{ form_row(form.creationYear) }}
-    </div>
-    <div class="mb-3">
         {{ form_row(form.orientedOn) }}
     </div>
     <div class="mb-3">
         {{ form_row(form.subjects) }}
     </div>
-    <div class="mb-3">
+    <div class="mb-3 d-flex flex-column">
         <label for="project_awards" class="form-label">{{ 'Awards'|trans }}</label>
-        <div class="mb-3" id="project_awards" {{ stimulus_controller('form-collection', {
-            'index': form.awards|length > 0 ? form.awards|last.vars.name + 1 : 0,
-            'prototype': form_widget(form.awards.vars.prototype)|e('html_attr')
-        }) }}>
-            <ul {{ stimulus_target('form-collection', 'collectionContainer') }}></ul>
-            <button type="button" {{ stimulus_action('form-collection', 'addCollectionElement')}} class="btn btn-primary">Добавить награду</button>
+        {% for key, award in form.awards %}
+            <div class="mb-3">
+                {{ form_widget(award) }}
+                <button class="btn btn-danger"
+                        data-action="live#action"
+                        data-live-action-param="removeAward"
+                        data-live-index-param="{{ key }}"
+                >Удалить</button>
+            </div>
+        {% endfor %}
+        <div>
+            <button class="btn btn-primary" data-action="live#action" data-live-action-param="addAward">Добавить награду</button>
         </div>
         {{ form_rest(form.awards) }}
     </div>
@@ -75,6 +78,6 @@
     </div>
     {{ form_rest(form) }}
 
-    <button type="submit" class="btn btn-primary mb-5">Отправить</button>
+    <button data-action="live#action:prevent" data-live-action-param="save" class="btn btn-primary mb-5">Отправить</button>
     {{ form_end(form) }}
 </div>

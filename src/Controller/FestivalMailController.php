@@ -6,8 +6,8 @@ namespace App\Controller;
 
 use App\Entity\Festival;
 use App\Entity\FestivalMail;
+use App\Feature\Festival\Repository\FestivalMailRepository;
 use App\Feature\Festival\Service\FestivalMailService;
-use App\Repository\FestivalMailRepository;
 use App\Security\Voter\FestivalVoter;
 use Pagerfanta\Doctrine\ORM\QueryAdapter;
 use Pagerfanta\Pagerfanta;

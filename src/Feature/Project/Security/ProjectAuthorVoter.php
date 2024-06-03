@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Security\Voter;
+namespace App\Feature\Project\Security;
 
 use App\Entity\Project;
 use App\Entity\User;
@@ -12,15 +12,17 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * Checks if user has linked project author entity
- * @extends Voter<string, Project>
+ * @extends Voter<string, Project|null>
  */
 class ProjectAuthorVoter extends Voter
 {
-    public const string IS_PROJECT_AUTHOR = 'IS_PROJECT_AUTHOR_USER';
+    public const string HAS_PROJECT_AUTHOR_DATA = 'IS_PROJECT_AUTHOR_USER';
 
     protected function supports(string $attribute, mixed $subject): bool
     {
-        return $attribute === self::IS_PROJECT_AUTHOR;
+        return in_array($attribute, [
+            self::HAS_PROJECT_AUTHOR_DATA,
+        ]);
     }
 
     protected function voteOnAttribute(string $attribute, mixed $subject, TokenInterface $token): bool

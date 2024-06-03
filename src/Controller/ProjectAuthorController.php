@@ -7,7 +7,7 @@ namespace App\Controller;
 use App\Entity\ProjectAuthor;
 use App\Entity\User;
 use App\Feature\Account\Form\ProjectAuthorUserType;
-use App\Security\Voter\ProjectAuthorVoter;
+use App\Feature\Project\Security\ProjectAuthorVoter;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -29,7 +29,7 @@ final class ProjectAuthorController extends AbstractController
         User $user,
         Request $request,
     ): Response {
-        if ($this->isGranted(ProjectAuthorVoter::IS_PROJECT_AUTHOR)) {
+        if ($this->isGranted(ProjectAuthorVoter::HAS_PROJECT_AUTHOR_DATA)) {
             return $this->redirectToRoute('app_index');
         }
 
@@ -57,7 +57,7 @@ final class ProjectAuthorController extends AbstractController
         User $user,
         Request $request,
     ): Response {
-        if (!$this->isGranted(ProjectAuthorVoter::IS_PROJECT_AUTHOR)) {
+        if (!$this->isGranted(ProjectAuthorVoter::HAS_PROJECT_AUTHOR_DATA)) {
             return $this->redirectToRoute('app_project_author_create');
         }
 

@@ -2,7 +2,7 @@
 
 namespace App\Entity;
 
-use App\Repository\ProjectReportRepository;
+use App\Feature\Project\Repository\ProjectReportRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Types\UuidType;
 use Symfony\Component\Uid\Uuid;

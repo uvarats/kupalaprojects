@@ -25,9 +25,19 @@
                             <span class="card-text">Состояние: {{ project.state|fancy|raw }}</span>
                         </div>
                         <div class="card-footer">
-                            <div class="d-flex justify-content-end">
-                                <a class="btn btn-primary me-2" href="{{ path('app_project_participant_moderation', {'id': project.id}) }}">Модерация участников</a>
-                                <a class="btn btn-primary me-2">Отчёт</a>
+                            <div class="d-flex flex-row justify-content-end flex-wrap">
+                                <div class="mb-2">
+                                    <a class="btn btn-primary me-2" href="{{ path('app_projects_edit', {id: project.id}) }}">Редактировать</a>
+                                </div>
+                                <div class="mb-2">
+                                    <a class="btn btn-primary me-2" href="{{ path('app_project_participant_moderation', {'id': project.id}) }}">Модерация участников</a>
+                                </div>
+                                <div class="mb-2">
+                                    <a class="btn btn-primary me-2" href="{{ path('app_project_participants_import', {id: project.id}) }}">Импорт участников</a>
+                                </div>
+                                <div class="mb-2">
+                                    <a class="btn btn-primary me-2">Отчёт</a>
+                                </div>
                             </div>
                         </div>
                     </div>

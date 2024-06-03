@@ -1,1 +1,3 @@
 'Invite for email {{ email }} already sent and waiting for decision.': 'Приглашение для почты {{ email }} уже отправлено и ожидает принятия решения.'
+file.not_found: 'Пожалуйста, загрузите файл.'
+'Invalid full name. Full name must consist from 2 or 3 space-separated words.': 'ФИО должно состоять из 2 или 3 слов, разделенных пробелом.'
