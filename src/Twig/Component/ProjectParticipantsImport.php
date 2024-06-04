@@ -6,6 +6,7 @@ namespace App\Twig\Component;
 
 use App\Entity\Project;
 use App\Feature\Import\Service\ParticipantImportService;
+use App\Feature\Import\ValueObject\ParticipantImportReport;
 use App\Feature\Import\ValueObject\ParticipantsProcessingResult;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -83,11 +84,15 @@ final class ProjectParticipantsImport extends AbstractController
         return $errorMessages;
     }
 
-    private function buildReport(ParticipantsProcessingResult $processingResult): string
+    private function buildReport(ParticipantImportReport $processingReport): string
     {
         $report = '';
 
-        $rejected = $processingResult->getRejectedParticipants();
+        foreach ($processingReport->getErrors() as $error) {
+            $report .= "<p>Строка {$error->getRowNumber()}: " . $error->getMessage() . "</p>";
+        }
+
+        $rejected = $processingReport->getRejectedParticipants();
         foreach ($rejected as $rejectedParticipant) {
             $report .= "<p>Участник {$rejectedParticipant->getDisplayString()} не был импортирован, так как был отклонён в процессе модерации</p>";
         }

@@ -14,6 +14,8 @@ use App\Feature\Project\Collection\ProjectParticipantCollection;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
+use function Doctrine\ORM\QueryBuilder;
+
 /**
  * @extends ServiceEntityRepository<ProjectParticipant>
  *
@@ -29,15 +31,35 @@ class ProjectParticipantRepository extends ServiceEntityRepository
         parent::__construct($registry, ProjectParticipant::class);
     }
 
-    public function findAllWithoutDecision(Project $project): ProjectParticipantCollection
+    public function searchParticipants(Project $project, string $query = ''): ProjectParticipantCollection
     {
-        $result = $this->createQueryBuilder('project_participant')
-            // todo test preload
-            //->select('participant')
-            ->andWhere('project_participant.project = :project')
-            //->leftJoin('project_participant.participant', 'participant')
-            ->setParameter('project', $project)
-            ->getQuery()
+        $qb = $this->createQueryBuilder('pp');
+
+        $qb->select('pp')
+            ->where('pp.project = :project')
+            ->setParameter('project', $project);
+
+        if (!empty($query)) {
+            $qb->leftJoin('pp.participant', 'p')
+                ->addSelect('p');
+
+            $qb->andWhere(
+                $qb->expr()->orX(
+                    $qb->expr()->like(
+                        'CONCAT(p.lastName, \' \', p.firstName, \'\', p.middleName)',
+                        $qb->expr()->literal('%' . $query . '%'),
+                    ),
+                    $qb->expr()->like(
+                        'p.email',
+                        $qb->expr()->literal('%' . $query . '%'),
+                    ),
+                ),
+            );
+        }
+
+        //dd($qb->getDQL());
+
+        $result = $qb->getQuery()
             ->getResult();
 
         return new ProjectParticipantCollection($result);

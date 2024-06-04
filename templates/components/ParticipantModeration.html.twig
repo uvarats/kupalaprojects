@@ -1,0 +1,19 @@
+<div {{ attributes }}>
+    <div class="mb-3">
+        <form>
+            <div class="d-flex flex-row">
+                <input class="form-control me-3" data-model="query" type="search" placeholder="Введите запрос">
+                <button data-action="live#action:prevent" class="btn btn-primary">Поиск</button>
+            </div>
+        </form>
+    </div>
+    <div class="row row-cols-md-3">
+        {# @var projectParticipant \App\Entity\ProjectParticipant #}
+        {% for projectParticipant in this.participants %}
+            {{ component('ParticipantModerationCard', {
+                participant: projectParticipant,
+                key: projectParticipant.id
+            }) }}
+        {% endfor %}
+    </div>
+</div>

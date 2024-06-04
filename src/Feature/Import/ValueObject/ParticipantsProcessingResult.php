@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Feature\Import\ValueObject;
 
+use App\Feature\Import\Collection\ParticipantImportErrorCollection;
 use App\Feature\Participant\Collection\ParticipantCollection;
 
 final readonly class ParticipantsProcessingResult
@@ -21,5 +22,10 @@ final readonly class ParticipantsProcessingResult
     public function getRejectedParticipants(): ParticipantCollection
     {
         return $this->rejectedParticipants;
+    }
+
+    public function getErrors(): ParticipantImportErrorCollection
+    {
+        return $this->errors;
     }
 }

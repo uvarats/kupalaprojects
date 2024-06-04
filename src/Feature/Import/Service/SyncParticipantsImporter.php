@@ -13,6 +13,7 @@ use App\Feature\Import\Collection\ParticipantRowCollection;
 use App\Feature\Import\Dto\ParticipantRow;
 use App\Feature\Import\Enum\ImportErrorReasonEnum;
 use App\Feature\Import\ValueObject\ParticipantImportError;
+use App\Feature\Import\ValueObject\ParticipantImportReport;
 use App\Feature\Import\ValueObject\ParticipantsProcessingResult;
 use App\Feature\Participant\Collection\ParticipantCollection;
 use App\Feature\Participant\Repository\ParticipantRepository;
@@ -34,7 +35,7 @@ readonly class SyncParticipantsImporter
         private ParticipantRepository $participantRepository,
     ) {}
 
-    public function import(ProjectImport $import): ParticipantsProcessingResult
+    public function import(ProjectImport $import): ParticipantImportReport
     {
         $filePath = $import->getFilePath();
 
@@ -72,7 +73,16 @@ readonly class SyncParticipantsImporter
             $rows[$email] = $rowData;
         }
 
-        return $this->processChunk($rows, $import->getProject());
+        if (!$errors->isEmpty()) {
+            return new ParticipantImportReport(errors: $errors);
+        }
+
+        $chunkProcessingResult = $this->processChunk($rows, $import->getProject());
+
+        return new ParticipantImportReport(
+            newParticipants: $chunkProcessingResult->getNewParticipants(),
+            rejectedParticipants: $chunkProcessingResult->getRejectedParticipants(),
+        );
     }
 
     private function validateRow(int $rowNumber, array $data): ?ParticipantImportError

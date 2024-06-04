@@ -4,28 +4,29 @@ declare(strict_types=1);
 
 namespace App\Feature\Import\ValueObject;
 
-use App\Feature\Import\Enum\RowImportResultEnum;
+use App\Feature\Import\Collection\ParticipantImportErrorCollection;
+use App\Feature\Participant\Collection\ParticipantCollection;
 
 final readonly class ParticipantImportReport
 {
     public function __construct(
-        private int $rowNumber,
-        private RowImportResultEnum $result,
-        private string $report,
+        private ParticipantImportErrorCollection $errors = new ParticipantImportErrorCollection(),
+        private ParticipantCollection $newParticipants = new ParticipantCollection(),
+        private ParticipantCollection $rejectedParticipants = new ParticipantCollection(),
     ) {}
 
-    public function getRowNumber(): int
+    public function getErrors(): ParticipantImportErrorCollection
     {
-        return $this->rowNumber;
+        return $this->errors;
     }
 
-    public function getResult(): RowImportResultEnum
+    public function getNewParticipants(): ParticipantCollection
     {
-        return $this->result;
+        return $this->newParticipants;
     }
 
-    public function getReport(): string
+    public function getRejectedParticipants(): ParticipantCollection
     {
-        return $this->report;
+        return $this->rejectedParticipants;
     }
 }
