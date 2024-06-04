@@ -8,7 +8,7 @@ use App\Entity\Project;
 use App\Feature\Import\Enum\ImportStatusEnum;
 use App\Feature\Import\Interface\ProjectImportFactoryInterface;
 use App\Feature\Import\Interface\ProjectStorageInterface;
-use App\Feature\Import\ValueObject\ParticipantsProcessingResult;
+use App\Feature\Import\ValueObject\ParticipantImportReport;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
@@ -21,7 +21,7 @@ final readonly class ParticipantImportService
         private SyncParticipantsImporter $importer,
     ) {}
 
-    public function import(Project $project, UploadedFile $file): ParticipantsProcessingResult
+    public function import(Project $project, UploadedFile $file): ParticipantImportReport
     {
         $fileInfo = $this->projectStorage->upload($project, $file);
         $import = $this->importFactory->makeParticipantsImport(

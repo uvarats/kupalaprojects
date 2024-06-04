@@ -7,12 +7,9 @@
         <div class="d-flex justify-content-center mb-2">
             <h1>Модерация участников проекта "{{ project.name }}"</h1>
         </div>
-        <div class="row row-cols-md-3">
-            {# @var projectParticipant \App\Entity\ProjectParticipant #}
-            {% for projectParticipant in participants %}
-                {{ component('ParticipantModerationCard', {'participant': projectParticipant}) }}
-            {% endfor %}
-        </div>
+
+        {{ component('ParticipantModeration', {project: project}) }}
+
         {% if project.teamsAllowed %}
             {{ component('TeamModeration', {'project': project}) }}
         {% endif %}
