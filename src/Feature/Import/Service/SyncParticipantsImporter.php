@@ -73,10 +73,13 @@ readonly class SyncParticipantsImporter
             $rows[$email] = $rowData;
         }
 
+        if (!$errors->isEmpty()) {
+            return new ParticipantImportReport(errors: $errors);
+        }
+
         $chunkProcessingResult = $this->processChunk($rows, $import->getProject());
 
         return new ParticipantImportReport(
-            errors: $errors,
             newParticipants: $chunkProcessingResult->getNewParticipants(),
             rejectedParticipants: $chunkProcessingResult->getRejectedParticipants(),
         );

@@ -10,9 +10,9 @@ use App\Feature\Participant\Collection\ParticipantCollection;
 final readonly class ParticipantImportReport
 {
     public function __construct(
-        private ParticipantImportErrorCollection $errors,
-        private ParticipantCollection $newParticipants,
-        private ParticipantCollection $rejectedParticipants,
+        private ParticipantImportErrorCollection $errors = new ParticipantImportErrorCollection(),
+        private ParticipantCollection $newParticipants = new ParticipantCollection(),
+        private ParticipantCollection $rejectedParticipants = new ParticipantCollection(),
     ) {}
 
     public function getErrors(): ParticipantImportErrorCollection
