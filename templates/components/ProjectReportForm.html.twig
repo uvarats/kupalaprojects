@@ -1,0 +1,24 @@
+<div {{ attributes }}>
+    {{ form_start(form) }}
+    <div class="d-flex justify-content-end">
+        <button class="btn btn-primary" data-action="live#action:prevent" data-live-action-param="save">Сохранить</button>
+    </div>
+    {% if this.saved %}
+        <div class="alert alert-success" role="alert">
+            Сохранено!
+        </div>
+    {% endif %}
+    <div>
+        {{ form_row(form.reportUrl) }}
+    </div>
+    <div>
+        {{ form_row(form.protocolUrl) }}
+    </div>
+    <div>
+        {{ form_row(form.newsUrl) }}
+    </div>
+    <div>
+        {{ form_row(form.finalists) }}
+    </div>
+    {{ form_end(form) }}
+</div>

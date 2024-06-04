@@ -72,6 +72,11 @@ class ProjectParticipant implements AcceptableInterface
         return $this->acceptance;
     }
 
+    public function getFullNameWithEmail(): string
+    {
+        return $this->participant->getDisplayString();
+    }
+
     public function approve(): void
     {
         if ($this->acceptance !== AcceptanceEnum::NO_DECISION) {
