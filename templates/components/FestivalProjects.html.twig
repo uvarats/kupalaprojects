@@ -15,7 +15,7 @@
         {# @var project \App\Entity\Project #}
         {% for project in projects %}
             {% if project.isActive or is_granted('IS_ORGANIZATION_COMMITTEE_MEMBER', festival) %}
-                <div class="col mb-3">
+                <div class="col mb-3 d-flex flex-column justify-content-center">
                     {% if this.selected(project) %}
                         <input type="checkbox" hidden="hidden" data-model="selectedProjects[]" value="{{ project.id.toRfc4122 }}">
                         {% set selectionKey = 'selected' %}

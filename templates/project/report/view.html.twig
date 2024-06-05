@@ -1,0 +1,43 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Отчёт о проведении проекта "{{ project.name }}"{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <div class="d-flex justify-content-center mb-3">
+            <h1>Отчёт о проведении проекта "{{ project.name }}"</h1>
+        </div>
+        <div class="d-flex mb-3">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th scope="col"></th>
+                    <th scope="col"></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <th scope="row">Ссылка на протокол</th>
+                    <td><a href="{{ project.projectReport.protocolUrl }}">{{ project.projectReport.protocolUrl }}</a></td>
+                </tr>
+                <tr>
+                    <th scope="row">Ссылка на отчёт</th>
+                    <td><a href="{{ project.projectReport.reportUrl }}">{{ project.projectReport.reportUrl }}</a></td>
+                </tr>
+                <tr>
+                    <th scope="row">Ссылка на новость на странице проекта</th>
+                    <td><a href="{{ project.projectReport.newsUrl }}">{{ project.projectReport.newsUrl }}</a></td>
+                </tr>
+                <tr>
+                    <th scope="row" colspan="2" class="text-center">Финалисты</th>
+                </tr>
+                {% for pp in project.projectReport.finalists %}
+                    <tr>
+                        <th colspan="2" class="fw-normal">{{ pp.fullNameWithEmail }}</th>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}

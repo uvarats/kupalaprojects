@@ -526,21 +526,38 @@ class Project implements HasDateRangeInterface
         return $this->projectReport;
     }
 
-    public function setProjectReport(?ProjectReport $projectReport): static
+    public function hasReport(): bool
     {
-        // unset the owning side of the relation if necessary
-        if ($projectReport === null && $this->projectReport !== null) {
-            $this->projectReport->setProject(null);
+        return $this->projectReport !== null;
+    }
+
+    public function isReportingAllowed(): bool
+    {
+        return $this->state === ProjectStateEnum::APPROVED->value && $this->festival->isActive();
+    }
+
+    public function createReport(
+        string $reportUrl,
+        string $protocolUrl,
+        string $newsUrl,
+        array $finalists = [],
+    ): void {
+        if ($this->projectReport !== null) {
+            return;
         }
 
-        // set the owning side of the relation if necessary
-        if ($projectReport !== null && $projectReport->getProject() !== $this) {
-            $projectReport->setProject($this);
+        $report = new ProjectReport($this, $reportUrl, $protocolUrl, $newsUrl);
+
+        foreach ($finalists as $finalist) {
+            $report->addFinalist($finalist);
         }
 
-        $this->projectReport = $projectReport;
+        $this->projectReport = $report;
+    }
 
-        return $this;
+    public function removeReport(): void
+    {
+        $this->projectReport = null;
     }
 
     public function filePath(string $basePath): string
@@ -548,5 +565,10 @@ class Project implements HasDateRangeInterface
         $projectStorageFolder = md5($this->id->toString());
 
         return $projectStorageFolder . DIRECTORY_SEPARATOR . trim($basePath, '/');
+    }
+
+    public function isApproved(): bool
+    {
+        return $this->state === ProjectStateEnum::APPROVED->value;
     }
 }

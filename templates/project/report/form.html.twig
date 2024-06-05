@@ -1,0 +1,12 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Отчёт о проведении проекта "{{ project.name }}"{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <div class="mb-3 d-flex justify-content-center">
+            <h1>Отчёт о проведении проекта "{{ project.name }}"</h1>
+        </div>
+        {{ component('ProjectReportForm', {project: project}) }}
+    </div>
+{% endblock %}

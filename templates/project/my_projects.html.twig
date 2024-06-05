@@ -35,9 +35,11 @@
                                 <div class="mb-2">
                                     <a class="btn btn-primary me-2" href="{{ path('app_project_participants_import', {id: project.id}) }}">Импорт участников</a>
                                 </div>
-                                <div class="mb-2">
-                                    <a class="btn btn-primary me-2">Отчёт</a>
-                                </div>
+                                {% if is_granted('PROJECT_REPORTING_ALLOWED', project) %}
+                                    <div class="mb-2">
+                                        <a class="btn btn-primary me-2" href="{{ path('app_project_report', {id: project.id}) }}">Отчёт</a>
+                                    </div>
+                                {% endif %}
                             </div>
                         </div>
                     </div>
