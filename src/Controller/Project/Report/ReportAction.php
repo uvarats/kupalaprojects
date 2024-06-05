@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Controller\Project;
+namespace App\Controller\Project\Report;
 
 use App\Entity\Project;
 use App\Feature\Project\Security\ProjectReportVoter;
@@ -17,6 +17,6 @@ final class ReportAction extends AbstractController
     {
         $this->denyAccessUnlessGranted(ProjectReportVoter::PROJECT_REPORTING_ALLOWED, $project);
 
-        return $this->render('project/report.html.twig', ['project' => $project]);
+        return $this->render('project/report/form.html.twig', ['project' => $project]);
     }
 }

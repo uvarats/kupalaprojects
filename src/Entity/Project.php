@@ -566,4 +566,9 @@ class Project implements HasDateRangeInterface
 
         return $projectStorageFolder . DIRECTORY_SEPARATOR . trim($basePath, '/');
     }
+
+    public function isApproved(): bool
+    {
+        return $this->state === ProjectStateEnum::APPROVED->value;
+    }
 }

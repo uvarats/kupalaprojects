@@ -1,5 +1,5 @@
 <div {{ attributes }}>
-    <div class="card">
+    <div class="card mh-100">
         <div class="card-body">
             <div class="d-flex flex-row justify-content-between">
                 <h5 class="card-title">{{ project.name }}</h5>
@@ -12,6 +12,13 @@
             <span class="card-text">Состояние: {{ project.state|fancy }}</span><br>
             <span class="card-text">Дата начала: {{ project.startsAt|date('d.m.Y') }}</span><br>
             <span class="card-text">Дата завершения: {{ project.endsAt|date('d.m.Y') }}</span><br>
+            {% if is_granted('CAN_VIEW_EXISTING_REPORT', project) %}
+                <span class="card-text text-success">Отчёт предоставлен. <a href="{{ path('app_project_report_view', {id: project.id}) }}">Просмотреть</a></span><br>
+            {% elseif is_granted('CAN_VIEW_REPORT', project) %}
+                <span class="card-text text-danger">Отчёт не предоставлен</span><br>
+            {% else %}
+                <br>
+            {% endif %}
         </div>
         <div class="d-flex justify-content-between align-items-center card-footer">
             <div class="d-flex flex-wrap">
@@ -24,8 +31,8 @@
                     <button class="btn btn-danger me-2" data-action="live#action" data-live-action-param="transition" data-live-transition-param="reject">Отклонить</button>
                 {% endif %}
                 <a href="{{ path('app_project_details', { 'id': project.id }) }}" data-turbo="false" class="btn btn-primary me-2">Детали</a>
-                {% if false %}
-                    <a href="#" class="btn btn-secondary me-2">Отчёт</a>
+                {% if is_granted('CAN_VIEW_EXISTING_REPORT', project) %}
+                    <a href="{{ path('app_project_report_view', {id: project.id}) }}" class="btn btn-secondary me-2">Просмотреть отчёт</a>
                 {% endif %}
                 {% if is_granted('IS_ORGANIZATION_COMMITTEE_MEMBER', project.festival) and not workflow_has_marked_place(project, 'under_moderation') %}
                     <div class="dropdown me-2">
