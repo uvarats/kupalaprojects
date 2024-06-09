@@ -18,7 +18,14 @@
         {{ form_row(form.newsUrl) }}
     </div>
     <div>
-        {{ form_row(form.finalists) }}
+        {{ form_label(form.finalists) }}
+        <div class="mb-2">
+            <button class="btn btn-sm btn-outline-primary" data-action="live#action" data-live-action-param="selectAllParticipants">Выбрать всех</button>
+            <button class="btn btn-sm btn-outline-danger" data-action="live#action" data-live-action-param="unselectAllParticipants">Очистить выделение</button>
+        </div>
+        {{ form_widget(form.finalists) }}
+        {{ form_errors(form.finalists) }}
+        {{ form_help(form.finalists) }}
     </div>
     {{ form_end(form) }}
 </div>

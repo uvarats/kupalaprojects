@@ -7,8 +7,10 @@ namespace App\Twig\Component;
 use App\Entity\Project;
 use App\Feature\Project\Dto\ProjectReportData;
 use App\Feature\Project\Form\ProjectReportType;
+use App\Feature\Project\Repository\ProjectParticipantRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\Form;
 use Symfony\Component\Form\FormInterface;
 use Symfony\UX\LiveComponent\Attribute\AsLiveComponent;
 use Symfony\UX\LiveComponent\Attribute\LiveAction;
@@ -61,7 +63,27 @@ final class ProjectReportForm extends AbstractController
     }
 
     #[LiveAction]
-    public function save(EntityManagerInterface $entityManager) {
+    public function selectAllParticipants(ProjectParticipantRepository $participantRepository): void
+    {
+        $projectParticipants = $participantRepository->findAllApproved($this->project);
+        $this->formValues['finalists'] = [];
+
+        foreach ($projectParticipants as $projectParticipant) {
+            $finalistId = $projectParticipant->getId();
+
+            $this->formValues['finalists'][] = $finalistId->toString();
+        }
+    }
+
+    #[LiveAction]
+    public function unselectAllParticipants(): void
+    {
+        $this->formValues['finalists'] = [];
+    }
+
+    #[LiveAction]
+    public function save(EntityManagerInterface $entityManager): void
+    {
         $this->submitForm();
 
         $data = $this->getForm()->getData();

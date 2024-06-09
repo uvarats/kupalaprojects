@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Controller\Admin;
 
-use App\Entity\EducationGroup;
 use App\Entity\EducationSubGroup;
 use App\Entity\Festival;
 use App\Entity\Participant;
@@ -73,7 +72,6 @@ class DashboardController extends AbstractDashboardController
             MenuItem::linkToCrud('Фестивали', 'fas fa-calendar', Festival::class),
             MenuItem::linkToCrud('Предметы проектов', 'fa fa-tags', ProjectSubject::class),
             MenuItem::linkToCrud('Проекты', 'fas fa-project-diagram', Project::class),
-            MenuItem::linkToCrud('Образовательные группы', 'fas fa-university', EducationGroup::class),
             MenuItem::linkToCrud('Образовательные подгруппы', 'fas fa-school', EducationSubGroup::class)
         ];
     }

@@ -23,7 +23,9 @@ class EducationSubGroupAutocompleteField extends AbstractType
             'choice_label' => 'name',
             'multiple' => true,
             'query_builder' => function (EducationSubGroupRepository $educationSubGroupRepository) {
-                return $educationSubGroupRepository->createQueryBuilder('educationSubGroup');
+                return $educationSubGroupRepository->createQueryBuilder('educationSubGroup')
+                    ->where('educationSubGroup.allowsProjects = :allows')
+                    ->setParameter('allows', true);
             },
             'no_more_results_text' => 'Больше результатов нет',
             'no_results_found_text' => 'Групп не найдено. Возможно, это ошибка.'
