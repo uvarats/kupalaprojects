@@ -8,6 +8,7 @@ use App\Entity\EducationSubGroup;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 
@@ -30,7 +31,8 @@ class EducationSubGroupController extends AbstractCrudController
         return [
             IdField::new('id')->hideOnForm(),
             TextField::new('name'),
-            AssociationField::new('educationGroup')->setFormTypeOption('choice_label', 'name'),
+            BooleanField::new('allowsProjects'),
+            AssociationField::new('parent', 'Parent Sub Group'),
         ];
     }
 

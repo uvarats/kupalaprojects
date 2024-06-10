@@ -24,12 +24,16 @@ Name: 'Название'
 'Education establishment': 'Учреждение образования'
 'Teams allowed': 'Разрешить регистрацию участников в виде команд'
 'Recipients': 'Адресаты'
+'New password': 'Новый пароль'
+'Repeat Password': 'Повтор пароля'
 app:
   create: 'Создать'
   edit: 'Редактировать'
   remove: 'Удалить'
   yes: 'Да'
   no: 'Нет'
+  password_reset:
+    help: 'Введите Вашу почту и мы вышлем ссылку для изменения пароля'
 festival:
   create: 'Создание фестиваля'
   update: 'Редактирование фестиваля'

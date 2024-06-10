@@ -30,6 +30,12 @@ class ProjectReport
     #[ORM\ManyToMany(targetEntity: ProjectParticipant::class)]
     private Collection $finalists;
 
+    #[ORM\JoinTable(name: 'project_report_team_finalists')]
+    #[ORM\JoinColumn(name: 'project_report_id', referencedColumnName: 'id')]
+    #[ORM\InverseJoinColumn(name: 'project_team_id', referencedColumnName: 'id', unique: true)]
+    #[ORM\ManyToMany(targetEntity: ProjectTeam::class)]
+    private Collection $teamFinalists;
+
     public function __construct(
         #[ORM\OneToOne(inversedBy: 'projectReport', cascade: ['persist', 'remove'])]
         private Project $project,
@@ -41,6 +47,7 @@ class ProjectReport
         private string $newsUrl,
     ) {
         $this->finalists = new ArrayCollection();
+        $this->teamFinalists = new ArrayCollection();
     }
 
     public function getId(): ?Uuid
@@ -131,5 +138,10 @@ class ProjectReport
         foreach ($finalists as $finalist) {
             $this->addFinalist($finalist);
         }
+    }
+
+    public function getTeamFinalists(): Collection
+    {
+        return $this->teamFinalists;
     }
 }

@@ -1,0 +1,14 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Измените пароль{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <h1>Сброс пароля</h1>
+
+        {{ form_start(resetForm) }}
+        {{ form_row(resetForm.plainPassword) }}
+        <button class="btn btn-primary">Сбросить пароль</button>
+        {{ form_end(resetForm) }}
+    </div>
+{% endblock %}

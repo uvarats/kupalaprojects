@@ -2,3 +2,5 @@
 file.not_found: 'Пожалуйста, загрузите файл.'
 'Invalid full name. Full name must consist from 2 or 3 space-separated words.': 'ФИО должно состоять из 2 или 3 слов, разделенных пробелом.'
 'You must specify at least one finalist': 'Укажите хотя бы одного финалиста'
+'Your password should be at least {{ limit }} characters': 'Ваш пароль должен иметь длину хотя бы {{ limit }} символов'
+'The password fields must match.': 'Значения должны совпадать.'
