@@ -1,0 +1,15 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Письмо выслано!{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <div class="alert alert-success" role="alert">
+            <p>
+                Если аккаунт с указанной почтой действительно существует, то на данный e-mail было выслано письмо с ссылкой для смены пароля.
+                Эта ссылка истечет через {{ resetToken.expirationMessageKey|trans(resetToken.expirationMessageData, 'ResetPasswordBundle') }}.
+            </p>
+            <span>Если Вы не получили письмо, тогда проверьте спам или <a href="{{ path('app_forgot_password_request') }}">попробуйте еще раз</a>.</span>
+        </div>
+    </div>
+{% endblock %}

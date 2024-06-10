@@ -7,7 +7,7 @@
     <div class="row justify-content-center">
         <div class="col-md-6">
             <div class="card mt-4">
-                <div class="card-header bg-primary text-white">
+                <div class="card-header bg-primary text-white d-flex justify-content-between">
                     <h4 class="mb-0">Вход</h4>
                 </div>
                 <div class="card-body">
@@ -30,8 +30,9 @@
                         </div>
                         <div class="d-grid">
                             <button type="submit" class="btn btn-primary">Войти</button>
-                            <div class="d-flex justify-content-center mt-2">
+                            <div class="d-flex flex-column align-items-center mt-2">
                                 <span>Нет аккаунта? <a href="{{ path('app_signup') }}">Зарегистрироваться</a></span>
+                                <span>Или может <a href="{{ path('app_forgot_password_request') }}" class="text-danger">забыли пароль?</a></span>
                             </div>
                         </div>
                     </form>
